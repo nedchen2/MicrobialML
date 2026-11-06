@@ -8,9 +8,9 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 FILES = [".gitignore", "myst.yml", "intro.md", "README.md", "STUDENT_README.txt",
          "microbial-ml.Rproj", "requirements-build.txt", "preview.command",
-         "PUBLICATION.md", "CHANGELOG.md"]
+         "PUBLICATION.md", "CHANGELOG.md", "BUILDING.md"]
 DIRECTORIES = ["assets", "authoring", "chapters", "reference", "scripts", "tools",
-               "downloads", "validation", ".github"]
+               "downloads", "validation", ".github", "templates"]
 
 
 def main():
@@ -21,8 +21,9 @@ def main():
     sources = [ROOT / name for name in FILES]
     for name in DIRECTORIES:
         sources.extend(p for p in (ROOT / name).rglob("*") if p.is_file()
-                       and "__pycache__" not in p.parts and p.suffix != ".pyc")
-    sources += [ROOT / "data/practice_counts.csv", ROOT / "data/data-dictionary.csv"]
+                       and "__pycache__" not in p.parts and p.suffix != ".pyc"
+                       and not p.name.startswith("my-"))
+    sources += [ROOT / "data/practice_counts.csv", ROOT / "data/practice_farms.csv", ROOT / "data/data-dictionary.csv"]
     html = ROOT / "_build/html"
     assert (html / "index.html").is_file(), "Build the HTML before packaging."
     sources.extend(p for p in html.rglob("*") if p.is_file())

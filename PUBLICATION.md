@@ -17,10 +17,10 @@
 ## 日常修改
 
 - 修改正文：第 0 章和参考页直接修改 Markdown；计算章节的说明修改 `authoring/*.md`。
-- 修改计算：修改 `scripts/*.R` 中的 canonical 代码，然后运行 `python tools/execute_book.py` 更新 notebook。不要分别手改 notebook 与下载脚本中的计算。
+- 修改计算：修改 `scripts/*.R` 中的 canonical 代码，然后运行 `python tools/execute_book.py` 更新 notebook。第 5–7 章脚本由整合脚本 worked-example.R 自动生成，不要单独修改生成的分步脚本。不要分别手改 notebook 与下载脚本中的计算。
 - 提交修改、推送 `main`。只有新一轮检查成功才发布；失败时先看 Actions 中具体失败的步骤。
 - 发给学生的始终是同一个教材主页网址。第一次使用前建议在课程平台写明：解压学生 ZIP，再双击 `.Rproj`。
-- 每次正式开课前固定一个 Release，例如 `v0.1`，附上该版本验证后的学生 ZIP。网页会继续更新；Release 附件保留课堂用版本。
+- 每次正式开课前固定一个 Release，例如 `v0.2`，附上该版本验证后的学生 ZIP。网页会继续更新；Release 附件保留课堂用版本。
 
 ## 文件与环境边界
 

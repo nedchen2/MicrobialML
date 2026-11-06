@@ -1,6 +1,16 @@
 # 1. Your first successful run
 
-**Time:** 30-45 minutes, with installation taking longer on some computers. **You need:** the student project and permission to install software, or an institution-managed computer with R and RStudio already installed.
+**Estimated session:** 30–60 minutes plus installation or access support. These times have not been measured with beginners.
+
+| Before running | Your task |
+|---|---|
+| Input | [Student ZIP](../downloads/microbial-ml-student.zip), extracted on your computer |
+| Working file | Open `scripts/01-first-run.R`; File → Save As `scripts/my-01-first-run.R` |
+| Run method | Cursor on a complete line → Run; for several lines, select the whole block → Run |
+| Stop after | Section 1.10, after restarting and recreating the output |
+| Finish with | Your my- script and `outputs/practice/first-run.txt` |
+
+You need permission to install R and RStudio, or a prepared lab computer. The reference script already contains the code below. Work in your saved my- copy and run its matching lines; avoid pasting duplicate copies from the website.
 
 The goal is small: run one line, save a script, create a file, and find it again. Follow the steps in order even if AI offers to write a full analysis immediately.
 
@@ -33,7 +43,7 @@ A project gives R a starting folder. A relative path such as `data/practice_coun
 
 This is an illustration, not a screenshot. The arrangement can vary. The important names are **Source**, **Console**, **Environment** and **Files**. The [official pane guide](https://docs.posit.co/ide/user/ide/guide/ui/ui-panes.html) has further interface guidance.
 
-Open `scripts/01-first-run.R` through **File → Open File**. It appears in the Source editor. Comments beginning with `#` explain the steps; R ignores the comment text.
+Open `scripts/01-first-run.R` through **File → Open File**. It appears in the Source editor. Immediately choose **File → Save As** and save `my-01-first-run.R` in the same `scripts` folder. Check the tab name before editing. Comments beginning with `#` explain the steps; R ignores them. A marker such as `# %% arithmetic` identifies a supplied block.
 
 ## 1.4 Run one line
 
@@ -45,7 +55,11 @@ The output should show `2`. R may print `[1]` before the value; that is an outpu
 
 If the console shows `+` instead of `>`, R is waiting for the rest of an unfinished expression. Press **Esc**, then run just the complete line again.
 
-**Make a script of your own:** choose **File → New File → R Script**. Type `1 + 1` in the blank Source tab. Use **File → Save As** and save it as `my-first-script.R` inside the project's `scripts` folder. Run the line. Then return to the supplied `01-first-run.R` tab. A script is a text file, not an Excel sheet or a screenshot.
+**For a block:** drag over all its code lines in the Source editor, then click **Run** once. Keep your browser, script and Console visible as you compare results. Read output in the Console, below the script; the Environment lists created objects.
+
+**Run versus Source:** the main route uses Run so you see each result. Source executes an entire saved file and normally does not print every bare expression. A missing printed value after Source does not itself mean failure. To display one, run its object name or use `print()`.
+
+Your my- file is already a script of your own. For a future blank script, use **File → New File → R Script**, then Save As a `.R` filename. You do not need a second blank file for this lesson.
 
 ## 1.5 Store something in an object
 
@@ -53,7 +67,7 @@ Read `<-` as “store the value on the right under the name on the left.” Quot
 
 {{r:object}}
 
-An object is a named value in the current R session. Here is a numerical one:
+An assignment such as `sample_name <- "milk"` normally prints nothing. Run the next line, `sample_name`, to display its value; you can also find it in Environment. An object is a named value in the current R session. Here is a numerical one:
 
 {{r:count}}
 
@@ -79,7 +93,7 @@ In RStudio's Files pane, open **outputs → practice** and find `first-run.txt`.
 
 Saving a script with **File → Save** or **Ctrl/Cmd + S** saves your instructions. Running a line such as `writeLines()` creates the output file. These are different actions.
 
-## 1.8 Packages: installation versus use
+## 1.8 Optional reference: packages
 
 A package adds functions to R. `install.packages("packageName")` downloads and installs one; `library(packageName)` attaches an already installed package in the current session.
 
@@ -93,7 +107,14 @@ Your version does not have to display the same text as this example. The tested 
 
 ## 1.9 Ask AI a small question
 
-**Where: AI chat.**
+**Where: the course-approved AI chat.** Obtain the course access link from your TA. If access is unavailable, finish the R steps and mark this live-chat task pending; Chapter 3 also offers an offline inspection route.
+
+1. Open the approved chat and start a new conversation.
+2. Paste the filled-in prompt below into its message box and send it.
+3. Read the reply. The assistant does not automatically see your RStudio session.
+4. If it returns code, copy only the R instructions, leaving out triple backticks and explanatory prose.
+5. In your **my-01** script, add `# My AI check` at the end, paste or type the proposed small check below it, save, and select that new block → Run.
+6. Compare the Console output with the actual `count` object. If they disagree, send the exact code and output back.
 
 > I am new to R. I ran `count <- 20` and then `count * 2`. Explain what is stored in `count`, what the second line prints, and how I can check whether `count` changed. Do not add packages or an analysis pipeline.
 
@@ -105,11 +126,16 @@ Save the script. Use **Session → Restart R**. The Environment should no longer
 
 ```{admonition} Checkpoint 1
 :class: tip
-Show the TA your saved script, the `TRUE` project-folder check, and `outputs/practice/first-run.txt`. Explain the difference between a file on disk and an object in memory.
+Record your my- script filename, show the `TRUE` project-folder check, find `outputs/practice/first-run.txt`, and explain how you recreated it after restarting. Record whether the live AI step is completed or pending in your completion card.
 ```
 
 **If it fails:** use the [troubleshooting page](../reference/troubleshooting.md). Report the exact line and full error text. A screenshot can help with the interface; code and error text should also be copied as text.
 
-**Try a change:** save a second text file with a different message and filename. Check that both files exist.
+```{admonition} Open after you try: expected evidence
+:class: tip dropdown
+The arithmetic returns 2; `count * 2` returns 40 and `count` remains 20. The project check is TRUE. After a restart, rerunning your saved script recreates the objects and writes the text file again. Saving the script preserves instructions; running writeLines creates the result file.
+```
+
+**Try a change:** in your my- copy, change the message and filename in the `writeLines()` line to save a second text file with a different message and filename. Check that both files exist.
 
 [Download this chapter's R script](../scripts/01-first-run.R). **Next:** [the R you need today](02-minimum-r.ipynb).

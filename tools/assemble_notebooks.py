@@ -5,7 +5,14 @@ import re
 import nbformat
 
 ROOT = Path(__file__).resolve().parents[1]
-LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "worked-example"]
+REAL_STAGES = {
+    "05-meet-real-data": ["source", "raw-preview", "assays", "select", "quality",
+                          "usable-preview", "target", "log-intuition", "prepare-audit", "save-prepared"],
+    "06-split-farms": ["load-prepared", "split", "overlap", "save-split"],
+    "07-baseline": ["load-split", "baseline", "metrics", "independent", "sensitivity",
+                    "save", "plot", "audit-save"],
+}
+LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-example", *REAL_STAGES]
 
 
 def read_cells(path):
@@ -24,6 +31,14 @@ def read_cells(path):
 
 
 def assemble():
+    full = read_cells(ROOT / "scripts/worked-example.R")
+    assert [key for keys in REAL_STAGES.values() for key in keys] == list(full), "Stages must partition the complete workflow in order"
+    for name, keys in REAL_STAGES.items():
+        script = f"# Generated from worked-example.R for Chapter {name[:2]}; edit that canonical source as author.\n"
+        script += "# Students: save a working copy as my-" + name + ".R; follow the matching page.\n"
+        for key in keys:
+            script += f"# %% {key}\n{full[key]}\n"
+        (ROOT / "scripts" / f"{name}.R").write_text(script)
     for name in LESSONS:
         target = ROOT / "chapters" / f"{name}.ipynb"
         previous = nbformat.read(target, as_version=4) if target.exists() else None

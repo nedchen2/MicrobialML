@@ -8,6 +8,9 @@
 | Console | Where R accepts commands and prints results | 控制台 |
 | Object | A named value in the current R session | 内存中的对象 |
 | Working directory | Starting folder for relative paths | 工作目录 |
+| Checkpoint file | A saved input that a later chapter explicitly reloads | 章节间保存并重新载入的文件 |
+| RDS | An R file format preserving saved objects and their types | R 对象保存格式 |
+| Run / Source | Execute selected lines / execute a script, often with less intermediate printing | 运行选中代码／执行脚本 |
 | Data frame | A table of rows and typed columns | 数据框 |
 | Function | A named operation receiving arguments | 函数 |
 | Argument | An input or setting supplied to a function | 参数或输入 |

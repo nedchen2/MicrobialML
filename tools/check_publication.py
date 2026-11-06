@@ -5,11 +5,12 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 root_files = {".gitignore", "README.md", "STUDENT_README.txt", "myst.yml",
               "intro.md", "microbial-ml.Rproj", "requirements-build.txt",
-              "preview.command", "PUBLICATION.md", "CHANGELOG.md"}
+              "preview.command", "PUBLICATION.md", "CHANGELOG.md", "BUILDING.md"}
 extensions = {"assets": {".svg", ".css"}, "authoring": {".md"},
               "chapters": {".md", ".ipynb"}, "reference": {".md"},
               "scripts": {".R"}, "tools": {".py"}}
-exact_paths = {"data/practice_counts.csv", "data/data-dictionary.csv",
+extensions["templates"] = {".txt"}
+exact_paths = {"data/practice_counts.csv", "data/practice_farms.csv", "data/data-dictionary.csv",
                "downloads/baseline-scores.csv", "downloads/data-audit.csv",
                ".github/workflows/deploy.yml"}
 files = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().split("\0")
@@ -21,6 +22,8 @@ for name in files:
     allowed = name in root_files or name in exact_paths
     if len(path.parts) == 2 and path.parts[0] in extensions:
         allowed = path.suffix in extensions[path.parts[0]]
+    if path.name.startswith("my-"):
+        allowed = False
     if not allowed:
         unexpected.append(name)
 assert not unexpected, "Unreviewed public paths: " + ", ".join(unexpected)

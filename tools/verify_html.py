@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_build" / "html"
@@ -30,7 +31,10 @@ class Page(HTMLParser):
 
 
 pages = {p.resolve(): Page(p.read_text()) for p in SITE.rglob("*.html")}
-assert len(pages) == 10, f"Expected ten book pages, found {len(pages)}"
+def toc_files(entries):
+    return sum((1 if "file" in entry else 0) + toc_files(entry.get("children", [])) for entry in entries)
+expected_pages = toc_files(yaml.safe_load((ROOT / "myst.yml").read_text())["project"]["toc"])
+assert len(pages) == expected_pages, f"Expected {expected_pages} book pages, found {len(pages)}"
 failures = []
 checked = 0
 for path, page in pages.items():

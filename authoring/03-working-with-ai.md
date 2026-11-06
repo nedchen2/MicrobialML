@@ -1,132 +1,119 @@
-# 3. Work with AI in small steps
+# 3. Ask, run, inspect and repair
 
-**Time:** about 25 minutes. **You need:** an AI chat interface approved for your course, RStudio, and the student project. Open `scripts/03-working-with-ai.R` in a fresh R session.
+**Estimated session:** 35–50 minutes, longer if you are arranging AI access. This is a planning estimate, not a measured completion time.
 
-The aim is to make AI assistance reviewable. You should be able to explain what you requested, what code you accepted, what R produced, and what convinced you that the step was correct.
-
-## Before your first prompt
-
-1. Open your course-approved AI chat interface. Ask the TA about access if you do not have an approved account; this lesson does not require an API key or a coding-agent subscription.
-2. Start a new conversation. Paste the task below into the message box and send it.
-3. Wait for the response. Read its assumptions before copying code.
-4. Copy only the R instructions from a code block, leaving out the surrounding triple backticks, language label and ordinary explanation.
-5. Paste those instructions into an RStudio **script**, save, and run a small block. Do not paste the whole conversation into the R console.
-6. Compare the actual output with the expected result. Send the relevant code and exact output back to the assistant if you need a repair.
-
-The assistant may produce a different answer on another run. The same input/output checks still apply.
-
-## 3.1 Begin with a task, not a model name
-
-Compare these requests:
-
-> Do my microbial machine-learning analysis.
-
-> First inspect this table. Tell me what a row represents, identify the outcome and identifiers, and report missing values. Give only the code for this inspection and say what output I should check. Do not fit a model yet.
-
-The second request defines a small job with a stopping point. It also gives you something you can check before an error spreads through the analysis.
-
-## 3.2 Supply five pieces of context
-
-| Context | Example for our project |
+| Before running | Your task |
 |---|---|
-| Scientific task | Predict log10 MSC for a sample from a held-out farm |
-| Actual input | The relevant column names and a data dictionary |
-| Constraints | Base R; keep records from the same farm together |
-| Expected output | A row count, a small table, a saved CSV |
-| Verification | Check no training/test farm overlap; reconstruct the mean |
+| Input | The invented `data/practice_counts.csv` from Chapter 2 |
+| Working file | Open `scripts/03-working-with-ai.R`; Save As `scripts/my-03-working-with-ai.R` |
+| Starting state | Open the project and use Session → Restart R |
+| Run method | Select the named block and click Run; inspect its result before proceeding |
+| Finish with | `outputs/ch03/summary.csv` and your completed `outputs/ch03/ai-use-log.txt` |
 
-Do not ask AI to invent what an abbreviation or concentration unit means. Give the dictionary or ask it to identify the missing information.
+The goal is **the mean of the recorded counts**, with the missing count left missing. This specific goal will help us detect code that runs successfully but answers another question.
 
-## 3.3 A prompt you can adapt
+## 3.1 Give the assistant something it can actually use
 
-**Where: AI chat.**
+Run the `context` block in your working copy:
 
-> You are helping me learn R, and I have no coding background. I am working in an RStudio project. My current goal is [one task]. My input is [file/object and exact columns]. One row represents [unit]. Please propose a short plan, list assumptions, and give only the first small code block. Explain where I should run it, what output to expect, and one independent check. Use base R and do not change unrelated files. If information is missing, say what you cannot determine.
+{{r:context}}
 
-Replace the square-bracketed descriptions with real information. A template is a reminder of context; it is not a magic phrase.
+The chat assistant does not automatically receive this RStudio object. Copy the output of `names(practice)` and the four-row table from the Console into the chat. These four rows are invented teaching data. For a real project, share only information approved for that tool.
 
-## 3.4 Check a number without relying on AI's confidence
+Start a new conversation in the course-approved chat. Paste this **filled-in task**, followed by the column names and table you just copied:
 
-Suppose AI claims that the mean of 10, 20 and 30 is 30. You can test the claim directly:
+> I am a biology student learning base R in RStudio. I loaded data/practice_counts.csv into an object called practice. One row is one invented milk sample. The columns are sample_id, count_cfu_ml and storage_hours; one count is NA. My task is to report the number of missing counts, the number of recorded counts and the mean of the recorded counts. Leave the missing value unchanged. First give a short plan, then one small R block using the existing object. Explain its expected output and one hand check. Do not install packages or change files. I will paste my actual input below.
 
-{{r:verify-mean}}
+Read the assumptions before running returned code. Copy only R instructions, excluding triple backticks and surrounding prose. At the end of your **my-** script, add a comment `# My live AI attempt`, paste the block below it, save, and select only that new block to run. Keep the supplied reference blocks for comparison.
 
-The result is 20, and the assertion passes. “I ran the code” and “I checked the calculation another way” are different pieces of evidence.
+If chat access is unavailable, follow the supplied dialogue below and set your log route to **supplied illustrative dialogue**. This practises inspection and repair; it does not count as having used a live tool.
 
-**Ask a follow-up:** “Your result was 30, but R and my arithmetic both give 20. Identify the incorrect step and revise only that step.” Verify the revision yourself.
+## 3.2 Inspect a plausible but unsuitable answer
 
-## 3.5 Give AI useful information when code fails
+**The following is a scripted teaching example, not an actual conversation or a promise of what a model will say.** If your live response is already suitable, record that fact; use this faulty response as a separate inspection exercise.
 
-Prepare a tiny object with a known result:
+*Illustrative assistant:* “I will replace the missing count with zero and take the mean.”
 
-{{r:correct-object}}
+Run the labeled `faulty-answer` block. It changes a separate copy called `working`, leaving `practice` available for comparison:
 
-Now consider the line `mean(milkData$count)`. The code below catches its error so that this lesson can show the message without stopping:
+{{r:faulty-answer}}
 
-{{r:error-demo}}
+You should see **15**. Before continuing, calculate `(10 + 20 + 30) / 3` by hand. The mean of the three recorded counts is **20**. The assistant has introduced a fourth value without justification and has changed the requested task.
 
-The lesson defined `milk_data`, not `milkData`. The names are different. Your ordinary code does not need `tryCatch()` just to calculate a mean; it is used here to display an intentional error safely.
+{{r:inspect-answer}}
 
-Here is a useful error report to paste into AI chat:
+The original has one missing count, and the comparison is **FALSE**. A successful run alone has not established that the code answers the task.
 
-```text
-Goal: calculate the mean of the count column in base R.
-I ran:
-milk_data <- data.frame(count = c(10, 20, 30))
-mean(milkData$count)
+## 3.3 Send useful evidence back
 
-R says: object 'milkData' not found
-Expected result: 20.
-names(milk_data) returns: "count"
-Please explain the error and fix only the failing line.
-```
+*Student follow-up in the illustrative dialogue:*
 
-Run the localized repair:
+> I asked for the mean of recorded counts with no imputation. Your code changed NA to zero and returned 15. The recorded counts are 10, 20 and 30; their sum is 60 and there are three of them, so the requested mean is 20. Please revise only the summary step. Use practice, preserve its missing value, report missing_n and recorded_n, and explain what the mean describes. Do not modify input files.
 
-{{r:repair}}
+This report includes the requested task, actual behavior, conflicting assumption and an independent check. In a live chat, send the code and output you actually received; do not claim that the supplied faulty answer was your assistant's response.
 
-Saving the last working script gives you a place to recover from if a later repair breaks something else.
+*Illustrative assistant repair:* “Summarize recorded entries using na.rm = TRUE, and report the missingness separately. This does not estimate the unrecorded count.”
 
-## 3.6 Three different kinds of failure
+Run the `repaired-answer` block:
 
-| Type | Example | Evidence to inspect |
-|---|---|---|
-| Execution | File or object not found | Working folder, actual filenames and object names |
-| Analysis | The same farm occurs in training and test | The overlap of group identifiers |
-| Interpretation | AI says gloves cause lower counts from observational data | Study design and the distinction between prediction and causation |
+{{r:repaired-answer}}
 
-A script may run perfectly while making the second or third type of error. “No error message” is not a scientific validation.
+Expect **missing_n = 1, recorded_n = 3, mean_recorded = 20**. `summary_table` is a one-row data frame made from those named results.
 
-## 3.7 Keep a short AI-use log
+## 3.4 Check before accepting
 
-Use a text or Markdown file. One entry can be four lines:
+{{r:verify-repair}}
 
-```text
-Task: repair an object-name error in a mean calculation.
-Accepted change: milkData -> milk_data in one line.
-Evidence: R returns 20; hand calculation also returns 20.
-Remaining question: none for this calculation.
-```
+The assertions use the hand calculation and check that the fourth source count remains `NA`. They print nothing when they pass; the following message confirms that execution reached the end of the block.
 
-Keep the prompts or responses needed to explain important decisions. You do not need to submit a giant conversation dump. Follow your course's AI-use and disclosure policy.
+The mean describes the three recorded counts. These checks do not establish why the fourth is missing, whether the samples are representative, or whether excluding missing outcomes is appropriate in another study.
 
-## 3.8 Review an answer before running it
-
-Ask yourself:
-
-1. Does this code solve the task I stated?
-2. Does it use the actual objects and columns?
-3. Does it change data, files or assumptions I did not ask it to change?
-4. What result can I check independently?
-5. What uncertainty is still unresolved?
-
-Use public practice material or information approved by your institution. Do not paste private participant, farm, patient or unpublished research information into an external assistant without appropriate authorization.
-
-```{admonition} Checkpoint 3
+```{admonition} What if your AI returns different code?
 :class: tip
-Show one task specification, one localized error report, a corrected run and a verification. Explain why rerunning the same code twice is not an independent calculation check.
+Compare the task, objects, missing-value treatment and actual outputs. Different code can be acceptable when it preserves the input and gives 1, 3 and 20 with a justified interpretation. If it uses an unknown object, renamed column or a package, report the exact mismatch and request a localized repair. Do not edit assumptions simply to imitate the sample response.
 ```
 
-**Exercise:** an assistant proposes replacing every missing count with zero and then reporting a mean. Write a follow-up that asks it to explain the assumption, report the missingness, and separate the known data from an imputation decision. Use Chapter 2 to check the answer.
+## 3.5 Save the result and a short, honest log
 
-[Download this chapter's R script](../scripts/03-working-with-ai.R). **Next:** [a complete real-data example](worked-example.ipynb).
+{{r:save-evidence}}
+
+In Files, open **outputs → ch03**. Open `summary.csv` and confirm its three values. Open `ai-use-log.txt` as text, fill in the bracketed fields, and save with Ctrl/Cmd + S. The script creates the log template only when it is absent, so rerunning will preserve your notes.
+
+A completed log for the **supplied dialogue** could say:
+
+```text
+Route: supplied illustrative dialogue
+Task: summarize the recorded practice counts without imputation.
+Context sent: none to an external tool; I inspected the supplied four-row example.
+Accepted change: remove the zero substitution; summarize recorded entries.
+Evidence: missing_n 1, recorded_n 3, mean 20; 60 / 3 = 20; source NA unchanged.
+Remaining question: why the fourth count is missing is unknown.
+Tool and date, if used: no live AI tool used for this route.
+```
+
+A live-chat log should identify the actual tool, date, accepted change and checks. You do not need to submit an entire conversation dump.
+
+## 3.6 Optional: repair an execution error too
+
+R is case-sensitive. This supplied wrapper displays an intentional error without stopping the executed book:
+
+{{r:object-name-error}}
+
+The defined object is `practice`, not `Practice`. In your ordinary code, repair the name in the failing line. You do not need to write `tryCatch()` to calculate a mean; here it is a teaching wrapper.
+
+| Failure type | Example | Check |
+|---|---|---|
+| Execution | An object name does not exist | Actual spelling and whether its creation line ran |
+| Analysis | A missing measurement was silently replaced by zero | Task, data and transformation |
+| Interpretation | A prediction is described as a causal effect | Study design and scope of the evidence |
+
+## Checkpoint 3
+
+Find your saved my- script, summary CSV and completed log. Explain why 15 was unsuitable for this task, why 20 is the requested result, and which route you used. Keep any live AI attempt separately labeled inside your script.
+
+```{admonition} Open after you try: reference checks
+:class: tip dropdown
+The requested outputs are 1 missing, 3 recorded and a mean of 20. The faulty response averages 10, 20, 30 and an invented zero, giving 15. Correcting it preserves the source NA. A log records the actual exercise or live tool used; the illustrative dialogue is not represented as a real model response.
+```
+
+**Next:** [a six-row farm example](04-small-farm-example.ipynb), then the [real-data route](worked-example.md).

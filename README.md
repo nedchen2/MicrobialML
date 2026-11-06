@@ -1,140 +1,38 @@
-# AI-Assisted Microbial ML: Jupyter Book pilot
+# Microbial ML
 
-Student website: <https://nedchen2.github.io/MicrobialML/>.
-Students read the website and download the R project there. Maintainers can use
-the [publication and update guide](PUBLICATION.md) for the GitHub Pages workflow.
+**A first R and AI-assisted coding journey for Machine Learning for Food Safety and Toxicology.**
 
-The first edition contains Chapters 0-3 plus a complete real-data-to-baseline
-example for **Machine Learning for Food Safety and Toxicology**. It follows
-the beginner-oriented approach of [Start Your R Journey](https://nedchen2.github.io/StartYourRJourney/intro.html).
+Start with no programming experience. Learn to ask a small scientific question, run R code, inspect the evidence and explain what the result supports.
 
-The main text is English, with an English-Chinese glossary. The student route is
-R + RStudio. The website is a static reading interface; in-page R execution is
-not configured. The student scripts require base R only.
+## Start learning
 
-## View the book
+**[Open the online textbook →](https://nedchen2.github.io/MicrobialML/)**
 
-The complete pilot bundle includes the built website in `_build/html/`. On macOS,
-double-click `preview.command`, keep the terminal open, and visit the printed URL.
-Alternatively, from this project directory run:
+Read in your browser. Download the **complete student ZIP** from the book's [Downloads page](https://nedchen2.github.io/MicrobialML/downloads/), extract it, and open `microbial-ml.Rproj` in RStudio.
 
-```sh
-python3 tools/preview_book.py
-```
+Students need R and RStudio. No GitHub account, Python, Node.js, Jupyter Book, API key or additional R package is required for the supplied analysis. The real-data example needs internet for its first download. Use the course-approved AI chat; a clearly labeled illustrative dialogue is also provided for inspection practice.
 
-This serves the book on this computer only. Use `--port 8766` if the default port
-is occupied. Press Ctrl+C in that terminal to stop.
+## Your learning route
 
-Serve the site over HTTP, rather than expecting
-modern Jupyter Book pages to work by double-clicking their HTML files:
+| Part | What you will do |
+|---|---|
+| [0. Start here](https://nedchen2.github.io/MicrobialML/start-here/) | Understand the task, tools and files you will save |
+| [1. First successful run](https://nedchen2.github.io/MicrobialML/first-run/) | Run a line, save a script and find an output |
+| [2. Minimum R](https://nedchen2.github.io/MicrobialML/minimum-r/) | Inspect a small table, handle missingness and change a copy |
+| [3. Ask, run, inspect and repair](https://nedchen2.github.io/MicrobialML/working-with-ai/) | Check an AI answer against the task and repair an unsuitable assumption |
+| [4. Six invented farm records](https://nedchen2.github.io/MicrobialML/small-farm-example/) | Hold out one farm and calculate baseline errors by hand |
+| [5–7. Real-data analysis](https://nedchen2.github.io/MicrobialML/worked-example/) | Inspect MSC data, keep farms together, then fit and evaluate a baseline |
 
-```sh
-python3 -m http.server 8765 --bind 127.0.0.1 --directory _build/html
-```
+Each chapter names a working file, a stopping point, an expected output and a check. Save your edits in a `my-` copy of the supplied reference script. The complete real-data script is included for a final run from the beginning.
 
-Open http://127.0.0.1:8765 in a browser. Press Ctrl+C in that terminal to stop.
-Python is needed for this simple instructor preview command, not for students
-following the R lessons. The same HTML can later be hosted on GitHub Pages.
+## The scientific case
 
-## Run the student analysis
+The real example uses organic raw-milk assay data linked by [Qian et al. (2025)](https://doi.org/10.1016/j.jfp.2025.100477). The [data audit](https://nedchen2.github.io/MicrobialML/data-audit/) documents the source, selection and detection-limit treatment. Small practice datasets are explicitly invented. MSC is a microbial-quality endpoint; the baseline does not establish product safety or causality.
 
-Open `microbial-ml.Rproj` in RStudio. Start at `scripts/01-first-run.R`, then
-work through the other lessons with the book. To run the complete example:
+This edition covers the beginner-to-baseline route. Predictor-based models are later course material. See [Releases](https://github.com/nedchen2/MicrobialML/releases) for fixed classroom student packages.
 
-```r
-source("scripts/worked-example.R")
-```
+## For textbook maintainers
 
-Or, from a terminal in this project directory:
+[Build and verify locally](BUILDING.md) · [Publish and update the website](PUBLICATION.md)
 
-```sh
-Rscript --vanilla scripts/worked-example.R
-```
-
-The real-data helper downloads a pinned original-author CSV once, checks its MD5,
-and caches it in `data/raw/`. The first download needs internet. The student ZIP
-contains the helper, scripts, practice data, dictionary and project file, not a
-repackaged complete source dataset.
-
-Expected supplied split: 525 eligible MSC records from 102 farms; 420 training
-records from 81 farms and 105 test records from 21 other farms; zero group overlap.
-Baseline RMSE is about 0.528923 and MAE about 0.409148 log10 CFU/mL. These are
-microbial-quality results on one fixed split, not a food-safety decision.
-
-## Author/build environment
-
-Tested with Jupyter Book 2.1.7, Python 3.12.14, R 4.6.1 and IRkernel 1.3.2 on macOS
-arm64. No additional R packages are needed to run the student scripts. IRkernel
-and Python packages are needed only to execute/build the author notebooks.
-
-Create an isolated author environment and install build dependencies:
-
-```sh
-python3 -m venv .build-venv
-source .build-venv/bin/activate
-python -m pip install -r requirements-build.txt
-```
-
-Install IRkernel in a project-local library using R (or use an existing author
-environment with IRkernel installed):
-
-```r
-dir.create(".R-library", showWarnings = FALSE)
-install.packages("IRkernel", lib = ".R-library", repos = "https://cloud.r-project.org")
-```
-
-Build steps, from the project root:
-
-```sh
-python tools/execute_book.py
-python tools/package_student.py
-jupyter-book build --html --strict
-```
-
-A supported Node.js runtime and npm must be on the author PATH for Jupyter Book 2.
-The tested author runtime used Node.js 24.22.1 and npm 12.2.2. These are build
-tools, not student prerequisites. The complete author dependency snapshot is
-recorded in `validation/author-environment.json`; `requirements-build.txt`
-contains the direct Python dependencies.
-The executor uses project-local Jupyter configuration, registers the R kernel
-under the active Python prefix, starts a separate fresh kernel for every notebook,
-and saves executed notebooks. The HTML build renders those real outputs; it does
-not need to recompute them a second time.
-
-To check an extracted student ZIP and the built site's local links:
-
-```sh
-python tools/verify_pilot.py --cold-download
-python tools/verify_html.py
-```
-
-The first command runs all four student scripts in separate R sessions,
-downloads the pinned source from an empty cache, repeats the baseline, and
-independently reconstructs the mean and error metrics in Python. The second
-checks the ten built pages and their local link/asset targets. Browser navigation,
-search, download and visual checks are recorded separately in `validation/`.
-
-Computational sources are canonical `scripts/*.R` files divided by named `# %%`
-cell markers. Prose lives in `authoring/*.md` and refers to those names. The
-assembler checks that every R cell appears exactly once in its lesson before
-writing `.ipynb` files. Update prose and the canonical script, then rerun the
-executor; do not independently edit generated computational cells.
-
-## Data decisions and scope
-
-See `reference/data-audit.md`, `validation/` and the separate instructor review.
-The pilot deliberately returns to the original assay CSV. MSC records with any
-laboratory note are excluded, including 34 laboratory errors, two TNTC values
-and one unresolved note. Thirty of the remaining records carry the authors'
-0.125 CFU/mL below-detection substitution (25% of a 0.5 CFU/mL detection limit).
-That target limitation is shown to students.
-
-No management/weather model is fitted in this edition. Their units, historical
-imputation, availability and leakage implications require a further audit before
-the later five-model course is written. The pilot uses only the assay target
-and farm/round identifiers, and does not treat farm IDs as predictors.
-
-The independent GitHub Pages workflow executes and verifies the analysis before
-publishing. It generates the student ZIP during each build; generated ZIP files
-and raw data are not committed. Private marking guidance is kept outside the
-public book directory. The original R tutorial is a separate project.
+The book follows the beginner-oriented approach of [Start Your R Journey](https://nedchen2.github.io/StartYourRJourney/intro.html). R scripts and executed notebooks are checked together before the website is published. A novice classroom trial remains to be completed.

@@ -1,0 +1,8 @@
+AI USE / TEACHING EXERCISE LOG
+Route: [live approved chat / supplied illustrative dialogue / both]
+Task: [what summary or analysis was requested?]
+Context sent: [column names / invented rows / error text]
+Accepted change: [what code or assumption changed?]
+Evidence: [actual output and an independent check]
+Remaining question: [what this check does not establish]
+Tool and date, if used: [record actual use; do not invent a conversation]

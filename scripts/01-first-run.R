@@ -1,3 +1,4 @@
+# Reference: File > Save As scripts/my-01-first-run.R before editing.
 # Chapter 1. Open microbial-ml.Rproj before running this script.
 # %% arithmetic
 1 + 1

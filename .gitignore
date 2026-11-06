@@ -12,3 +12,4 @@ __pycache__/
 *.zip
 validation/
 .DS_Store
+scripts/my-*.R

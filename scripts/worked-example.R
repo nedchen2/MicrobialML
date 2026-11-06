@@ -1,5 +1,5 @@
-# Complete worked example. Core analysis uses base R only.
-# Open microbial-ml.Rproj, then run the script from the top in a fresh session.
+# Complete real-data workflow. Chapters 5-7 are generated from these same cells.
+# Open microbial-ml.Rproj; run from the top in a fresh session.
 # %% source
 source("scripts/course_setup.R")
 source_file <- fetch_course_data()
@@ -8,6 +8,8 @@ dim(milk)
 names(milk)
 stopifnot(identical(names(milk), c("FarmID", "Sampling", "Test", "Conc", "Notes")))
 stopifnot(nrow(milk) == 2736)
+# %% raw-preview
+head(milk, 3)
 # %% assays
 table(milk$Test)
 # %% select
@@ -24,6 +26,8 @@ length(unique(usable$FarmID))
 stopifnot(nrow(usable) == 525)
 stopifnot(length(unique(usable$FarmID)) == 102)
 stopifnot(anyDuplicated(usable[c("FarmID", "Sampling")]) == 0)
+# %% usable-preview
+head(usable[c("FarmID", "Sampling", "Conc")], 3)
 # %% target
 usable$left_censored <- usable$Conc == 0.125
 usable$log10_msc <- log10(usable$Conc)
@@ -34,6 +38,24 @@ stopifnot(all(is.finite(usable$log10_msc)))
 log10(c(1, 10, 100))
 10^mean(log10(c(10, 100)))
 mean(c(10, 100))
+# %% prepare-audit
+audit <- data.frame(check = c("source rows", "raw MSC rows", "excluded lab-error rows",
+  "excluded TNTC rows", "excluded other-note rows", "eligible MSC rows",
+  "farms", "left-censored encoded rows", "missing eligible counts",
+  "duplicate eligible farm-round keys"),
+  value = c(nrow(milk), nrow(msc), sum(msc$Notes == "lab error", na.rm = TRUE),
+  sum(msc$Notes == "TNTC", na.rm = TRUE), sum(msc$Notes == "other 8-E was 160", na.rm = TRUE),
+  nrow(usable), length(unique(usable$FarmID)), sum(usable$left_censored), sum(is.na(usable$Conc)),
+  anyDuplicated(usable[c("FarmID", "Sampling")])))
+# %% save-prepared
+dir.create("outputs/checkpoints", recursive = TRUE, showWarnings = FALSE)
+saveRDS(list(data = usable, audit = audit), "outputs/checkpoints/msc-prepared.rds")
+file.exists("outputs/checkpoints/msc-prepared.rds")
+# %% load-prepared
+if (!file.exists("outputs/checkpoints/msc-prepared.rds")) stop("Run Chapter 5 first to create msc-prepared.rds.")
+prepared <- readRDS("outputs/checkpoints/msc-prepared.rds")
+usable <- prepared$data
+stopifnot(nrow(usable) == 525)
 # %% split
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
 set.seed(2026)
@@ -49,6 +71,19 @@ overlap <- intersect(unique(train$FarmID), unique(test$FarmID))
 overlap
 stopifnot(length(overlap) == 0)
 stopifnot(nrow(train) + nrow(test) == nrow(usable))
+# %% save-split
+split_audit <- rbind(prepared$audit,
+  data.frame(check = "train/test farm overlap", value = length(overlap)))
+saveRDS(list(train = train, test = test, farm_ids = farm_ids,
+             test_farms = test_farms, audit = split_audit), "outputs/checkpoints/farm-split.rds")
+file.exists("outputs/checkpoints/farm-split.rds")
+# %% load-split
+if (!file.exists("outputs/checkpoints/farm-split.rds")) stop("Run Chapter 6 first to create farm-split.rds.")
+split_checkpoint <- readRDS("outputs/checkpoints/farm-split.rds")
+train <- split_checkpoint$train
+test <- split_checkpoint$test
+farm_ids <- split_checkpoint$farm_ids
+test_farms <- split_checkpoint$test_farms
 # %% baseline
 baseline_log10 <- mean(train$log10_msc)
 baseline_log10
@@ -101,13 +136,5 @@ legend("topright", "Training mean", col = "#a94c31", lwd = 3, bty = "n")
 invisible(dev.off())
 cat("Saved outputs/baseline/training-distribution.png\n")
 # %% audit-save
-audit <- data.frame(check = c("source rows", "raw MSC rows", "excluded lab-error rows",
-  "excluded TNTC rows", "excluded other-note rows", "eligible MSC rows",
-  "farms", "left-censored encoded rows", "missing eligible counts",
-  "duplicate eligible farm-round keys", "train/test farm overlap"),
-  value = c(nrow(milk), nrow(msc), sum(msc$Notes == "lab error", na.rm = TRUE),
-  sum(msc$Notes == "TNTC", na.rm = TRUE), sum(msc$Notes == "other 8-E was 160", na.rm = TRUE),
-  nrow(usable), length(farm_ids), sum(usable$left_censored), sum(is.na(usable$Conc)),
-  anyDuplicated(usable[c("FarmID", "Sampling")]), length(overlap)))
-write.csv(audit, "outputs/baseline/data-audit.csv", row.names = FALSE)
+write.csv(split_checkpoint$audit, "outputs/baseline/data-audit.csv", row.names = FALSE)
 cat("All data and baseline checks passed.\n")

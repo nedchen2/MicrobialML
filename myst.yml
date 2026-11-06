@@ -16,7 +16,11 @@ project:
         - file: chapters/03-working-with-ai.ipynb
     - title: A complete first analysis
       children:
-        - file: chapters/worked-example.ipynb
+        - file: chapters/worked-example.md
+        - file: chapters/04-small-farm-example.ipynb
+        - file: chapters/05-meet-real-data.ipynb
+        - file: chapters/06-split-farms.ipynb
+        - file: chapters/07-baseline.ipynb
     - title: Reference and downloads
       children:
         - file: reference/data-audit.md
