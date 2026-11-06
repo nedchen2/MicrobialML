@@ -6,15 +6,15 @@ You will turn a small biological question into an analysis you can run, check an
 
 Imagine you are helping in a milk-testing lab. A sample has arrived from a farm you have never studied. Its mesophilic spore count (**MSC**) result is still unknown, but you have measurements from other farms.
 
+**Why care about MSC?** Some bacterial spores survive pasteurization and can later germinate, allowing bacteria to grow and spoil dairy products. MSC is one laboratory measure of this spore burden. [Dairy research](https://doi.org/10.3168/jds.2015-9406)
+
+Certain spore-forming bacteria, such as *Bacillus cereus*, also cause foodborne illness. But MSC does not identify a species or measure toxins, so its value alone cannot establish whether milk is safe. [FDA explanation](https://www.fda.gov/food/laboratory-methods-food/bam-quantitative-analysis-cereulide-food-products)
+
 **What would you predict before the result comes back—and what would convince you that your prediction is any good?**
 
-Your job is to make a prediction, put it beside the lab result, and find out how far it missed. We will rehearse this with invented numbers, then real milk-study data. The new farms' answers stay out of the calculation until it is time to check the predictions.
+Reliable predictions could eventually help prioritize monitoring. First, we need to check whether they work: make a prediction, put it beside the lab result, and find out how far it missed. Practise with invented numbers, then real study data; keep new farms' answers out of learning the rule.
 
 Start with a guess you can make on paper: the average from the farms we already know. This **baseline** gives us something to test before asking a more complicated model to do better.
-
-By the end, when AI gives you a prediction and a convincing explanation, you should be able to ask: **What evidence supports this?** You will have the code, results and checks to answer for yourself.
-
-We predict MSC, a microbial-quality measurement. This project does not decide whether milk is safe to drink.
 
 ## Where each part happens
 
@@ -30,7 +30,7 @@ Opening a file in RStudio does not automatically share it with a chat assistant.
 
 **Make something run — Chapters 1–2.** Open the project, save your own script and inspect a four-row table.
 
-**Work with AI — Chapter 3.** Ask, run, spot an unsuitable assumption, repair it and keep the evidence.
+**Work with AI — Chapter 3.** Ask, run, repair a real R error, then spot an unsuitable assumption in code that runs. Keep evidence for both repairs.
 
 **Understand the analysis — Chapters 4–7.** Hand-check six invented farm records, then prepare real data, hold out whole farms and evaluate a baseline.
 
@@ -55,7 +55,7 @@ At the end, show a saved script, a result file and one check you can explain. Th
 
 ```{admonition} Before you move on
 :class: tip
-Point to the place where code runs, name the file that will hold your edits, and explain why an average can be a useful first prediction.
+Point to where code runs, name your working file, and explain why MSC matters to dairy quality without treating it as a safety verdict.
 ```
 
 **Start:** [your first successful R run](01-first-run.ipynb).

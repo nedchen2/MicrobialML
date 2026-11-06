@@ -1,5 +1,13 @@
 # Changes
 
+## v0.5 — Connect the biological purpose and practise real error repair
+
+- Briefly explain MSC's relevance to dairy quality and the safety significance of some spore-formers, while distinguishing MSC from species identification, toxin measurement and a safety verdict.
+- Add a real missing-object R error, an evidence-based repair request, a corrected mean and a saved error/repair record to Chapter 3.
+- Retain the zero-imputation logic-error exercise, and compare the evidence needed to repair code that stops versus code that runs but changes the analysis.
+- Clearly label constructed AI dialogue and distinguish it from actual live-chat records.
+- Verify that the unguarded student line genuinely fails, while complete scripts and notebooks capture the expected failure and continue.
+
 ## v0.4 — Make the mathematical ideas visible
 
 - Revise the invented six-row example so that using test answers changes the fitted constant, and MAE differs from RMSE.

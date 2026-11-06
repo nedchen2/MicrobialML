@@ -64,6 +64,16 @@ def main(cold):
         assert original_practice[-1]["count_cfu_ml"] in ["", "NA"]
         summary = read(project / "outputs/ch03/summary.csv")[0]
         assert {key: float(summary[key]) for key in summary} == {"missing_n": 1, "recorded_n": 3, "mean_recorded": 20}
+        # Run the student's single-line mistake without the supplied guard:
+        # it must be a genuine R execution failure, not a printed imitation.
+        runtime_error = subprocess.run(["Rscript", "--vanilla", "-e",
+            'practice <- read.csv("data/practice_counts.csv"); mean(milk_data$count_cfu_ml, na.rm = TRUE)'],
+            cwd=project, text=True, capture_output=True, timeout=30)
+        assert runtime_error.returncode != 0 and "milk_data" in runtime_error.stderr
+        runtime_record = (project / "outputs/ch03/runtime-error-and-repair.txt").read_text()
+        assert "milk_data" in runtime_record and "Correct object: practice" in runtime_record
+        assert "Repaired recorded-count mean: 20" in runtime_record
+        assert read(project / "data/practice_counts.csv")[-1]["count_cfu_ml"] in ["", "NA"]
         log_path = project / "outputs/ch03/ai-use-log.txt"
         log_path.write_text("My completed student log: preserve this on rerun.\n")
         subprocess.run(["Rscript", "--vanilla", "scripts/03-working-with-ai.R"], cwd=project,
@@ -124,6 +134,8 @@ def main(cold):
             "missing_prerequisite_has_actionable_error": True,
             "changed_copy_exercise_25_and_original_preserved": True,
             "AI_summary_1_3_20_and_completed_log_preserved": True,
+            "unguarded_student_line_produces_real_R_error": True,
+            "guarded_error_record_and_repaired_mean_20_checked": True,
             "toy_residuals_and_metrics_independently_checked": True,
             "toy_training_guesses_and_separate_leakage_example_checked": True,
             "baseline_numerically_matches_v01": True,

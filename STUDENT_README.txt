@@ -23,6 +23,8 @@ Textbook: https://nedchen2.github.io/MicrobialML/
 The optional templates/completion-card.txt helps you record a script, output,
 explanation and check. Chapter 3 creates outputs/ch03/ai-use-log.txt; edit and save your actual
 route. Its illustrative dialogue is a teaching example, not a real model log.
+Chapter 3 also produces a real R object-name error; follow the page's one-line
+Run step, then its supplied block to record the error and continue.
 Use the approved chat when available. No additional R packages, API keys,
 Python, Node.js or Jupyter Book are needed for the student analysis.
 

@@ -19,7 +19,8 @@ LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-
 CELL_DISPLAY = {
     "02-minimum-r": {"export": ["hide-input"], "exercise-copy": ["hide-input"],
                       "exercise-check": ["hide-input"]},
-    "03-working-with-ai": {"verify-repair": ["hide-input"], "save-evidence": ["hide-input"]},
+    "03-working-with-ai": {"runtime-error": ["hide-input"],
+                           "verify-repair": ["hide-input"], "save-evidence": ["hide-input"]},
     "04-small-farm-example": {"toy-guess": ["hide-input"], "toy-errors": ["hide-input"],
                              "toy-leakage": ["hide-input"], "toy-wrong-split": ["hide-input"],
                              "toy-save": ["hide-input"]},
