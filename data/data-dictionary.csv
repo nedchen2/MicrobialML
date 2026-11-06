@@ -1,0 +1,10 @@
+column,source,meaning,unit_or_encoding,role_in_pilot
+FarmID,Original assay CSV,Farm identifier,Author's categorical code,Group identifier only
+Sampling,Original assay CSV,Sampling round,Author's categorical label,Within-farm record identifier
+Test,Original assay CSV,Assay type,Select MSC only,Eligibility
+Conc,Original assay CSV,Assay-specific concentration,CFU/mL for selected MSC records,Source of outcome
+Notes,Original assay CSV,Laboratory note,Empty or NA means no recorded note,Eligibility
+left_censored,Derived,Equals the published 0.125 MSC substitution,TRUE or FALSE,Target-limit flag
+log10_msc,Derived,Base-10 logarithm of selected concentration,log10 CFU/mL,Prediction outcome
+prediction_log10,Derived,Training-mean prediction repeated across test records,log10 CFU/mL,Prediction
+error_log10,Derived,Observed minus predicted,log10 CFU/mL,Evaluation

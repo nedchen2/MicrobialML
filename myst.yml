@@ -1,0 +1,44 @@
+version: 1
+project:
+  id: microbial-ml-beginner-pilot
+  title: AI-Assisted Microbial ML
+  subtitle: A first R journey for Food Safety and Toxicology
+  authors:
+    - name: Congjia Chen
+  description: A beginner-first practical book on running, checking and explaining AI-assisted microbial data analysis in R.
+  toc:
+    - file: intro.md
+    - title: Start from zero
+      children:
+        - file: chapters/00-start-here.md
+        - file: chapters/01-first-run.ipynb
+        - file: chapters/02-minimum-r.ipynb
+        - file: chapters/03-working-with-ai.ipynb
+    - title: A complete first analysis
+      children:
+        - file: chapters/worked-example.ipynb
+    - title: Reference and downloads
+      children:
+        - file: reference/data-audit.md
+        - file: reference/troubleshooting.md
+        - file: reference/glossary.md
+        - file: reference/downloads.md
+  exclude:
+    - .build-venv/**
+    - .R-library/**
+    - .jupyter/**
+    - authoring/**
+    - tools/**
+    - data/raw/**
+    - outputs/**
+    - README.md
+site:
+  template: book-theme
+  title: AI-Assisted Microbial ML
+  options:
+    logo: assets/logo.svg
+    logo_text: Microbial ML
+    logo_alt: Microbial ML practical textbook
+    style: assets/book.css
+    hide_authors: true
+    hide_made_with_myst: false

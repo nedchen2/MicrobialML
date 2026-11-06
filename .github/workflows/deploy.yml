@@ -1,0 +1,94 @@
+name: Verify and publish textbook
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: textbook-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BASE_URL: /${{ github.event.repository.name }}
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out public textbook sources
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Set up Node.js and npm
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Check public file boundaries
+        run: python tools/check_publication.py
+      - name: Install R and its notebook kernel from Ubuntu packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends r-base r-cran-irkernel
+      - name: Install isolated Python author environment
+        run: |
+          python -m venv .build-venv
+          .build-venv/bin/python -m pip install -r requirements-build.txt
+          echo "$GITHUB_WORKSPACE/.build-venv/bin" >> "$GITHUB_PATH"
+      - name: Execute all R notebooks in fresh kernels
+        run: python tools/execute_book.py
+      - name: Generate student download and aggregate tables
+        run: python tools/package_student.py
+      - name: Verify extracted student project from an empty data cache
+        run: python tools/verify_pilot.py --cold-download
+      - name: Build the website strictly for its GitHub Pages subpath
+        run: jupyter-book build --html --strict
+      - name: Check page, asset, download and fragment targets
+        run: python tools/verify_html.py --base-url "$BASE_URL"
+      - name: Record the CI R environment
+        run: Rscript --vanilla -e 'sessionInfo()' > validation/ci-r-session.txt
+      - name: Save verification evidence and student project
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: textbook-checks-and-student-project
+          path: |
+            validation/*.json
+            validation/ci-r-session.txt
+            downloads/microbial-ml-student.zip
+            downloads/baseline-scores.csv
+            downloads/data-audit.csv
+          retention-days: 30
+      - name: Package the verified website
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _build/html
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - name: Deploy the checked website
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

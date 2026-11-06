@@ -1,0 +1,5 @@
+sample_id,count_cfu_ml,storage_hours
+P01,10,0
+P02,20,2
+P03,30,4
+P04,,6

@@ -1,0 +1,113 @@
+# Complete worked example. Core analysis uses base R only.
+# Open microbial-ml.Rproj, then run the script from the top in a fresh session.
+# %% source
+source("scripts/course_setup.R")
+source_file <- fetch_course_data()
+milk <- read.csv(source_file, stringsAsFactors = FALSE, na.strings = c("", "NA"))
+dim(milk)
+names(milk)
+stopifnot(identical(names(milk), c("FarmID", "Sampling", "Test", "Conc", "Notes")))
+stopifnot(nrow(milk) == 2736)
+# %% assays
+table(milk$Test)
+# %% select
+msc <- milk[milk$Test == "MSC", ]
+nrow(msc)
+table(msc$Notes, useNA = "ifany")
+# %% quality
+blank_note <- is.na(msc$Notes) | trimws(msc$Notes) == ""
+positive_count <- is.finite(msc$Conc) & msc$Conc > 0
+usable <- msc[blank_note & positive_count, ]
+rownames(usable) <- NULL
+nrow(usable)
+length(unique(usable$FarmID))
+stopifnot(nrow(usable) == 525)
+stopifnot(length(unique(usable$FarmID)) == 102)
+stopifnot(anyDuplicated(usable[c("FarmID", "Sampling")]) == 0)
+# %% target
+usable$left_censored <- usable$Conc == 0.125
+usable$log10_msc <- log10(usable$Conc)
+table(usable$left_censored)
+stopifnot(sum(usable$left_censored) == 30)
+stopifnot(all(is.finite(usable$log10_msc)))
+# %% log-intuition
+log10(c(1, 10, 100))
+10^mean(log10(c(10, 100)))
+mean(c(10, 100))
+# %% split
+RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
+set.seed(2026)
+farm_ids <- sort(unique(usable$FarmID), method = "radix")
+test_farms <- sample(farm_ids, size = ceiling(0.20 * length(farm_ids)))
+train <- usable[!usable$FarmID %in% test_farms, ]
+test <- usable[usable$FarmID %in% test_farms, ]
+c(train_rows = nrow(train), test_rows = nrow(test),
+  train_farms = length(unique(train$FarmID)),
+  test_farms = length(unique(test$FarmID)))
+# %% overlap
+overlap <- intersect(unique(train$FarmID), unique(test$FarmID))
+overlap
+stopifnot(length(overlap) == 0)
+stopifnot(nrow(train) + nrow(test) == nrow(usable))
+# %% baseline
+baseline_log10 <- mean(train$log10_msc)
+baseline_log10
+test$prediction_log10 <- rep(baseline_log10, nrow(test))
+stopifnot(all(test$prediction_log10 == mean(train$log10_msc)))
+# %% metrics
+test$error_log10 <- test$log10_msc - test$prediction_log10
+rmse <- sqrt(mean(test$error_log10^2))
+mae <- mean(abs(test$error_log10))
+data.frame(model = "Training-mean baseline", n_test = nrow(test),
+           RMSE_log10_CFU_ml = rmse, MAE_log10_CFU_ml = mae)
+# %% independent
+rmse_check <- sqrt(sum((test$log10_msc - baseline_log10)^2) / nrow(test))
+mae_check <- sum(abs(test$log10_msc - baseline_log10)) / nrow(test)
+stopifnot(isTRUE(all.equal(rmse, rmse_check)))
+stopifnot(isTRUE(all.equal(mae, mae_check)))
+round(data.frame(observed = head(test$log10_msc, 3),
+                 predicted = head(test$prediction_log10, 3),
+                 residual = head(test$error_log10, 3)), 4)
+# %% sensitivity
+# Evaluation subset only: the baseline is not refitted or chosen using this result.
+quantified_test <- test[!test$left_censored, ]
+quantified_rmse <- sqrt(mean(quantified_test$error_log10^2))
+data.frame(evaluation = c("All eligible test records", "Quantified test records only"),
+           n = c(nrow(test), nrow(quantified_test)),
+           RMSE_log10_CFU_ml = c(rmse, quantified_rmse))
+# %% save
+dir.create("outputs/baseline", recursive = TRUE, showWarnings = FALSE)
+score <- data.frame(model = "Training-mean baseline", training_mean_log10 = baseline_log10,
+                    train_rows = nrow(train), test_rows = nrow(test),
+                    train_farms = length(unique(train$FarmID)), test_farms = length(test_farms),
+                    RMSE_log10_CFU_ml = rmse, MAE_log10_CFU_ml = mae,
+                    quantified_test_n = nrow(quantified_test), quantified_test_RMSE = quantified_rmse)
+write.csv(score, "outputs/baseline/scores.csv", row.names = FALSE)
+split_table <- data.frame(FarmID = farm_ids,
+                         split = ifelse(farm_ids %in% test_farms, "test", "train"))
+write.csv(split_table, "outputs/baseline/farm-split.csv", row.names = FALSE)
+write.csv(test[c("FarmID", "Sampling", "left_censored", "log10_msc", "prediction_log10", "error_log10")],
+          "outputs/baseline/test-predictions.csv", row.names = FALSE)
+writeLines(capture.output(sessionInfo()), "outputs/baseline/session-info.txt")
+file.exists("outputs/baseline/scores.csv")
+# %% plot
+png("outputs/baseline/training-distribution.png", width = 1200, height = 720, res = 150)
+par(mar = c(4.5, 4.5, 2.5, 1), family = "sans", col.axis = "#294943", col.lab = "#294943")
+hist(train$log10_msc, breaks = 18, col = "#8cc7b6", border = "white",
+     main = "The baseline is learned from training farms",
+     xlab = "Training log10 MSC (CFU/mL)", ylab = "Number of records")
+abline(v = baseline_log10, col = "#a94c31", lwd = 3)
+legend("topright", "Training mean", col = "#a94c31", lwd = 3, bty = "n")
+invisible(dev.off())
+cat("Saved outputs/baseline/training-distribution.png\n")
+# %% audit-save
+audit <- data.frame(check = c("source rows", "raw MSC rows", "excluded lab-error rows",
+  "excluded TNTC rows", "excluded other-note rows", "eligible MSC rows",
+  "farms", "left-censored encoded rows", "missing eligible counts",
+  "duplicate eligible farm-round keys", "train/test farm overlap"),
+  value = c(nrow(milk), nrow(msc), sum(msc$Notes == "lab error", na.rm = TRUE),
+  sum(msc$Notes == "TNTC", na.rm = TRUE), sum(msc$Notes == "other 8-E was 160", na.rm = TRUE),
+  nrow(usable), length(farm_ids), sum(usable$left_censored), sum(is.na(usable$Conc)),
+  anyDuplicated(usable[c("FarmID", "Sampling")]), length(overlap)))
+write.csv(audit, "outputs/baseline/data-audit.csv", row.names = FALSE)
+cat("All data and baseline checks passed.\n")

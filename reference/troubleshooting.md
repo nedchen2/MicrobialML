@@ -1,0 +1,39 @@
+# When something goes wrong
+
+First save your script. Identify the smallest line that fails. Keep the full error message and the task you expected that line to perform.
+
+| What you see | First check | A useful next step |
+|---|---|---|
+| `object 'x' not found` | Was `x` created in this R session? Is the spelling identical? | Run the preceding assignment; check capitalization |
+| `cannot open file` | Are you in the extracted project? Does the path exist? | Open `microbial-ml.Rproj`; run `getwd()` and `file.exists("data/practice_counts.csv")` |
+| Console shows `+` | Is a quote or parenthesis unfinished? | Press Esc, then run one complete line |
+| A mean returns `NA` | Are any entries missing? | Use `is.na()` and explain a missing-data treatment before changing it |
+| A column returns `NULL` | Is the column name present? | Run `names(your_table)` and select the actual name |
+| A calculation says data are not numeric | What type is the column? | Run `str(your_table)`; inspect values before conversion |
+| Download or connection fails | Can your computer reach the pinned source URL? | Retry on an approved network, or use the TA's approved route |
+| Checksum mismatch | Is the file partial, edited or from another version? | Remove only the cached source file and retry; keep your scripts |
+| An assertion fails | Which assumption is false? | Inspect the relevant value; do not delete the check just to continue |
+| Correct code gives a different score | Same input checksum, eligibility rules, R sampling algorithm and seed? | Compare saved fold assignments and full-precision outputs |
+
+## A small error report
+
+**Where: AI chat or your message to the TA.**
+
+```text
+Goal:
+Exact code that fails:
+Full error text:
+Expected result:
+Actual result:
+Relevant object/column names:
+What I already checked:
+R version:
+```
+
+Only include data approved for sharing. A text copy of the code and error lets someone reproduce the problem more reliably than a cropped screenshot alone.
+
+## Restore a known starting point
+
+Use **Session → Restart R**, then open the correct project and run the lesson from the top. Do not rely on objects left in memory from an earlier experiment. Installation is persistent; ordinary in-memory objects are not.
+
+If a repair requires a new assumption, record it. For example, converting text counts to numbers can create missing values; replacing an absent result with zero changes the scientific data.

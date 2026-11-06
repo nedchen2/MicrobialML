@@ -1,0 +1,2 @@
+"model","training_mean_log10","train_rows","test_rows","train_farms","test_farms","RMSE_log10_CFU_ml","MAE_log10_CFU_ml","quantified_test_n","quantified_test_RMSE"
+"Training-mean baseline",0.745042547427386,420,105,81,21,0.528923133228833,0.409148046131208,104,0.50629143362992

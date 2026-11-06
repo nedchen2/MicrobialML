@@ -1,0 +1,14 @@
+.build-venv/
+.R-library/
+.jupyter/
+.tools/
+_build/
+node_modules/
+data/raw/
+outputs/
+.Rhistory
+.RData
+__pycache__/
+*.zip
+validation/
+.DS_Store

@@ -1,0 +1,13 @@
+:root { --primary: #166b66; --article-font-size: 1rem; }
+body { font-feature-settings: "ss01"; }
+article { line-height: 1.8; }
+article h1 { letter-spacing: -0.035em; line-height: 1.15; }
+article h2 { letter-spacing: -0.018em; margin-top: 2.2rem; }
+article p, article li { max-width: 78ch; }
+article table { font-size: .93rem; }
+article th { background: #e9f4f1; color: #174d49; }
+article pre { border-radius: .6rem; border: 1px solid #dae6e3; }
+article img { border-radius: .6rem; }
+article blockquote { border-left: 4px solid #b4c9c1; }
+::selection { background: #d5eee7; }
+@media (max-width: 700px) { article { line-height: 1.75; } article table { font-size: .85rem; } }

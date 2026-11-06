@@ -1,0 +1,12 @@
+"check","value"
+"source rows",2736
+"raw MSC rows",562
+"excluded lab-error rows",34
+"excluded TNTC rows",2
+"excluded other-note rows",1
+"eligible MSC rows",525
+"farms",102
+"left-censored encoded rows",30
+"missing eligible counts",0
+"duplicate eligible farm-round keys",0
+"train/test farm overlap",0
