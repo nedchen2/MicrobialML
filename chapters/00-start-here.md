@@ -4,11 +4,17 @@ You will turn a small biological question into an analysis you can run, check an
 
 ## The project in one question
 
-**Can we predict a milk microbial measurement for a farm we have not learned from?**
+Imagine you are helping in a milk-testing lab. A sample has arrived from a farm you have never studied. Its mesophilic spore count (**MSC**) result is still unknown, but you have measurements from other farms.
 
-The real case measures mesophilic spore counts (**MSC**). Begin with a rule you can understand before using sample-specific information: give every new sample the training average. This **baseline** gives later models a starting point to compare against; it is not a safe/unsafe threshold. Chapter 4 walks through a small example.
+**What would you predict before the result comes back—and what would convince you that your prediction is any good?**
 
-First practise with invented numbers. Then use the study's real data. MSC is a microbial-quality endpoint; this exercise does not decide whether milk is safe to drink.
+Your job is to make a prediction, put it beside the lab result, and find out how far it missed. We will rehearse this with invented numbers, then real milk-study data. The new farms' answers stay out of the calculation until it is time to check the predictions.
+
+Start with a guess you can make on paper: the average from the farms we already know. This **baseline** gives us something to test before asking a more complicated model to do better.
+
+By the end, when AI gives you a prediction and a convincing explanation, you should be able to ask: **What evidence supports this?** You will have the code, results and checks to answer for yourself.
+
+We predict MSC, a microbial-quality measurement. This project does not decide whether milk is safe to drink.
 
 ## Where each part happens
 
