@@ -12,6 +12,11 @@ baseline_log10 <- mean(train$log10_msc)
 baseline_log10
 test$prediction_log10 <- rep(baseline_log10, nrow(test))
 stopifnot(all(test$prediction_log10 == mean(train$log10_msc)))
+# %% baseline-scale
+# Interpret the fixed prediction using training records only; do not refit it.
+data.frame(mean_log10 = baseline_log10,
+           same_prediction_CFU_ml = 10^baseline_log10,
+           arithmetic_mean_CFU_ml = mean(train$Conc))
 # %% metrics
 test$error_log10 <- test$log10_msc - test$prediction_log10
 rmse <- sqrt(mean(test$error_log10^2))

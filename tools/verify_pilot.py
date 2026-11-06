@@ -70,9 +70,26 @@ def main(cold):
                        check=True, capture_output=True, text=True, timeout=30)
         assert log_path.read_text() == "My completed student log: preserve this on rerun.\n"
         toy = read(project / "outputs/toy/error-table.csv")
-        assert [float(r["residual"]) for r in toy] == [-10, 10]
-        assert statistics.mean(float(r["absolute_error"]) for r in toy) == 10
-        assert math.sqrt(statistics.mean(float(r["squared_error"]) for r in toy)) == 10
+        assert [float(r["residual"]) for r in toy] == [10, 30]
+        assert statistics.mean(float(r["absolute_error"]) for r in toy) == 20
+        assert math.isclose(math.sqrt(statistics.mean(float(r["squared_error"]) for r in toy)), math.sqrt(500))
+        toy_input = read(project / "data/practice_farms.csv")
+        toy_train = [float(r["count_cfu_ml"]) for r in toy_input if r["FarmID"] != "C"]
+        toy_test = [float(r["count_cfu_ml"]) for r in toy_input if r["FarmID"] == "C"]
+        guesses = read(project / "outputs/toy/training-guesses.csv")
+        for row in guesses:
+            guess = float(row["guess_CFU_ml"])
+            assert sum((y - guess)**2 for y in toy_train) == float(row["training_squared_error_sum"])
+        assert [float(r["training_squared_error_sum"]) for r in guesses] == [800, 400, 800]
+        leakage = read(project / "outputs/toy/leakage-comparison.csv")
+        assert len(leakage) == 2
+        for row, fitting_values in zip(leakage, [toy_train, toy_train + toy_test]):
+            guess = statistics.mean(fitting_values)
+            assert math.isclose(float(row["prediction_CFU_ml"]), guess, abs_tol=1e-12)
+            assert math.isclose(float(row["MAE_CFU_ml"]), statistics.mean(abs(y - guess) for y in toy_test), abs_tol=1e-12)
+            assert math.isclose(float(row["RMSE_CFU_ml"]), math.sqrt(statistics.mean((y - guess)**2 for y in toy_test)), abs_tol=1e-12)
+        assert all(float(r["predicted"]) == statistics.mean(toy_train) == 20 for r in toy)
+        assert float(leakage[1]["RMSE_CFU_ml"]) < float(leakage[0]["RMSE_CFU_ml"])
         first = (project / "outputs/baseline/scores.csv").read_bytes()
         subprocess.run(["Rscript", "--vanilla", "scripts/worked-example.R"], cwd=project,
                        check=True, text=True, capture_output=True, timeout=120)
@@ -108,6 +125,7 @@ def main(cold):
             "changed_copy_exercise_25_and_original_preserved": True,
             "AI_summary_1_3_20_and_completed_log_preserved": True,
             "toy_residuals_and_metrics_independently_checked": True,
+            "toy_training_guesses_and_separate_leakage_example_checked": True,
             "baseline_numerically_matches_v01": True,
             "student_zip_contains_complete_raw_dataset": False,
             "student_zip_extracted_and_executed": True,

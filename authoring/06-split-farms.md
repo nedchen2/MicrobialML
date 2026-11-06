@@ -14,6 +14,8 @@ Our question is prediction for a **farm not used to learn the rule**. All record
 
 A row-wise split can put records from the same farm on both sides. It then answers a different prediction question.
 
+**Check:** seeing a second sample from farm A is not the same as seeing a farm for the first time. Which situation matches our question?
+
 ## 6.2 Load and make the real split
 
 Run the supplied `load-prepared` block to reload the saved table. If the file is missing, complete Chapter 5 first:
@@ -21,6 +23,8 @@ Run the supplied `load-prepared` block to reload the saved table. If the file is
 {{r:load-prepared}}
 
 **The decision:** hold out 20% of the 102 farms, rounding up to 21. Use the supplied seed, 2026, to repeat this selection. Keep these choices fixed while learning the procedure.
+
+The seed lets us reproduce this random choice; the number 2026 does not make the split scientifically better than another seed.
 
 Run the supplied `split` block unchanged. Expand its code if you want to inspect the random selection and row assignment:
 

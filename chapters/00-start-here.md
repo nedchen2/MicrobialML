@@ -6,7 +6,7 @@ You will turn a small biological question into an analysis you can run, check an
 
 **Can we predict a milk microbial measurement for a farm we have not learned from?**
 
-The real case measures mesophilic spore counts (**MSC**). We begin with a simple prediction: the average in the training data. This **baseline** gives later models a starting point to compare against.
+The real case measures mesophilic spore counts (**MSC**). Begin with a rule you can understand before using sample-specific information: give every new sample the training average. This **baseline** gives later models a starting point to compare against; it is not a safe/unsafe threshold. Chapter 4 walks through a small example.
 
 First practise with invented numbers. Then use the study's real data. MSC is a microbial-quality endpoint; this exercise does not decide whether milk is safe to drink.
 

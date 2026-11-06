@@ -69,4 +69,4 @@ The original assay-file version, MSC eligibility rule, unit, encoded-limit treat
 
 The fixed RNGkind settings and radix sort support stable farm assignment across author runtimes. The prepared RDS container carries the eligible data and audit counts; the split container carries train/test tables, identifiers and the completed audit. Students must understand the roles and locate the files, but do not need to implement container serialization or the reporting machinery.
 
-The optional log-intuition block also shows that exponentiating a mean log concentration produces a geometric mean, rather than automatically estimating the arithmetic mean on the original concentration scale. The current baseline is evaluated on the log scale.
+The visible log-intuition example shows that exponentiating a mean log concentration produces a geometric mean, rather than automatically estimating the arithmetic mean on the original concentration scale. Chapter 7 connects this to the fixed real-data prediction with a training-only scale comparison. The current baseline is evaluated on the log scale.

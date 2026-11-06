@@ -35,9 +35,12 @@ table(usable$left_censored)
 stopifnot(sum(usable$left_censored) == 30)
 stopifnot(all(is.finite(usable$log10_msc)))
 # %% log-intuition
-log10(c(1, 10, 100))
-10^mean(log10(c(10, 100)))
-mean(c(10, 100))
+# Invented values for understanding the scale, separate from the real data.
+demo_counts <- c(1, 10, 100)
+demo_log_mean <- mean(log10(demo_counts))
+data.frame(mean_log10 = demo_log_mean,
+           inverse_mean_log10_CFU_ml = 10^demo_log_mean,
+           arithmetic_mean_CFU_ml = mean(demo_counts))
 # %% prepare-audit
 audit <- data.frame(check = c("source rows", "raw MSC rows", "excluded lab-error rows",
   "excluded TNTC rows", "excluded other-note rows", "eligible MSC rows",

@@ -1,5 +1,13 @@
 # Changes
 
+## v0.4 — Make the mathematical ideas visible
+
+- Revise the invented six-row example so that using test answers changes the fitted constant, and MAE differs from RMSE.
+- Compare candidate constant predictions on training data and execute a separate, explicitly incorrect leakage example without altering the correct model.
+- Show the log10 averaging chain in the main reading path and connect it to the real baseline's concentration-scale expression.
+- Add concrete comparisons for signed errors, log residuals, missing/zero/below-limit results, record weighting and the questions a predictive score can answer.
+- Preserve the real dataset, eligibility rule, farm split and baseline scores; update scripts, executed notebooks, student downloads and arithmetic verification together.
+
 ## v0.3 — Focus the student reading path
 
 - Remove unused factor, version-reporting and error-wrapper cells from the core chapter scripts.

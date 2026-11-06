@@ -9,7 +9,7 @@ REAL_STAGES = {
     "05-meet-real-data": ["source", "raw-preview", "assays", "select", "quality",
                           "usable-preview", "target", "log-intuition", "prepare-audit", "save-prepared"],
     "06-split-farms": ["load-prepared", "split", "overlap", "save-split"],
-    "07-baseline": ["load-split", "baseline", "metrics", "independent", "sensitivity",
+    "07-baseline": ["load-split", "baseline", "baseline-scale", "metrics", "independent", "sensitivity",
                     "save", "plot", "audit-save"],
 }
 LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-example", *REAL_STAGES]
@@ -20,13 +20,14 @@ CELL_DISPLAY = {
     "02-minimum-r": {"export": ["hide-input"], "exercise-copy": ["hide-input"],
                       "exercise-check": ["hide-input"]},
     "03-working-with-ai": {"verify-repair": ["hide-input"], "save-evidence": ["hide-input"]},
-    "04-small-farm-example": {"toy-errors": ["hide-input"], "toy-wrong-split": ["hide-input"],
+    "04-small-farm-example": {"toy-guess": ["hide-input"], "toy-errors": ["hide-input"],
+                             "toy-leakage": ["hide-input"], "toy-wrong-split": ["hide-input"],
                              "toy-save": ["hide-input"]},
-    "05-meet-real-data": {"source": ["hide-input"], "assays": ["hide-input", "hide-output"], "log-intuition": ["hide-input", "hide-output"],
+    "05-meet-real-data": {"source": ["hide-input"], "assays": ["hide-input", "hide-output"], "log-intuition": ["hide-input"],
                           "prepare-audit": ["hide-input"], "save-prepared": ["hide-input"]},
     "06-split-farms": {"load-prepared": ["hide-input"], "split": ["hide-input"],
                        "save-split": ["hide-input"]},
-    "07-baseline": {"load-split": ["hide-input"], "independent": ["hide-input"],
+    "07-baseline": {"load-split": ["hide-input"], "baseline-scale": ["hide-input"], "independent": ["hide-input"],
                     "sensitivity": ["hide-input", "hide-output"], "save": ["hide-input"],
                     "plot": ["hide-input"], "audit-save": ["hide-input"]},
 }

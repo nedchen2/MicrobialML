@@ -59,21 +59,43 @@ Now every displayed concentration belongs to the same assay. Do not delete a fai
 Thirty eligible values are encoded as 0.125 CFU/mL: the authors' substitution of one quarter of the 0.5 CFU/mL detection limit. They are not precise measured concentrations. We retain and flag them so the target limitation stays visible.
 ```
 
+Compare three kinds of laboratory result. They do not carry the same information:
+
+| Result card | What can we conclude? |
+|---|---|
+| No recorded result: `NA` | The concentration is missing. Chapter 3 showed why replacing it with zero changes the question. |
+| A method records zero | Interpret it using that method's reporting rules; it does not automatically prove absolute absence. Zero is not eligible for this positive-count log10 exercise. |
+| Below-limit result, encoded here as 0.125 | A substitution lets the source store a number; it does not establish that the sample's exact concentration was 0.125. |
+
 {{r:target}}
 
 We predict **log10 MSC**, not the original concentration. Keep this small conversion table nearby:
 
 | CFU/mL | log10 value |
 |---:|---:|
+| 0.1 | −1 |
 | 1 | 0 |
 | 10 | 1 |
 | 100 | 2 |
 
-A negative log10 value can represent a positive concentration below 1 CFU/mL. It does not mean a negative microbial count.
+A negative log10 value can represent a positive concentration below 1 CFU/mL. It does not mean a negative microbial count. One step up this scale multiplies concentration by ten: 1 → 10 → 100.
 
-**Optional arithmetic — `log-intuition`.** Expand to inspect the conversion and the difference between averaging before and after a logarithm:
+**Follow one complete example.** These three training concentrations are invented and separate from the real records:
+
+| Step | Calculation |
+|---|---|
+| Start with concentrations | 1, 10 and 100 CFU/mL |
+| Convert each to log10 | 0, 1 and 2 |
+| Average on the target scale | `(0 + 1 + 2) / 3 = 1` |
+| Express that fixed prediction as a concentration | `10^1 = 10` CFU/mL |
+
+Run the supplied `log-intuition` block to check this and compare with the original-scale average:
 
 {{r:log-intuition}}
+
+The original-scale arithmetic mean is **37**, whereas the inverse of the mean log10 value is **10** (the geometric mean). These answer different averaging questions. Our model learns and is scored on the **log10** scale: tenfold changes such as 1 → 10 and 10 → 100 each span one unit. Choosing this scale changes which prediction errors receive more emphasis.
+
+**Check:** if each of 1, 10 and 100 increases tenfold, what happens to its log10 value? Each increases by 1. It does not increase tenfold on the log scale.
 
 ## 5.4 Save the prepared input
 
