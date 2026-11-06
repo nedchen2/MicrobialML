@@ -14,6 +14,23 @@ REAL_STAGES = {
 }
 LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-example", *REAL_STAGES]
 
+# Supplied operational code can be inspected on demand. Scientific rules and
+# their outputs remain in the lesson; these tags never skip execution.
+CELL_DISPLAY = {
+    "02-minimum-r": {"export": ["hide-input"], "exercise-copy": ["hide-input"],
+                      "exercise-check": ["hide-input"]},
+    "03-working-with-ai": {"verify-repair": ["hide-input"], "save-evidence": ["hide-input"]},
+    "04-small-farm-example": {"toy-errors": ["hide-input"], "toy-wrong-split": ["hide-input"],
+                             "toy-save": ["hide-input"]},
+    "05-meet-real-data": {"source": ["hide-input"], "assays": ["hide-input", "hide-output"], "log-intuition": ["hide-input", "hide-output"],
+                          "prepare-audit": ["hide-input"], "save-prepared": ["hide-input"]},
+    "06-split-farms": {"load-prepared": ["hide-input"], "split": ["hide-input"],
+                       "save-split": ["hide-input"]},
+    "07-baseline": {"load-split": ["hide-input"], "independent": ["hide-input"],
+                    "sensitivity": ["hide-input", "hide-output"], "save": ["hide-input"],
+                    "plot": ["hide-input"], "audit-save": ["hide-input"]},
+}
+
 
 def read_cells(path):
     cells = {}
@@ -53,6 +70,9 @@ def assemble():
                 if part not in code:
                     raise ValueError(f"Missing R cell {name}:{part}")
                 cell = nbformat.v4.new_code_cell(code[part])
+                tags = CELL_DISPLAY.get(name, {}).get(part, [])
+                if tags:
+                    cell.metadata["tags"] = tags
                 used.append(part)
             else:
                 if not part.strip():
@@ -66,6 +86,7 @@ def assemble():
             cells.append(cell)
         if set(used) != set(code) or len(used) != len(code):
             raise ValueError(f"Code/prose cell mapping is not one-to-one for {name}")
+        assert set(CELL_DISPLAY.get(name, {})) <= set(code), "Unknown cell visibility setting"
         notebook = nbformat.v4.new_notebook(cells=cells, metadata={
             "kernelspec": {"name": "ir", "display_name": "R", "language": "R"},
             "language_info": {"name": "R", "file_extension": ".r", "mimetype": "text/x-r-source"},

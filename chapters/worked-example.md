@@ -1,33 +1,35 @@
 # Worked example: your route from data to a baseline
 
-This is the complete example, divided into short sessions. Start after Chapters 0–3. Each session names its working file, saves a visible checkpoint, and tells you when it is safe to restart R.
+**Question:** what error do we get when predicting milk MSC for samples from farms not used to learn the rule?
 
-**Biological question:** what error do we get when predicting milk MSC for samples from farms not used to learn the rule? **First rule:** the mean training outcome. We will compare later feature-based models with this reference; this edition does not yet fit those models.
+Start after Chapters 0–3. First learn the decisions with six invented records; then apply them to real measurements.
 
-| Read in order | What you do | What you leave with |
-|---|---|---|
-| [4. Six invented records](04-small-farm-example.ipynb) | Hold out one entire farm; calculate predictions and errors by hand | A six-row story and `outputs/toy/error-table.csv` |
-| [5. Meet the real data](05-meet-real-data.ipynb) | Read a row; select MSC; document quality and detection-limit rules | `outputs/checkpoints/msc-prepared.rds` |
-| [6. Keep farms together](06-split-farms.ipynb) | Hold out whole farms and check overlap | `outputs/checkpoints/farm-split.rds` |
-| [7. Learn and evaluate a baseline](07-baseline.ipynb) | Fit the training mean; evaluate, check, save and explain | Scores, predictions, plot and audit counts |
+## Follow the analysis
 
-The six-row table is **invented** for hand calculations. Chapters 5–7 use the pinned author data described in the [data audit](../reference/data-audit.md). Their counts and scales must not be mixed.
+**[4. Work it out by hand](04-small-farm-example.ipynb)**
 
-## How the saved checkpoints help
+Hold out one farm, predict a mean and calculate two errors. Save `outputs/toy/error-table.csv`.
 
-An R object disappears after a restart. A checkpoint is a file on disk containing the prepared input needed by the next chapter. You may restart R between Chapters 5, 6 and 7: each page explicitly reads its required file. If a checkpoint is absent, the script asks you to complete the preceding chapter. A checkpoint preserves earlier decisions; it does not validate those decisions by itself.
+**[5. Understand the real measurements](05-meet-real-data.ipynb)**
 
-For every page, open its reference script and **Save As a my- copy** before editing. Run the blocks in order. Record a script, output, explanation and check in your completion card.
+Read a row, select MSC and make the target-limit treatment explicit. Save `outputs/checkpoints/msc-prepared.rds`.
 
-## The complete script
+**[6. Keep farms together](06-split-farms.ipynb)**
 
-After the step-by-step route, [download the complete R script](../scripts/worked-example.R), or use it inside the [student project](../downloads/microbial-ml-student.zip). Restart R, open `scripts/worked-example.R`, Save As `scripts/my-worked-example.R`, select the complete script and click Run. It rebuilds all real-data checkpoints and final outputs from the beginning.
+Split whole farms and check their shared labels. Save `outputs/checkpoints/farm-split.rds`.
 
-This integrated script and the three chapter scripts are generated from the same computational source. You do not need to combine code blocks manually. Source can also execute a script, but it normally shows fewer intermediate results than selecting and running the lines.
+**[7. Evaluate and explain](07-baseline.ipynb)**
 
-```{admonition} Final evidence to show the TA
-:class: tip
-Find your saved my- scripts, baseline scores.csv, training-distribution.png and AI-use log. Explain what one real row represents, why no farm occurs in both sets, how one residual was calculated, and why the prediction uses only training outcomes. Record what remains uncertain.
-```
+Fit the training mean, inspect errors and save the result table and plot.
 
-**Start:** [six invented farm records](04-small-farm-example.ipynb).
+## Continue after restarting R
+
+Each real-data chapter reloads the file saved by its predecessor. Restart R before Chapters 6 and 7; no earlier in-memory object is needed. A missing file means you should complete the preceding chapter.
+
+Run blocks labeled **supplied** unchanged. Their code is collapsed on the page when its implementation is not a learning goal; you can expand it to inspect it. A collapsed block still needs to run when the lesson instructs you to use it.
+
+## Recreate the complete result
+
+After the guided route, open `scripts/worked-example.R` from the [student project](../downloads/microbial-ml-student.zip). Save a my- copy, restart R, select the complete script and Run. It recreates all real-data inputs and final outputs.
+
+**Your evidence:** a saved script, `scores.csv`, `training-distribution.png`, a short AI-use log, and a hand reconstruction of one residual. Explain the new-farm setting and the training-only mean. Use the [data sheet](../reference/data-audit.md) to check source and measurement decisions.

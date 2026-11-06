@@ -12,7 +12,7 @@ import tempfile
 import zipfile
 
 import nbformat
-from assemble_notebooks import LESSONS, REAL_STAGES, read_cells
+from assemble_notebooks import LESSONS, REAL_STAGES, CELL_DISPLAY, read_cells
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -34,6 +34,9 @@ def main(cold):
         assert [cell.source for cell in code] == canonical
         assert all(cell.execution_count is not None for cell in code)
         assert not any(out.output_type == "error" for cell in code for out in cell.outputs)
+        for cell, key in zip(code, read_cells(ROOT / "scripts" / f"{name}.R")):
+            assert cell.metadata.get("tags", []) == CELL_DISPLAY.get(name, {}).get(key, [])
+            assert "skip-execution" not in cell.metadata.get("tags", [])
         executed += len(code)
     zip_path = ROOT / "downloads/microbial-ml-student.zip"
     with tempfile.TemporaryDirectory(prefix="microbial-ml-student-") as work:
@@ -100,6 +103,7 @@ def main(cold):
     info = {"canonical_R_cells_match_executed_notebooks": True, "executed_R_cells": executed,
             "unhandled_notebook_errors": 0, "all_chapter_scripts_run_in_fresh_Rscript_sessions": True,
             "chapter_scripts": len(LESSONS), "stage_scripts_match_complete_canonical_workflow": True,
+            "collapsed_cells_still_executed_and_match_display_policy": True,
             "missing_prerequisite_has_actionable_error": True,
             "changed_copy_exercise_25_and_original_preserved": True,
             "AI_summary_1_3_20_and_completed_log_preserved": True,

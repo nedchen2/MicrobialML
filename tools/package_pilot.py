@@ -8,7 +8,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 FILES = [".gitignore", "myst.yml", "intro.md", "README.md", "STUDENT_README.txt",
          "microbial-ml.Rproj", "requirements-build.txt", "preview.command",
-         "PUBLICATION.md", "CHANGELOG.md", "BUILDING.md"]
+         "PUBLICATION.md", "CHANGELOG.md", "BUILDING.md", "DATA_NOTES.md"]
 DIRECTORIES = ["assets", "authoring", "chapters", "reference", "scripts", "tools",
                "downloads", "validation", ".github", "templates"]
 

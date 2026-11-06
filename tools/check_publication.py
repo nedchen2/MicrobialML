@@ -5,7 +5,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 root_files = {".gitignore", "README.md", "STUDENT_README.txt", "myst.yml",
               "intro.md", "microbial-ml.Rproj", "requirements-build.txt",
-              "preview.command", "PUBLICATION.md", "CHANGELOG.md", "BUILDING.md"}
+              "preview.command", "PUBLICATION.md", "CHANGELOG.md", "BUILDING.md", "DATA_NOTES.md"}
 extensions = {"assets": {".svg", ".css"}, "authoring": {".md"},
               "chapters": {".md", ".ipynb"}, "reference": {".md"},
               "scripts": {".R"}, "tools": {".py"}}

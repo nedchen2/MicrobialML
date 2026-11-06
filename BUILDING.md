@@ -118,3 +118,9 @@ Edit `scripts/worked-example.R` and the three matching `authoring/05-*.md`, `06-
 The extracted-student-project check also verifies the changed-copy exercise, the repaired AI summary, preservation of a completed AI-use log, toy error calculations, actionable missing-checkpoint errors, and agreement with the v0.1 baseline results. The actual CI environment is saved as an Actions artifact.
 
 For subpath checks use `python tools/verify_html.py --base-url /MicrobialML` after a build with the same BASE_URL. The local link checker derives its page count from the table of contents.
+
+## Student reading layers
+
+The prose distinguishes scientific decisions, small learning blocks, supplied operational blocks and maintenance reference. Cell tags are assigned in tools/assemble_notebooks.py: hide-input collapses implementation while retaining its output; hide-output also collapses the result of an extra calculation. These tags do not skip execution. The verifier checks every cell's tags, executed state and agreement with its R source. Keep the selection, target-limit treatment, train-only rule and metric interpretation visible in prose.
+
+Full data provenance, exact source identifiers and reuse decisions are maintained in [DATA_NOTES.md](DATA_NOTES.md), outside the student reading sequence.

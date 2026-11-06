@@ -1,42 +1,42 @@
-# Downloads and how to use them
+# Your student project
 
-## Start with the complete student project
+**[Download the complete student ZIP](../downloads/microbial-ml-student.zip)**
 
-[Download the complete student ZIP](../downloads/microbial-ml-student.zip). **Extract it first**, then open `microbial-ml.Rproj` in RStudio. Each chapter tells you to save a my- working copy of its reference script and run short blocks with Run.
+1. Extract it first.
+2. Open `microbial-ml.Rproj` in RStudio.
+3. Start with Chapter 1. Save your edits in my- copies of the reference scripts.
 
-| In order | Reference script | What it creates |
-|---|---|---|
-| 1. First run | [01-first-run.R](../scripts/01-first-run.R) | A text file |
-| 2. Minimum R | [02-minimum-r.R](../scripts/02-minimum-r.R) | A filtered table and a labeled changed copy |
-| 3. AI feedback | [03-working-with-ai.R](../scripts/03-working-with-ai.R) | A checked summary and an AI-use log template |
-| 4. Six invented records | [04-small-farm-example.R](../scripts/04-small-farm-example.R) | A hand-checkable error table |
-| 5. Real data | [05-meet-real-data.R](../scripts/05-meet-real-data.R) | The prepared-data checkpoint |
-| 6. Farm split | [06-split-farms.R](../scripts/06-split-farms.R) | The split checkpoint |
-| 7. Baseline | [07-baseline.R](../scripts/07-baseline.R) | Scores, predictions, a plot and audit counts |
+The supplied analysis uses R and RStudio, with no extra R packages. Ask the TA for the course-approved AI chat link; Chapter 3 also includes a labeled inspection dialogue.
 
-Restart R between Chapters 5, 6 and 7. Each reloads its saved input explicitly. For a final complete run from scratch, use [worked-example.R](../scripts/worked-example.R). The [download helper](../scripts/course_setup.R) fetches and checks the real source file.
+## What is in the folder?
 
-The student route needs R and RStudio, with no additional R packages. It does not require Python, Node, Jupyter Book or a GitHub account. Obtain the course-approved AI access link from the TA; the illustrative dialogue provides a clearly labeled inspection route when live access is unavailable.
+| Folder | What you use it for |
+|---|---|
+| `scripts` | The chapter scripts and complete real-data workflow |
+| `data` | Two invented practice tables and the real-data dictionary |
+| `templates` | An AI-use log and an optional completion card |
+| `outputs` | Created when you run the lessons; your own results go here |
 
-## Inputs and evidence templates
+Chapters 5–7 save and reload their inputs. The final `scripts/worked-example.R` recreates the complete real-data analysis from the beginning. Run it after the step-by-step route.
 
-- [Practice counts](../data/practice_counts.csv): four invented samples.
-- [Practice farms](../data/practice_farms.csv): six invented farm-round records.
-- [Real-data dictionary](../data/data-dictionary.csv).
-- [Completion card](../templates/completion-card.txt).
-- [AI-use log template](../templates/ai-use-log.txt).
-- [Plain-language project instructions](../STUDENT_README.txt).
-- [Aggregate real baseline scores](../downloads/baseline-scores.csv).
-- [Real-data selection and verification counts](../downloads/data-audit.csv).
+## Need a single file again?
 
-Individual files do not supply all supporting inputs. Use the complete ZIP for your first run. Your scripts create outputs on your own computer; they are not already present just because the website displays example results.
+```{admonition} Reference scripts
+:class: note dropdown
+[1. First run](../scripts/01-first-run.R) · [2. Minimum R](../scripts/02-minimum-r.R) · [3. AI exchange](../scripts/03-working-with-ai.R) · [4. Six records](../scripts/04-small-farm-example.R) · [5. Real data](../scripts/05-meet-real-data.R) · [6. Split farms](../scripts/06-split-farms.R) · [7. Baseline](../scripts/07-baseline.R).
 
-## Source and versions
+The [complete workflow](../scripts/worked-example.R) and its [download helper](../scripts/course_setup.R) are also in the ZIP. A script alone does not include its supporting inputs.
+```
 
-The helper downloads the original-author raw CSV from a fixed commit and checks its checksum. The complete raw dataset is not inside the ZIP. First download requires internet; later runs can use the verified cache. Read the [data audit](data-audit.md) before reuse.
+```{admonition} Inputs, templates and example outputs
+:class: note dropdown
+[Four invented samples](../data/practice_counts.csv) · [Six invented farm records](../data/practice_farms.csv) · [Real-data dictionary](../data/data-dictionary.csv).
 
-For a class using a fixed version, use the student ZIP attached to the [release specified by the TA](https://github.com/nedchen2/MicrobialML/releases). The website and its default download reflect the current edition.
+[AI-use log](../templates/ai-use-log.txt) · [Optional completion card](../templates/completion-card.txt) · [Project instructions](../STUDENT_README.txt).
 
-## For maintainers
+[Example baseline scores](../downloads/baseline-scores.csv) · [Selection counts](../downloads/data-audit.csv). Your own scripts generate their results on your computer.
+```
 
-See the repository's [build guide](https://github.com/nedchen2/MicrobialML/blob/main/BUILDING.md) and [publication guide](https://github.com/nedchen2/MicrobialML/blob/main/PUBLICATION.md). The website displays executed R outputs; live in-page R execution is not configured. A novice RStudio working-session trial remains necessary to measure usability and timing.
+The real raw data are downloaded from the fixed author source on first use; they are not redistributed in this ZIP. Read the [data sheet](data-audit.md) before reuse.
+
+If your TA specifies a classroom version, use that [release's student ZIP](https://github.com/nedchen2/MicrobialML/releases). Otherwise use the download at the top of this page.

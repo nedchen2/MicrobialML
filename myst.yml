@@ -36,6 +36,10 @@ project:
     - data/raw/**
     - outputs/**
     - README.md
+    - BUILDING.md
+    - PUBLICATION.md
+    - DATA_NOTES.md
+    - CHANGELOG.md
 site:
   template: book-theme
   title: AI-Assisted Microbial ML

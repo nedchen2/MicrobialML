@@ -1,99 +1,88 @@
 # 4. Six records you can check by hand
 
-**Estimated session:** 25–40 minutes; allow time to explain your reasoning aloud.
+**Open:** restart R and save the supplied script as `scripts/my-04-small-farm-example.R`.
 
-| Before running | Your task |
-|---|---|
-| Input | `data/practice_farms.csv`: six explicitly invented records |
-| Working file | Open `scripts/04-small-farm-example.R`; Save As `scripts/my-04-small-farm-example.R` |
-| Starting state | Open the project and restart R; no previous objects are needed |
-| Stop after | The `toy-save` block |
-| Finish with | `outputs/toy/error-table.csv` and a hand calculation |
+This is a worked example with **invented counts**, on the original CFU/mL scale. We can inspect every record before using a larger real dataset.
 
-## 4.1 Read one row before running a model
+## 4.1 Read the experiment
 
-Every number on this page is invented. One row is one assay result from a farm at a sampling round. The unit is CFU/mL. Here we use the original concentration scale so that we can calculate everything by hand.
-
-| Farm | Sampling round | Invented count |
-|---|---|---:|
-| A | 1 | 10 |
-| A | 2 | 10 |
-| B | 1 | 30 |
-| B | 2 | 30 |
-| C | 1 | 10 |
-| C | 2 | 30 |
-
-A1 and A2 come from the same farm at different rounds. They are related observations, even though they occupy separate rows. This is familiar from repeatedly measuring the same biological source.
+Run `toy-read`:
 
 {{r:toy-read}}
 
-`unique()` returns each distinct label once. We have six records and three farms.
+A row is one farm sampled at one round. A/1 and A/2 share a biological source, even though they occupy different rows. We have six records from three farms.
 
-## 4.2 Decide which farm is held out
+**Decide before calculating:** hold out farm C. Both its records must stay together. Farms A and B supply the training data.
 
-Before calculating error, we choose C as the test farm. Both C records must stay together. A and B supply training data. This manual choice is for illustration; Chapter 6 will use a fixed random selection of whole farms.
+## 4.2 Make the split match the question
 
-`==` asks “equal to”; `!=` asks “not equal to”. Inside `[rows, columns]`, the empty position after the comma retains all columns.
+`==` means equal to; `!=` means not equal to. Run `toy-split`:
 
 {{r:toy-split}}
 
-`intersect()` lists shared labels. `character(0)` means no shared labels:
+`intersect()` lists shared farm labels:
 
 {{r:toy-overlap}}
 
-**Pause:** point to the two test rows in the table before proceeding. We will not use their outcomes to compute the training average.
+**Read `character(0)` as “no shared farm labels.”** Point to the two test records in the input table. Their outcomes will not contribute to the training mean.
 
-## 4.3 Why start with one average?
+## 4.3 Work one prediction by hand
 
-Training counts are 10, 10, 30 and 30. Their sum is 80 across four records, so the training mean is **20 CFU/mL**. Without sample-specific information, we can give both new samples this same transparent prediction. This is a fitted rule with one learned value: a baseline.
+Training counts are **10, 10, 30 and 30**.
 
-`rep(value, times)` repeats a value. We need one prediction for each of the two test rows:
+1. Sum them: 80.
+2. Divide by four records: 20 CFU/mL.
+3. Give each held-out sample that prediction.
+
+Run `toy-predict`. `rep()` repeats the prediction once per test row:
 
 {{r:toy-predict}}
 
-A later model may use more information to improve on this starting point. Complexity alone does not establish an improvement.
+This is a fitted rule with one learned value. Later models can be compared with this simple reference.
 
-## 4.4 Calculate an error before reading its formula
+## 4.4 Turn predictions into errors
 
-The test measurements are 10 and 30. Subtract the prediction, 20, from each one:
+For the first test result, **observed 10 − predicted 20 = residual −10**. The prediction was above the observed concentration; the microbial count itself is not negative.
 
-| Observed | Predicted | Residual: observed − predicted | Absolute error | Squared error |
-|---:|---:|---:|---:|---:|
-| 10 | 20 | −10 | 10 | 100 |
-| 30 | 20 | 10 | 10 | 100 |
-
-`abs()` removes the sign; `^2` squares a number. A negative residual means the prediction was above the observed value. It does not mean there was a negative microbial count.
+Run the supplied `toy-errors` block to build the two-row calculation table. Expand its code if you want to inspect how the columns are assembled:
 
 {{r:toy-errors}}
 
-- **MAE:** average the absolute errors: `(10 + 10) / 2 = 10`.
-- **RMSE:** average the squared errors, then take the square root: `sqrt((100 + 100) / 2) = 10`. `sqrt()` is the square-root function.
+**MAE** averages the absolute errors: `(10 + 10) / 2 = 10`.
+
+**RMSE** averages the squared errors and takes their square root: `sqrt((100 + 100) / 2) = 10`.
 
 {{r:toy-metrics}}
 
-Both are **10 CFU/mL** in this deliberately symmetric example. They need not be equal for other errors. Neither is an accuracy percentage.
+Both equal **10 CFU/mL** in this symmetric example. They need not be equal in another dataset, and neither is an accuracy percentage.
 
-```{admonition} Open after you try: what if the two residuals were −10 and 30?
+```{admonition} Try before opening: residuals −10 and 30
 :class: tip dropdown
-MAE would be (10 + 30) / 2 = 20. RMSE would be sqrt((100 + 900) / 2), about 22.36. Squaring makes a larger error contribute more strongly. These are hand-calculation alternatives, not replacement results for our saved six-row table.
+MAE would be 20. RMSE would be sqrt((100 + 900) / 2), about 22.36. Squaring gives a larger error more influence. These alternative numbers are a hand exercise, not replacement results for the saved six-row table.
 ```
 
-## 4.5 A split that runs but answers a different question
+## 4.5 Challenge a split that runs
 
-The following counterexample assigns alternate rows to two sets. `c(1, 3, 5)` supplies row positions. It uses separate `bad_` objects, leaving our correct toy split unchanged:
+Consider this alternative:
+
+| Training rows | Test rows |
+|---|---|
+| A/1, B/1, C/1 | A/2, B/2, C/2 |
+
+**Your prediction:** which farm labels will occur in both sets?
+
+Run the supplied `toy-wrong-split` counterexample. Its separate objects leave the correct split unchanged:
 
 {{r:toy-wrong-split}}
 
-The overlap contains **A, B and C**. Both sets contain records from every farm. This cannot evaluate prediction for an unseen farm. The code ran; the split did not match the stated prediction setting.
+The shared labels are A, B and C. This tests new records from already represented farms, not the stated task of predicting an unseen farm.
 
-**Ask AI:** paste this six-row table and ask it to explain the difference between the two splits. Require it to list the shared farm labels. Verify its list yourself before accepting the explanation.
+## 4.6 Keep the evidence
 
-## 4.6 Save and explain
+Run the supplied `toy-save` block:
 
 {{r:toy-save}}
 
-Open **Files → outputs → toy → error-table.csv**. Check the two residuals against the hand table. Record the file in your completion card.
+Find **outputs/toy/error-table.csv**. Explain why C has two test records, why the baseline predicts 20, and how one residual becomes an absolute and a squared error.
 
-**Checkpoint 4:** explain why C has two test records, why the prediction is 20, and why the error metrics here have CFU/mL units. The real example will use a log10 target, so its numerical errors cannot be directly compared with these original-scale toy errors.
-
-**Next:** [meet the real milk data](05-meet-real-data.ipynb).
+**Next:** [the real milk data](05-meet-real-data.ipynb). Its target will use a log10 scale, so its errors cannot be compared numerically with these original-scale toy errors.

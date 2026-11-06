@@ -9,6 +9,8 @@ Textbook: https://nedchen2.github.io/MicrobialML/
 4. The supplied file already contains the page's code. Select a short block in
    Source and click Run (Ctrl+Enter Windows; Cmd+Enter macOS). Inspect the Console
    before continuing. Source executes a full script but may print fewer values.
+   Supplied blocks still need to run when instructed, even if their code is
+   collapsed on the web page. Expand details only when you need them.
 5. Follow 01-first-run, 02-minimum-r, 03-working-with-ai, then
    04-small-farm-example. The first two practice CSVs are explicitly invented.
 6. Restart R before 05-meet-real-data.R. Its helper downloads a pinned original
@@ -18,8 +20,8 @@ Textbook: https://nedchen2.github.io/MicrobialML/
 9. To rebuild the whole REAL-data analysis, restart R and run a my- copy of
    scripts/worked-example.R from top to bottom. No previous checkpoint is needed.
 
-Use templates/completion-card.txt to record your script, output, explanation and
-check. Chapter 3 creates outputs/ch03/ai-use-log.txt; edit and save your actual
+The optional templates/completion-card.txt helps you record a script, output,
+explanation and check. Chapter 3 creates outputs/ch03/ai-use-log.txt; edit and save your actual
 route. Its illustrative dialogue is a teaching example, not a real model log.
 Use the approved chat when available. No additional R packages, API keys,
 Python, Node.js or Jupyter Book are needed for the student analysis.

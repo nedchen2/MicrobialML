@@ -18,5 +18,3 @@ writeLines("My first successful R run.", "outputs/practice/first-run.txt")
 file.exists("outputs/practice/first-run.txt")
 # %% inspect
 readLines("outputs/practice/first-run.txt")
-# %% versions
-R.version.string

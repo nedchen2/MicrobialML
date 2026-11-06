@@ -33,6 +33,6 @@ This edition covers the beginner-to-baseline route. Predictor-based models are l
 
 ## For textbook maintainers
 
-[Build and verify locally](BUILDING.md) · [Publish and update the website](PUBLICATION.md)
+[Build and verify locally](BUILDING.md) · [Publish and update the website](PUBLICATION.md) · [Data provenance](DATA_NOTES.md)
 
 The book follows the beginner-oriented approach of [Start Your R Journey](https://nedchen2.github.io/StartYourRJourney/intro.html). R scripts and executed notebooks are checked together before the website is published. A novice classroom trial remains to be completed.

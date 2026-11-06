@@ -5,7 +5,7 @@ practice <- read.csv("data/practice_counts.csv", stringsAsFactors = FALSE)
 names(practice)
 practice
 # %% faulty-answer
-# Deliberately unsuitable for the task: mean of the RECORDED counts, without imputation.
+# Deliberate error: zero imputation changes this task.
 working <- practice
 working$count_cfu_ml[is.na(working$count_cfu_ml)] <- 0
 bad_mean <- mean(working$count_cfu_ml)
@@ -30,7 +30,3 @@ if (!file.exists("outputs/ch03/ai-use-log.txt")) {
   file.copy("templates/ai-use-log.txt", "outputs/ch03/ai-use-log.txt")
 }
 file.exists("outputs/ch03/summary.csv")
-# %% object-name-error
-# Optional execution-error exercise. The wrapper displays an expected error safely.
-tryCatch(mean(Practice$count_cfu_ml, na.rm = TRUE), error = function(e) conditionMessage(e))
-mean(practice$count_cfu_ml, na.rm = TRUE)

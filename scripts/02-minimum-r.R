@@ -25,9 +25,6 @@ mean(practice$count_cfu_ml, na.rm = TRUE)
 # %% subset
 known_counts <- practice[!is.na(practice$count_cfu_ml), ]
 known_counts
-# %% factor
-handling <- factor(c("routine", "routine", "changed"))
-levels(handling)
 # %% export
 dir.create("outputs/practice", recursive = TRUE, showWarnings = FALSE)
 write.csv(known_counts, "outputs/practice/known-counts.csv", row.names = FALSE)

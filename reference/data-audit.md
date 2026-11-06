@@ -1,64 +1,32 @@
-# Data audit and provenance
+# The milk data at a glance
 
-This page records the data decisions behind the worked example. The classroom score refers to this fixed teaching slice and split, rather than a reproduction of the publication's machine-learning results.
+Use this sheet to check the scientific choices behind Chapters 5–7.
 
-## Source and version
+## What are we using?
 
-**Publication:** Qian, C., Lee, R. T., Weachock, R. L., Wiedmann, M., and Martin, N. H. (2025). *A Machine-Learning Approach Reveals That Bacterial Spore Levels in Organic Bulk Tank Milk are Dependent on Farm Characteristics and Meteorological Factors.* Journal of Food Protection, 88, 100477. [DOI](https://doi.org/10.1016/j.jfp.2025.100477).
+**Source:** [Qian and colleagues' organic milk study (2025)](https://doi.org/10.1016/j.jfp.2025.100477), with data in the [authors' repository](https://github.com/FSL-MQIP/OREI_ML_Inference).
 
-**Author repository:** [FSL-MQIP/OREI_ML_Inference](https://github.com/FSL-MQIP/OREI_ML_Inference).
+A selected row is one **MSC result from one farm and sampling round**. MSC means mesophilic spore count, in CFU/mL. Farms contribute repeated records.
 
-**Pinned commit:** `aebcac0888599ad34ab2898f5aa2b704c6e7600c`.
+## Which records enter this exercise?
 
-**Input:** [Data/Raw Milk Micro Data.csv at that commit](https://github.com/FSL-MQIP/OREI_ML_Inference/blob/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Raw%20Milk%20Micro%20Data.csv).
-
-The download helper verifies MD5 `66057392dd1c31f6be47ec0c75ee2cb4`. The independently recorded SHA-256 is `36f38d28e750e4354a3646b09fd5c4d624e20fc4dbad76704dabd52ea42bc709`. A checksum identifies the exact bytes used; it does not validate the scientific content.
-
-## What was actually checked?
-
-| Check | Finding |
+| Decision | Result |
 |---|---|
-| Original assay table | 2,736 rows, five columns |
-| Assay record counts | APC 563; BAB 513; MSC 562; PSC 536; TSC 562 |
-| Selected assay | MSC only |
-| Raw MSC notes | 525 missing/blank; 34 laboratory errors; two TNTC; one other note |
-| Eligibility | No note; concentration positive and finite |
-| Eligible MSC | 525 farm-round records, 102 farms |
-| Duplicate eligible farm-round keys | None |
-| Missing eligible concentrations | None |
-| Encoded detection-limit values | 30 at 0.125 CFU/mL |
-| Transformation | log10 concentration in CFU/mL |
-| Training / test | 420 / 105 records from 81 / 21 farms |
-| Farm overlap | Zero |
+| Read the original multi-assay table | 2,736 records |
+| Select MSC | 562 records |
+| Require no note and a positive, finite count | 525 records from 102 farms |
+| Keep the authors' below-detection encoding and flag it | 30 records at 0.125 CFU/mL |
+| Predict log10 MSC | Errors are on the transformed scale |
+| Hold out whole farms | 81 training farms / 21 test farms; no overlap |
 
-The selection is reproducible in `scripts/worked-example.R`, and its counts are written to `outputs/baseline/data-audit.csv` when you run it.
+The 0.125 values represent the authors' substitution of one quarter of a 0.5 CFU/mL detection limit. They are not precise point measurements. The excluded notes comprise 34 laboratory errors, two TNTC results and one unresolved note. This defines a teaching slice, not a reproduction of the paper's full analysis.
 
-## Why the earlier combined table had 528 MSC rows
+## What can the result support?
 
-The author's combined `FarmData.csv` retains 528 positive MSC records, including the two TNTC records and the record with another note. This pilot starts from the original assay table and applies the explicit eligibility rule above. Its 525 records match the publication's stated MSC sample size, but matching a count alone is not proof of identical preprocessing.
+The score evaluates a fixed baseline on held-out records in this study setting. It does not establish that all records are independent, that a farm practice causes a change, or that a milk product is safe. The limit-value treatment and single split constrain interpretation.
 
-The combined file also contains already processed predictors, including an outcome-derived farm summary and globally imputed values in the accompanying author code. A future predictor-based lesson needs a separate leakage and availability audit. The baseline uses none of those columns.
+## How do I get the data?
 
-## Detection limits are part of the target definition
+Run the supplied download block in Chapter 5. It retrieves a fixed author-file version and checks it; the complete raw dataset is not inside the student ZIP. First access needs internet. If it fails, use the [help page](troubleshooting.md) or ask the TA for an approved access route.
 
-The publication describes replacing undetected MSC measurements by one quarter of the 0.5 CFU/mL detection limit. The encoded value is therefore 0.125 CFU/mL. The pilot retains and flags it; it is not a measured point concentration. The main score and the separate quantified-test-subset score are both explicitly labeled.
-
-Changing this treatment changes the target and potentially the result. Excluding flagged rows is not a general remedy, and their unobserved true values are not recovered by using a regression model.
-
-## Prediction setting and interpretation
-
-The target is a held-out sample from a new farm within the represented study setting. Whole-farm separation prevents a farm appearing in both training and test. It is not a prospective study, does not guarantee transport to a new region or production system, and does not establish that all observations are independent.
-
-The score gives each eligible test record equal weight. It is a single-split descriptive evaluation; uncertainty intervals and formal comparisons are not supplied in this pilot. Repeated farm sampling must also be considered when later teaching coefficient inference.
-
-The outcome is a microbial quality measurement. No pathogen-specific abundance, causal effect or food-safety decision follows directly from it.
-
-## Files and redistribution
-
-The author repository is publicly accessible. An explicit redistribution license for the repository's complete raw dataset was not established in this review. The student ZIP therefore contains a pinned original-source downloader and checksum, rather than a repackaged complete raw dataset. The generated local outputs are produced on the student's computer. Public book outputs show limited examples and aggregate checks with attribution.
-
-The first download needs internet access; later runs use the verified local file. If a source becomes unavailable, the TA should supply an institution-approved access route. Do not substitute invented observations while labeling them as real data.
-
-## What is finalized for this pilot?
-
-The original assay-file version, MSC eligibility rule, unit, encoded-limit treatment, target, group split, baseline and arithmetic checks are fixed and executed. Management/weather feature selection, missingness treatment for those predictors, formal model comparisons and the remaining five-model lessons are later work. The candidate is suitable for the **data-to-baseline pilot** on those terms.
+For citation, version identifiers, checksums and detailed reuse notes, maintainers can consult the [full provenance record](https://github.com/nedchen2/MicrobialML/blob/main/DATA_NOTES.md).

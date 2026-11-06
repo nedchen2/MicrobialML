@@ -41,3 +41,8 @@ Only include data approved for sharing. A text copy of the code and error lets s
 Use **Session → Restart R**, then open the correct project and run the lesson from the top. Do not rely on objects left in memory from an earlier experiment. Installation is persistent; ordinary in-memory objects are not.
 
 If a repair requires a new assumption, record it. For example, converting text counts to numbers can create missing values; replacing an absent result with zero changes the scientific data.
+
+```{admonition} Only when asking for setup help: report your R version
+:class: note dropdown
+Run `R.version.string` in the Console and copy the output with your error report. You do not need to match the exact version text printed in the book.
+```

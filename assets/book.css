@@ -11,3 +11,8 @@ article img { border-radius: .6rem; }
 article blockquote { border-left: 4px solid #b4c9c1; }
 ::selection { background: #d5eee7; }
 @media (max-width: 700px) { article { line-height: 1.75; } article table { font-size: .85rem; } }
+/* Dialogue roles stay identifiable by their titles as well as colour. */
+article .student-turn { border-left: 4px solid #267970; background: #edf6f2; }
+article .assistant-turn { border-left: 4px solid #b3843b; background: #fff7e9; }
+article blockquote { font-style: normal; }
+article .student-turn pre, article .assistant-turn pre { white-space: pre-wrap; overflow-wrap: anywhere; }
