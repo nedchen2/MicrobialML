@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 for key, suffix in {"JUPYTER_CONFIG_DIR": "config", "JUPYTER_DATA_DIR": "data",
@@ -18,12 +19,22 @@ if (ROOT / ".R-library").exists():
 
 import nbformat
 from nbclient import NotebookClient
+from jupyter_client.kernelspec import KernelSpecManager
 from assemble_notebooks import LESSONS, assemble
 
 
 def main():
-    expression = f'IRkernel::installspec(prefix={json.dumps(sys.prefix)}, name="ir", displayname="R (microbial ML)")'
-    subprocess.run(["Rscript", "--vanilla", "-e", expression], cwd=ROOT, check=True)
+    # Register from Python: launching hosted-toolcache Python from system R can
+    # inherit R's library search paths and load an incompatible libpython on Linux.
+    expression = 'stopifnot(requireNamespace("IRkernel", quietly=TRUE)); cat(file.path(R.home("bin"), "R"))'
+    r_binary = subprocess.check_output(["Rscript", "--vanilla", "-e", expression],
+                                       cwd=ROOT, text=True).strip()
+    spec = {"argv": [r_binary, "--vanilla", "--slave", "-e", "IRkernel::main()",
+                     "--args", "{connection_file}"],
+            "display_name": "R (microbial ML)", "language": "R"}
+    with tempfile.TemporaryDirectory(prefix="microbial-ml-kernel-") as temporary:
+        Path(temporary, "kernel.json").write_text(json.dumps(spec))
+        KernelSpecManager().install_kernel_spec(temporary, kernel_name="ir", prefix=sys.prefix)
     assemble()
     rows = []
     for name in LESSONS:
