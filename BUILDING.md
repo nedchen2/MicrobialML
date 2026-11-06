@@ -54,7 +54,7 @@ microbial-quality results on one fixed split, not a food-safety decision.
 ## Author/build environment
 
 Tested with Jupyter Book 2.1.7, Python 3.12.14, R 4.6.1 and IRkernel 1.3.2 on macOS
-arm64. No additional R packages are needed to run the student scripts. IRkernel
+arm64. Chapters 1–7 use base R; tree lessons require rpart (locally tested at 4.1.27). IRkernel
 and Python packages are needed only to execute/build the author notebooks.
 
 Create an isolated author environment and install build dependencies:
@@ -70,7 +70,7 @@ environment with IRkernel installed):
 
 ```r
 dir.create(".R-library", showWarnings = FALSE)
-install.packages("IRkernel", lib = ".R-library", repos = "https://cloud.r-project.org")
+install.packages(c("IRkernel", "rpart"), lib = ".R-library", repos = "https://cloud.r-project.org")
 ```
 
 Build steps, from the project root:
@@ -98,7 +98,7 @@ python tools/verify_pilot.py --cold-download
 python tools/verify_html.py
 ```
 
-The first command runs all seven chapter scripts in separate R sessions,
+The first command runs all ten chapter scripts in separate R sessions,
 downloads the pinned source from an empty cache, repeats the baseline, and
 independently reconstructs the mean and error metrics in Python. The second
 checks the pages listed in myst.yml and their local link/asset targets. Browser navigation,
@@ -114,6 +114,10 @@ executor; do not independently edit generated computational cells.
 ## Shared computational source for Chapters 5–7
 
 Edit `scripts/worked-example.R` and the three matching `authoring/05-*.md`, `06-*.md`, `07-*.md` files. The assembler partitions named cells and generates both the chapter scripts and notebooks. Do not hand-edit generated stage scripts. Each stage runs in a fresh session using a saved RDS checkpoint from its predecessor. The integrated script rebuilds all stages from scratch.
+
+Chapters 8–10 similarly share canonical scripts/tree-workflow.R and three authoring pages. scripts/tree_helpers.R provides parsing, training-only median filling, fixed tree controls and numeric branch tracing. scripts/full-analysis.R orchestrates the baseline and tree workflows from an empty cache. The tree stages preserve the original baseline split and scores.
+
+tools/verify_tree.py independently reconstructs all 15 fold/candidate trees' node means and OOF routes, per-fold and final medians, selected depth, final leaf means, prediction routes and metrics. The pilot verifier also changes only held-out values and checks that selection, preprocessing and fitted structure cannot change. Public downloads include aggregate comparisons; row-level predictions and full raw source files stay outside published files.
 
 The extracted-student-project check also verifies the changed-copy exercise, the repaired AI summary, preservation of a completed AI-use log, toy error calculations, actionable missing-checkpoint errors, and agreement with the v0.1 baseline results. The actual CI environment is saved as an Actions artifact.
 

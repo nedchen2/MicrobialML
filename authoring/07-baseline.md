@@ -115,3 +115,5 @@ Different questions require different evidence:
 **Explain:** why would even a lower predictive RMSE leave the last two questions unanswered?
 
 **Finish:** locate your score, plot and AI-use record, explain one residual, then restart R and run a my- copy of `scripts/worked-example.R` from the beginning. It should recreate the real-data outputs.
+
+**Next:** [could group averages make a useful tree?](08-first-tree.ipynb)

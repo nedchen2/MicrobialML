@@ -11,6 +11,8 @@ extensions = {"assets": {".svg", ".css"}, "authoring": {".md"},
               "scripts": {".R"}, "tools": {".py"}}
 extensions["templates"] = {".txt"}
 exact_paths = {"data/practice_counts.csv", "data/practice_farms.csv", "data/data-dictionary.csv",
+               "data/predictor-dictionary.csv", "downloads/tree-scores.csv", "downloads/tree-validation.csv",
+               "downloads/predictor-audit.csv",
                "downloads/baseline-scores.csv", "downloads/data-audit.csv",
                ".github/workflows/deploy.yml"}
 files = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().split("\0")

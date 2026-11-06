@@ -23,7 +23,8 @@ def main():
         sources.extend(p for p in (ROOT / name).rglob("*") if p.is_file()
                        and "__pycache__" not in p.parts and p.suffix != ".pyc"
                        and not p.name.startswith("my-"))
-    sources += [ROOT / "data/practice_counts.csv", ROOT / "data/practice_farms.csv", ROOT / "data/data-dictionary.csv"]
+    sources += [ROOT / "data/practice_counts.csv", ROOT / "data/practice_farms.csv", ROOT / "data/data-dictionary.csv",
+                ROOT / "data/predictor-dictionary.csv"]
     html = ROOT / "_build/html"
     assert (html / "index.html").is_file(), "Build the HTML before packaging."
     sources.extend(p for p in html.rglob("*") if p.is_file())

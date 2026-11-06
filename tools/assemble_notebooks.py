@@ -12,7 +12,15 @@ REAL_STAGES = {
     "07-baseline": ["load-split", "baseline", "baseline-scale", "metrics", "independent", "sensitivity",
                     "save", "plot", "audit-save"],
 }
-LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-example", *REAL_STAGES]
+TREE_STAGES = {
+    "08-first-tree": ["tree-load", "hand-tree", "survey-source", "predictor-audit", "save-tree-input"],
+    "09-choose-tree": ["load-tree-input", "tree-formula", "training-folds", "validate-depth",
+                        "choose-depth", "fit-tree", "training-check", "save-tree-fit"],
+    "10-test-tree": ["load-tree-fit", "predict-tree", "tree-test-scores", "check-leaves",
+                      "trace-one", "save-tree-results", "new-samples", "plot-tree"],
+}
+WORKFLOWS = {"worked-example.R": REAL_STAGES, "tree-workflow.R": TREE_STAGES}
+LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-example", *REAL_STAGES, *TREE_STAGES]
 
 # Supplied operational code can be inspected on demand. Scientific rules and
 # their outputs remain in the lesson; these tags never skip execution.
@@ -31,6 +39,13 @@ CELL_DISPLAY = {
     "07-baseline": {"load-split": ["hide-input"], "baseline-scale": ["hide-input"], "independent": ["hide-input"],
                     "sensitivity": ["hide-input", "hide-output"], "save": ["hide-input"],
                     "plot": ["hide-input"], "audit-save": ["hide-input"]},
+    "08-first-tree": {"tree-load": ["hide-input"], "hand-tree": ["hide-input"],
+                       "survey-source": ["hide-input"], "predictor-audit": ["hide-input"], "save-tree-input": ["hide-input"]},
+    "09-choose-tree": {"load-tree-input": ["hide-input"], "training-folds": ["hide-input"],
+                        "validate-depth": ["hide-input", "hide-output"], "choose-depth": ["hide-input"],
+                        "training-check": ["hide-input"], "save-tree-fit": ["hide-input"]},
+    "10-test-tree": {"load-tree-fit": ["hide-input"], "check-leaves": ["hide-input"],
+                      "trace-one": ["hide-input"], "save-tree-results": ["hide-input"], "plot-tree": ["hide-input"]},
 }
 
 
@@ -50,14 +65,15 @@ def read_cells(path):
 
 
 def assemble():
-    full = read_cells(ROOT / "scripts/worked-example.R")
-    assert [key for keys in REAL_STAGES.values() for key in keys] == list(full), "Stages must partition the complete workflow in order"
-    for name, keys in REAL_STAGES.items():
-        script = f"# Generated from worked-example.R for Chapter {name[:2]}; edit that canonical source as author.\n"
-        script += "# Students: save a working copy as my-" + name + ".R; follow the matching page.\n"
-        for key in keys:
-            script += f"# %% {key}\n{full[key]}\n"
-        (ROOT / "scripts" / f"{name}.R").write_text(script)
+    for workflow, stages in WORKFLOWS.items():
+        full = read_cells(ROOT / "scripts" / workflow)
+        assert [key for keys in stages.values() for key in keys] == list(full), "Stages must partition the complete workflow in order"
+        for name, keys in stages.items():
+            script = f"# Generated from {workflow} for Chapter {name[:2]}; edit that canonical source as author.\n"
+            script += "# Students: save a working copy as my-" + name + ".R; follow the matching page.\n"
+            for key in keys:
+                script += f"# %% {key}\n{full[key]}\n"
+            (ROOT / "scripts" / f"{name}.R").write_text(script)
     for name in LESSONS:
         target = ROOT / "chapters" / f"{name}.ipynb"
         previous = nbformat.read(target, as_version=4) if target.exists() else None

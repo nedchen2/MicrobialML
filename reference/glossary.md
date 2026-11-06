@@ -18,6 +18,13 @@
 | Factor | A representation of categories | 分类变量 |
 | Outcome / target | The value to be predicted | 结局／预测目标 |
 | Predictor | Information available to make a prediction | 预测变量 |
+| Package | A collection of R functions; the tree lessons use rpart | R 扩展包 |
+| Formula | In R, `target ~ input1 + input2` specifies the prediction inputs | 模型公式 |
+| Leaf | A final tree group; here it predicts its training mean | 叶节点 |
+| Depth | Number of splits along a path from the root | 树深度 |
+| Validation fold | A batch of training farms temporarily hidden for model selection | 训练内部验证分组 |
+| Out-of-fold / OOF | A prediction made without fitting on that record's farm | 折外预测 |
+| Median filling | Replace a missing input with a middle value learned from fitting records | 用训练部分中位数填补 |
 | Group | Related observations kept together in a split | 分组，本例为牧场 |
 | Baseline | A simple reference prediction procedure | 基线模型 |
 | Train / validation / test | Learn / choose / evaluate using separate roles | 训练／验证／测试 |

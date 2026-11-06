@@ -40,7 +40,7 @@ jobs:
       - name: Install R and its notebook kernel from Ubuntu packages
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends r-base r-cran-irkernel
+          sudo apt-get install --yes --no-install-recommends r-base r-cran-irkernel r-cran-rpart
       - name: Install isolated Python author environment
         run: |
           python -m venv .build-venv
@@ -68,6 +68,13 @@ jobs:
             downloads/microbial-ml-student.zip
             downloads/baseline-scores.csv
             downloads/data-audit.csv
+            downloads/tree-scores.csv
+            downloads/tree-validation.csv
+            downloads/predictor-audit.csv
+            outputs/tree/nodes.csv
+            outputs/tree/leaf-means.csv
+            outputs/tree/training-medians.csv
+            outputs/tree/fitted-tree.mmd
           retention-days: 30
       - name: Package the verified website
         if: github.event_name != 'pull_request'

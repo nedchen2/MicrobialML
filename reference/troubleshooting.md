@@ -13,6 +13,8 @@ First save your script. Identify the smallest line that fails. Keep the full err
 | Download or connection fails | Can your computer reach the pinned source URL? | Retry on an approved network, or use the TA's approved route |
 | Checksum mismatch | Is the file partial, edited or from another version? | Remove only the cached source file and retry; keep your scripts |
 | A checkpoint file is missing | Did the preceding chapter finish? | Run Chapter 5 to create msc-prepared.rds, or Chapter 6 to create farm-split.rds; do not create an empty substitute |
+| A tree checkpoint is missing | Did Chapters 8 and 9 finish? | Chapter 8 creates tree-input.rds; Chapter 9 creates tree-fit.rds. Keep the original order |
+| The tree lesson says rpart is missing | Is the package installed for this R? | Run `install.packages("rpart", repos="https://cloud.r-project.org")` once in the Console, restart R and rerun Chapter 8 |
 | The changed-copy exercise shows FALSE | Is this the labeled old-rule check? | FALSE is expected for the old one-missing rule after changing the fourth practice count to 40 |
 | Source shows fewer results than the website | Was the file sourced rather than run block by block? | Run the object name or use print(); the main lesson route selects a block and clicks Run |
 | The AI cannot find my data | Did you provide the column names and relevant approved rows or output? | Opening a file in RStudio alone does not send it to chat |

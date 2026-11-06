@@ -12,7 +12,8 @@ import tempfile
 import zipfile
 
 import nbformat
-from assemble_notebooks import LESSONS, REAL_STAGES, CELL_DISPLAY, read_cells
+from assemble_notebooks import LESSONS, WORKFLOWS, CELL_DISPLAY, read_cells
+from verify_tree import verify_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,9 +25,10 @@ def read(path):
 
 def main(cold):
     executed = 0
-    complete = read_cells(ROOT / "scripts/worked-example.R")
-    for name, keys in REAL_STAGES.items():
-        assert read_cells(ROOT / "scripts" / f"{name}.R") == {key: complete[key] for key in keys}
+    for workflow, stages in WORKFLOWS.items():
+        complete = read_cells(ROOT / "scripts" / workflow)
+        for name, keys in stages.items():
+            assert read_cells(ROOT / "scripts" / f"{name}.R") == {key: complete[key] for key in keys}
     for name in LESSONS:
         notebook = nbformat.read(ROOT / "chapters" / f"{name}.ipynb", as_version=4)
         code = [cell for cell in notebook.cells if cell.cell_type == "code"]
@@ -45,13 +47,16 @@ def main(cold):
             assert not any("/data/raw/" in p for p in z.namelist())
             z.extractall(work)
         project = Path(work) / "microbial-ml"
-        for name, prerequisite in [("06-split-farms", "Chapter 5"), ("07-baseline", "Chapter 6")]:
+        for name, prerequisite in [("06-split-farms", "Chapter 5"), ("07-baseline", "Chapter 6"),
+                                   ("08-first-tree", "Chapter 7"), ("09-choose-tree", "Chapter 8"),
+                                   ("10-test-tree", "Chapter 9")]:
             missing = subprocess.run(["Rscript", "--vanilla", "scripts/"+name+".R"], cwd=project,
                                      text=True, capture_output=True, timeout=30)
             assert missing.returncode != 0 and prerequisite in missing.stderr
         if not cold:
             (project / "data/raw").mkdir(parents=True)
-            shutil.copyfile(ROOT / "data/raw/Raw_Milk_Micro_Data.csv", project / "data/raw/Raw_Milk_Micro_Data.csv")
+            for filename in ["Raw_Milk_Micro_Data.csv", "Farm_Survey_Data.csv"]:
+                shutil.copyfile(ROOT / "data/raw" / filename, project / "data/raw" / filename)
         for name in LESSONS:
             result = subprocess.run(["Rscript", "--vanilla", "scripts/"+name+".R"], cwd=project,
                                     text=True, capture_output=True, timeout=180)
@@ -105,6 +110,35 @@ def main(cold):
                        check=True, text=True, capture_output=True, timeout=120)
         assert (project / "outputs/baseline/scores.csv").read_bytes() == first
         assert (ROOT / "outputs/baseline/scores.csv").read_bytes() == first
+        first_tree = (project / "outputs/tree/test-scores.csv").read_bytes()
+        subprocess.run(["Rscript", "--vanilla", "scripts/full-analysis.R"], cwd=project,
+                       check=True, text=True, capture_output=True, timeout=180)
+        assert (project / "outputs/tree/test-scores.csv").read_bytes() == first_tree
+        assert (ROOT / "outputs/tree/test-scores.csv").read_bytes() == first_tree
+        assert (project / "outputs/baseline/scores.csv").read_bytes() == first
+        original_cv = (project / "outputs/tree/validation-scores.csv").read_bytes()
+        poison_check = '''
+original_input <- readRDS("outputs/checkpoints/tree-input.rds")
+original_fit <- readRDS("outputs/checkpoints/tree-fit.rds")
+poisoned <- original_input
+poisoned$test$log10_msc <- rep(1e6, nrow(poisoned$test))
+poisoned$test$pasture_hours <- rep(1e6, nrow(poisoned$test))
+poisoned$test$milking_cows <- rep(1e6, nrow(poisoned$test))
+saveRDS(poisoned, "outputs/checkpoints/tree-input.rds")
+source("scripts/09-choose-tree.R")
+new_fit <- readRDS("outputs/checkpoints/tree-fit.rds")
+stopifnot(identical(original_fit$chosen_depth, new_fit$chosen_depth))
+stopifnot(isTRUE(all.equal(original_fit$medians, new_fit$medians)))
+stopifnot(isTRUE(all.equal(original_fit$fit$frame, new_fit$fit$frame)))
+stopifnot(isTRUE(all.equal(original_fit$fit$splits, new_fit$fit$splits)))
+saveRDS(original_input, "outputs/checkpoints/tree-input.rds")
+saveRDS(original_fit, "outputs/checkpoints/tree-fit.rds")
+'''
+        subprocess.run(["Rscript", "--vanilla", "-e", poison_check], cwd=project,
+                       check=True, text=True, capture_output=True, timeout=120)
+        assert (project / "outputs/tree/validation-scores.csv").read_bytes() == original_cv
+        assert (project / "outputs/tree/test-scores.csv").read_bytes() == first_tree
+        tree_info = verify_tree(project)
         source = project / "data/raw/Raw_Milk_Micro_Data.csv"
         assert hashlib.md5(source.read_bytes()).hexdigest() == "66057392dd1c31f6be47ec0c75ee2cb4"
         rows = read(source)
@@ -146,6 +180,9 @@ def main(cold):
             "student_and_notebook_score_files_byte_identical": True,
             "independent_python_mean_rmse_mae_checks": True,
             "source_MD5_verified": True,
+            "full_analysis_recreates_baseline_and_tree": True,
+            "test_outcomes_and_features_cannot_change_tree_selection_or_fit": True,
+            "independent_tree_checks": tree_info,
             "independent_results": {"training_mean_log10": mean, "rmse": rmse, "mae": mae}}
     (ROOT / "validation/student-project-check.json").write_text(json.dumps(info, indent=2))
     print(json.dumps(info, indent=2))

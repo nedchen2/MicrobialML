@@ -34,6 +34,8 @@ Opening a file in RStudio does not automatically share it with a chat assistant.
 
 **Understand the analysis — Chapters 4–7.** Hand-check six invented farm records, then prepare real data, hold out whole farms and evaluate a baseline.
 
+**Add a model — Chapters 8–10.** Build the idea of a tree from group averages, choose its depth within training farms, then predict and compare it with the baseline.
+
 ## One working-file rule
 
 1. Open the chapter's supplied script, for example `scripts/02-minimum-r.R`.

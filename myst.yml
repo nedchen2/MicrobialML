@@ -21,6 +21,11 @@ project:
         - file: chapters/05-meet-real-data.ipynb
         - file: chapters/06-split-farms.ipynb
         - file: chapters/07-baseline.ipynb
+    - title: From a baseline to a tree
+      children:
+        - file: chapters/08-first-tree.ipynb
+        - file: chapters/09-choose-tree.ipynb
+        - file: chapters/10-test-tree.ipynb
     - title: Reference and downloads
       children:
         - file: reference/data-audit.md

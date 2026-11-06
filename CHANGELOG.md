@@ -1,5 +1,14 @@
 # Changes
 
+## v0.6 — Learn one predictor model step by step
+
+- Add Chapters 8–10: hand-build two leaf means, audit two original survey predictors, choose depth within training farms, then predict and explain a shallow regression tree.
+- Preserve the 525 targets and original farm split; match the untouched survey, keep unmatched records and learn missing-value medians inside each fitting partition.
+- Freeze depths 1/2/3 and grouped five-fold OOF RMSE selection before tree evaluation; retain the result that the tree does not beat the baseline.
+- Save and reload the fitted tree with its preparation, trace individual branches, reconstruct leaf means and predict clearly labelled invented input profiles.
+- Add a full-analysis runner, original-survey download/checksum, predictor dictionary, aggregate result downloads and rpart dependency instructions.
+- Independently verify fold preprocessing, all 15 validation trees' node means/routes, OOF and test metrics, saved-model predictions and invariance to changes in held-out values.
+
 ## v0.5 — Connect the biological purpose and practise real error repair
 
 - Briefly explain MSC's relevance to dairy quality and the safety significance of some spore-formers, while distinguishing MSC from species identification, toxin measurement and a safety verdict.

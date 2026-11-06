@@ -1,0 +1,3 @@
+"model","maxdepth","n_test","test_farms","RMSE_log10_CFU_ml","MAE_log10_CFU_ml"
+"Training-mean baseline",0,105,21,0.528923133228833,0.409148046131208
+"Shallow regression tree",1,105,21,0.544897029474068,0.426426372143913

@@ -17,16 +17,22 @@ Textbook: https://nedchen2.github.io/MicrobialML/
    author CSV and checks the checksum. It saves outputs/checkpoints/msc-prepared.rds.
 7. Restart R, run 06-split-farms.R, then find outputs/checkpoints/farm-split.rds.
 8. Restart R, run 07-baseline.R, then inspect outputs/baseline for scores and a plot.
-9. To rebuild the whole REAL-data analysis, restart R and run a my- copy of
+9. To rebuild the real-data BASELINE, restart R and run a my- copy of
    scripts/worked-example.R from top to bottom. No previous checkpoint is needed.
+10. Continue with 08-first-tree.R, 09-choose-tree.R, then 10-test-tree.R.
+    Restart R before each chapter. Chapter 8 checks the rpart package and downloads
+    the original survey file. Follow its message if a one-time installation is needed.
+11. After the tree route, scripts/full-analysis.R recreates BOTH real workflows
+    from the beginning. Keep optional changed-input results under another filename;
+    this script recreates the supplied reference results.
 
 The optional templates/completion-card.txt helps you record a script, output,
 explanation and check. Chapter 3 creates outputs/ch03/ai-use-log.txt; edit and save your actual
 route. Its illustrative dialogue is a teaching example, not a real model log.
 Chapter 3 also produces a real R object-name error; follow the page's one-line
 Run step, then its supplied block to record the error and continue.
-Use the approved chat when available. No additional R packages, API keys,
-Python, Node.js or Jupyter Book are needed for the student analysis.
+Use the approved chat when available. Chapters 1-7 need only base R; Chapters 8-10
+use rpart. Students do not need API keys, Python, Node.js or Jupyter Book.
 
 The changed-copy exercise creates outputs/practice/practice_counts_changed.csv.
 Its mean is 25 and it has zero missing counts. The old one-missing rule is FALSE
@@ -38,5 +44,7 @@ fixed author URL, not redistributed in this ZIP. First access requires internet.
 
 Expected real baseline: 420 training records/81 farms; 105 test records/21 other
 farms; no farm overlap; RMSE about 0.529 and MAE about 0.409 log10 CFU/mL.
+Expected tree: training-only five-fold farm validation selects depth 1; test RMSE
+about 0.545 and MAE about 0.426 log10 CFU/mL. It does not beat the baseline here.
 Toy original-scale error values cannot be compared directly with log-scale errors.
 These microbial-quality results do not establish causality or product safety.

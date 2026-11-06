@@ -8,20 +8,35 @@ course_source <- list(
   doi = "10.1016/j.jfp.2025.100477"
 )
 
-fetch_course_data <- function() {
+course_survey_source <- list(
+  commit = course_source$commit,
+  url = paste0("https://raw.githubusercontent.com/FSL-MQIP/OREI_ML_Inference/",
+               course_source$commit, "/Data/Farm%20Survey%20Data.csv"),
+  md5 = "948ed520f7564bda2694111b56ccc8cb"
+)
+
+fetch_course_file <- function(source_info, destination) {
   if (!file.exists("microbial-ml.Rproj")) {
     stop("Open microbial-ml.Rproj first. The working folder must be the project root.")
   }
   dir.create("data/raw", recursive = TRUE, showWarnings = FALSE)
-  destination <- "data/raw/Raw_Milk_Micro_Data.csv"
   if (!file.exists(destination)) {
     previous <- options(timeout = max(120, getOption("timeout")))
     on.exit(options(previous), add = TRUE)
-    download.file(course_source$url, destination, mode = "wb", quiet = TRUE)
+    download.file(source_info$url, destination, mode = "wb", quiet = TRUE)
   }
   checksum <- unname(tools::md5sum(destination))
-  if (is.na(checksum) || checksum != course_source$md5) {
-    stop("Source checksum mismatch. Keep your work, remove only data/raw/Raw_Milk_Micro_Data.csv and retry; do not change the expected checksum.")
+  if (is.na(checksum) || checksum != source_info$md5) {
+    stop(paste("Source checksum mismatch. Keep your work, remove only", destination,
+               "and retry; do not change the expected checksum."))
   }
   destination
+}
+
+fetch_course_data <- function() {
+  fetch_course_file(course_source, "data/raw/Raw_Milk_Micro_Data.csv")
+}
+
+fetch_course_survey <- function() {
+  fetch_course_file(course_survey_source, "data/raw/Farm_Survey_Data.csv")
 }

@@ -13,7 +13,7 @@ Follow the steps in order. Run the supplied code in your **my-** working copy.
 
 Install R first, then RStudio. On Windows choose R's base installation. On macOS choose the installer for your processor, following the download page's compatibility notes. On a prepared lab computer, open RStudio and continue. Ask the TA for installation help if the computer is managed by your institution.
 
-The student route needs no additional R packages.
+This first run needs only base R. The later tree lessons check their additional package when you reach Chapter 8.
 
 ## 1.2 Open the project and your working file
 
