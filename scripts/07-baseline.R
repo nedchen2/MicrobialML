@@ -12,11 +12,11 @@ baseline_log10 <- mean(train$log10_msc)
 baseline_log10
 test$prediction_log10 <- rep(baseline_log10, nrow(test))
 stopifnot(all(test$prediction_log10 == mean(train$log10_msc)))
-# %% baseline-scale
-# Interpret the fixed prediction using training records only; do not refit it.
-data.frame(mean_log10 = baseline_log10,
-           same_prediction_CFU_ml = 10^baseline_log10,
-           arithmetic_mean_CFU_ml = mean(train$Conc))
+# %% first-test-record
+# [1] selects the first value in each column.
+first_test_record <- data.frame(observed_log10 = test$log10_msc[1],
+                                predicted_log10 = test$prediction_log10[1])
+round(first_test_record, 4)
 # %% metrics
 test$error_log10 <- test$log10_msc - test$prediction_log10
 rmse <- sqrt(mean(test$error_log10^2))
@@ -30,14 +30,6 @@ rmse_check <- sqrt(sum((test$log10_msc - baseline_log10)^2) / nrow(test))
 mae_check <- sum(abs(test$log10_msc - baseline_log10)) / nrow(test)
 stopifnot(isTRUE(all.equal(rmse, rmse_check)))
 stopifnot(isTRUE(all.equal(mae, mae_check)))
-round(data.frame(observed = head(test$log10_msc, 3),
-                 predicted = head(test$prediction_log10, 3),
-                 residual = head(test$error_log10, 3)), 4)
-# %% rmse-scope
-# Three displayed records are a preview; the complete score uses all test records.
-preview_errors <- head(test$error_log10, 3)
-data.frame(records_used = c(length(preview_errors), nrow(test)),
-           RMSE_log10 = c(sqrt(mean(preview_errors^2)), rmse))
 # %% score-quantified-records
 # Evaluation subset only: the baseline is not refitted or chosen using this result.
 quantified_test <- test[!test$left_censored, ]
@@ -75,4 +67,4 @@ write.csv(split_checkpoint$audit, "outputs/baseline/data-audit.csv", row.names =
 cat("All data and baseline checks passed.\n")
 # %% baseline-live-workspace
 # My AI RMSE check: add your returned R code below in your my- copy.
-# Use all rows of test, not just the three-row preview.
+# Use all 105 rows of test.

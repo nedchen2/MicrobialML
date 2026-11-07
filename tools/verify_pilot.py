@@ -83,16 +83,22 @@ def main(cold):
         # Check the new learning bridges against the actual fitted workflow.
         # This is a reference-code check, not a claimed live AI interaction.
         baseline_cells = read_cells(project / "scripts/07-baseline.R")
+        baseline_steps = list(baseline_cells)
+        assert baseline_steps.index("baseline") < baseline_steps.index("first-test-record") < baseline_steps.index("metrics")
         before_export = []
         for key, value in baseline_cells.items():
-            if key == "sensitivity":
+            if key == "save-baseline-results":
                 break
             before_export.append(value)
         learning_checks = "\n".join(before_export) + r'''
 # The student's local-data AI check works before any export block is run.
 ai_rmse <- sqrt(mean((test$log10_msc - test$prediction_log10)^2))
 stopifnot(nrow(test) == 105, isTRUE(all.equal(ai_rmse, rmse)))
-stopifnot(abs(sqrt(mean(preview_errors^2)) - ai_rmse) > 0.08)
+stopifnot(nrow(first_test_record) == 1,
+          round(first_test_record$observed_log10, 4) == 0.8129,
+          round(first_test_record$predicted_log10, 4) == 0.7450,
+          round(first_test_record$observed_log10 - first_test_record$predicted_log10, 4) == 0.0679,
+          test$error_log10[1] == first_test_record$observed_log10 - first_test_record$predicted_log10)
 source("scripts/08-first-tree.R")
 stopifnot(hand_baseline == 1, left_mean == 0, right_mean == 2)
 stopifnot(hand_new_prediction == 0, sum(one_mean_errors^2) == 4, sum(two_mean_errors^2) == 0)

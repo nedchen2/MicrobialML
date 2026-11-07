@@ -9,7 +9,7 @@ REAL_STAGES = {
     "05-meet-real-data": ["load-milk-data", "raw-preview", "list-assays", "select-msc-records", "filter-usable-msc-records",
                           "usable-preview", "create-log10-msc", "log-intuition", "prepare-audit", "save-prepared"],
     "06-split-farms": ["load-prepared", "split-by-farm", "check-farm-overlap", "save-split"],
-    "07-baseline": ["load-split", "baseline", "baseline-scale", "metrics", "cross-check-error-metrics", "rmse-scope", "score-quantified-records",
+    "07-baseline": ["load-split", "baseline", "first-test-record", "metrics", "cross-check-error-metrics", "score-quantified-records",
                     "save-baseline-results", "plot-training-counts", "audit-save", "baseline-live-workspace"],
 }
 TREE_STAGES = {
@@ -42,7 +42,7 @@ CELL_DISPLAY = {
                           "prepare-audit": ["hide-input"], "save-prepared": ["hide-input"]},
     "06-split-farms": {"load-prepared": ["hide-input"], "split-by-farm": ["hide-input"],
                        "save-split": ["hide-input"]},
-    "07-baseline": {"load-split": ["hide-input"], "baseline-scale": ["hide-input"], "cross-check-error-metrics": ["hide-input"],
+    "07-baseline": {"load-split": ["hide-input"], "cross-check-error-metrics": ["hide-input"],
                     "score-quantified-records": ["hide-input", "hide-output"], "save-baseline-results": ["hide-input"],
                     "plot-training-counts": ["hide-input"], "audit-save": ["hide-input"]},
     "08-first-tree": {"load-farm-split-for-tree": ["hide-input"], "join-farm-survey": ["hide-input"],
