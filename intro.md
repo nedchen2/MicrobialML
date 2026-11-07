@@ -21,7 +21,7 @@ We take those questions one step at a time. You will begin with a few records yo
 
 ## About the author
 
-I'm Congjia Chen, a teaching assistant for *Machine Learning for Food Safety and Toxicology*. I also wrote [Start Your R Journey](https://nedchen2.github.io/StartYourRJourney/intro.html), an introductory R tutorial for biology students. This guide continues that approach, with a focus on using AI to support small, understandable and reproducible analyses.
+I'm Congjia Chen, a teaching assistant for *Machine Learning for Food Safety and Toxicology*, a course led by [Professor Guosheng Yin](https://saasresearch.hku.hk/~gyin/). I also wrote [Start Your R Journey](https://nedchen2.github.io/StartYourRJourney/intro.html), an introductory R tutorial for biology students. This guide continues that approach, with a focus on using AI to support small, understandable and reproducible analyses.
 
 ## First edition: feedback welcome
 
