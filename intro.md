@@ -40,7 +40,7 @@ This is the first edition of the guide, and some explanations or code may still 
 
 ## Get ready to work
 
-[Download the student project](downloads/microbial-ml-student.zip), extract it, and open `microbial-ml.Rproj` in RStudio. Read the website; run your calculations in RStudio. Chapter 1 explains installation and the first Run step.
+Start by [installing R and RStudio Desktop](chapters/00-start-here.md#set-up-your-computer). Then [download the student project](downloads/microbial-ml-student.zip), extract it, and open `microbial-ml.Rproj` in RStudio. Chapter 1 walks you through your first run.
 
 **Your final evidence:** a saved script, a result table, a plot and a short AI-use record. Explain one row, one prediction and one independent check. Chapters 8–10 add a shallow regression tree, using the same question and farm split to test whether extra complexity helps.
 

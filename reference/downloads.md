@@ -2,6 +2,8 @@
 
 **[Download the complete student ZIP](../downloads/microbial-ml-student.zip)**
 
+If you are setting up a computer for the course, start with the [R and RStudio installation instructions](../chapters/00-start-here.md#set-up-your-computer).
+
 1. Extract it first.
 2. Open `microbial-ml.Rproj` in RStudio.
 3. Start with Chapter 1. Save your edits in my- copies of the reference scripts.

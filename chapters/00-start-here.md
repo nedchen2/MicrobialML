@@ -2,6 +2,19 @@
 
 You will turn a small biological question into an analysis you can run, check and explain. Start with no programming experience.
 
+## Set up your computer
+
+**1. Install R first.** R performs the calculations. Start at the [official CRAN download page](https://cran.r-project.org/).
+
+- **Windows.** Choose **Download R for Windows**, open the **base** section, and run the downloaded installer.
+- **macOS.** Choose **Download R for macOS** and select the installer for your Mac's processor (Apple silicon or Intel). Check the listed macOS requirements, then open the downloaded `.pkg` file.
+
+**2. Install RStudio Desktop.** RStudio gives you an editor and a Console for running R. Follow [Posit's official RStudio download guide](https://docs.posit.co/ide/user/download.html) to get the free Desktop installer for your operating system, then install and open it.
+
+If you already have both tools, open RStudio Desktop. If your computer blocks installation, use a computer that already has R and RStudio. The first lessons use base R, and Chapter 8 explains how to load the package used for trees.
+
+Once RStudio opens, [download the student ZIP in Chapter 1](01-first-run.ipynb#id-1-1-download-the-student-project).
+
 ## The project in one question
 
 Imagine you are helping in a milk-testing lab. A sample has arrived from a farm you have never studied. Its mesophilic spore count (**MSC**) result is still unknown, but you have measurements from other farms.

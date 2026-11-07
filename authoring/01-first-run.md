@@ -4,22 +4,17 @@
 
 Follow the steps in order. Run the supplied code in your **my-** working copy.
 
-## 1.1 Get the two tools
+(id-1-1-get-the-two-tools)=
+Need R or RStudio Desktop? Follow the [installation instructions in Chapter 0](00-start-here.md#set-up-your-computer).
 
-| Tool | What it does | Where to get it |
-|---|---|---|
-| R | Performs the calculations | [Official R downloads](https://cran.r-project.org/) |
-| RStudio Desktop | Provides the editor, Console and file browser | [Official RStudio guide](https://docs.posit.co/ide/user/download.html) |
+## 1.1 Download the student project
 
-Install R first, then RStudio. On Windows choose R's base installation. On macOS choose the installer for your processor, following the download page's compatibility notes. Use a computer where you can install software, or one that already has R and RStudio. If a managed computer blocks installation, use an available computer with these tools installed or your own computer. A phone or tablet alone does not support this desktop route.
-
-This first run needs only base R. The later tree lessons check their additional package when you reach Chapter 8.
+[Download the student ZIP](../downloads/microbial-ml-student.zip) and **extract it** into a folder you can find. On Windows, use **Extract All**.
 
 ## 1.2 Open the project and your working file
 
-1. [Download the student ZIP](../downloads/microbial-ml-student.zip) and **extract it** into a folder you can find. On Windows use Extract All; do not work inside the ZIP preview.
-2. Open `microbial-ml.Rproj` in RStudio. In **Files**, find `scripts` and `data`.
-3. Choose **File → Open File**, open `scripts/01-first-run.R`, then choose **File → Save As**. In the project's **scripts folder**, use **my-01-first-run.R** as the filename. Confirm the editor tab now shows that name.
+1. Open `microbial-ml.Rproj` from the extracted folder in RStudio. In **Files**, find `scripts` and `data`.
+2. Choose **File → Open File**, open `scripts/01-first-run.R`, then choose **File → Save As**. In the project's **scripts folder**, use **my-01-first-run.R** as the filename. Confirm the editor tab now shows that name.
 
 ![An illustrated map of the editor, Run control, Console and file panes.](../assets/rstudio-map.svg)
 
