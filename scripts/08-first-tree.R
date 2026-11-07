@@ -50,7 +50,7 @@ test_survey <- attach_survey(outer_split$test, survey)
 stopifnot(identical(train_survey$log10_msc, outer_split$train$log10_msc))
 stopifnot(identical(test_survey$log10_msc, outer_split$test$log10_msc))
 # %% predictor-preview
-head(train_survey[c("pasture_hours", "milking_cows", "log10_msc")], 3)
+head(train_survey[c("FarmID", "Sampling", "pasture_hours", "milking_cows", "log10_msc")], 3)
 # %% predictor-audit
 predictor_audit <- do.call(rbind, lapply(list(train = train_survey, test = test_survey), function(data) {
   data.frame(records = nrow(data), survey_matched = sum(data$survey_matched),

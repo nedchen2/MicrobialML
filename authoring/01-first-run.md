@@ -107,7 +107,9 @@ Choose one browser chat from the list if you prefer an alternative to HKU GenAI.
 
 Availability was checked on **7 November 2026**. The provider links give current details. If account access or quota is an issue, try another service or use Chapter 3's code-inspection exercises.
 
-### Try one small exchange
+### Optional AI exchange
+
+You can continue at [Section 1.6](#id-1-6-restart-and-recreate) if you are studying without a chat account. [Chapter 3](03-working-with-ai.ipynb) provides a complete code-inspection route.
 
 1. Start a new chat and send the prompt below.
 2. Read the reply. If it contains code, copy only the R instructions, without triple backticks or prose.

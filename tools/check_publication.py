@@ -10,7 +10,7 @@ extensions = {"assets": {".svg", ".css"}, "authoring": {".md"},
               "chapters": {".md", ".ipynb"}, "reference": {".md"},
               "scripts": {".R"}, "tools": {".py"}}
 extensions["templates"] = {".txt"}
-exact_paths = {"data/practice_counts.csv", "data/practice_farms.csv", "data/data-dictionary.csv",
+exact_paths = {"assets/favicon.ico", "data/practice_counts.csv", "data/practice_farms.csv", "data/data-dictionary.csv",
                "data/predictor-dictionary.csv", "downloads/tree-scores.csv", "downloads/tree-validation.csv",
                "downloads/predictor-audit.csv",
                "downloads/baseline-scores.csv", "downloads/data-audit.csv",
@@ -22,7 +22,7 @@ unexpected = []
 for name in files:
     path = PurePosixPath(name)
     allowed = name in root_files or name in exact_paths
-    if len(path.parts) == 2 and path.parts[0] in extensions:
+    if not allowed and len(path.parts) == 2 and path.parts[0] in extensions:
         allowed = path.suffix in extensions[path.parts[0]]
     if path.name.startswith("my-"):
         allowed = False

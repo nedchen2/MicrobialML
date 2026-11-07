@@ -50,6 +50,7 @@ site:
   title: AI-Assisted Microbial ML
   options:
     logo: assets/logo.svg
+    favicon: assets/favicon.ico
     logo_text: Microbial ML
     logo_alt: Microbial ML practical textbook
     style: assets/book.css

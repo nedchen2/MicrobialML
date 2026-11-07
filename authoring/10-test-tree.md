@@ -62,6 +62,8 @@ Run {span .script-block}`BLOCK · check-leaves` to see where the tree’s predic
 
 {{r:tree-errors}}
 
+This block stores the residuals in R. When the Console returns to the `>` prompt, continue to the score table.
+
 Run {span .script-block}`BLOCK · tree-test-scores`. Compare the two rows. Both methods use the same **105 records from 21 test farms**, and both scores use the log10 CFU/mL scale.
 
 {{r:tree-test-scores}}
@@ -140,7 +142,9 @@ Imagine you want to try another model on the milk study. Fill in these four line
 4. Compare the tree and baseline on the same 105 test records using RMSE and MAE. Save the scores and the individual predictions.
 ```
 
-To replay the full reference analysis, restart R and run a my- copy of `scripts/full-analysis.R`. To check an edit of your own, run the changed blocks in your chapter script.
+**Finish.** Keep your `test-scores.csv`, your `test-predictions.csv` with **R15, round A**, your three-sentence English conclusion and your four worksheet answers.
+
+**Optional reproduction exercise.** To replay the full reference analysis, restart R and run a my- copy of `scripts/full-analysis.R`. To check an edit of your own, run the changed blocks in your chapter script.
 
 ## 10.6 Optional AI check
 

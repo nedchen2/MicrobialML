@@ -120,6 +120,8 @@ Run the supplied {span .script-block}`BLOCK · validate-depth`. It repeats the s
 
 {{r:validate-depth}}
 
+This block stores its results in R. When the Console returns to the `>` prompt, run the next block to display a result.
+
 **Find the same record.** Run {span .script-block}`BLOCK · trace-validation-record` to look up the farm ID and sampling round you wrote down.
 
 {{r:trace-validation-record}}

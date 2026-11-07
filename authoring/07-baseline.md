@@ -111,10 +111,12 @@ Open the files below from **Files → outputs → baseline**.
 
 | File | What you can check |
 |---|---|
-| `scores.csv` | The fitted mean, number of test records and two scores |
+| `scores.csv` | The fitted mean, test counts, MAE and the two RMSE columns described below |
 | `test-predictions.csv` | The observed value, prediction and residual for each test record |
 | `farm-split.csv` | Which farms went into training and which went into testing |
 | `training-distribution.png` | Where the prediction falls in the training distribution. Open the saved image directly. |
+
+In `scores.csv`, **`RMSE_log10_CFU_ml` is about 0.529** for all **105** test records. **`quantified_test_RMSE` is about 0.506** for the **104** records with quantified MSC. The second calculation leaves out the one test record whose value was stored as a below-limit substitute. Chapter 10 compares both models on all **105** records.
 
 ```{admonition} Preview the saved plot
 :class: note dropdown

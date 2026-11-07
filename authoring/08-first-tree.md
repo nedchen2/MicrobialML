@@ -158,7 +158,7 @@ Run the supplied {span .script-block}`BLOCK · join-farm-survey`. It selects the
 
 {{r:join-farm-survey}}
 
-Run {span .script-block}`BLOCK · predictor-preview` to inspect three training records. Compare the first row with the inputs and log10 MSC for **R1, round A** in the table above.
+Run {span .script-block}`BLOCK · predictor-preview` to inspect three training records. Use `FarmID` and `Sampling` to find **R1, round A**, then compare its inputs and log10 MSC with the table above.
 
 {{r:predictor-preview}}
 
