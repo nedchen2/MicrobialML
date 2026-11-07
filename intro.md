@@ -7,11 +7,21 @@ subtitle: Read, ask, run, check.
 
 **Machine Learning for Food Safety and Toxicology**
 
-Learn to turn a small biological question into R code, check the evidence and explain the result. No previous programming experience is required.
+*Congjia Chen · Teaching assistant*
 
-Our case asks how well we can predict a milk microbial measurement from a farm not used to learn the rule. You will first work with invented numbers, then use real study data.
+Welcome. This guide is for biology students starting with little or no programming experience. You will use R and AI assistance to work through one microbial prediction project, step by step.
 
 **[Begin with Chapter 0 →](chapters/00-start-here.md)**
+
+## Why I wrote this guide
+
+I wrote this guide because getting code from AI is only one part of doing an analysis. Once a result appears on the screen, questions remain: Which samples were used? What does this number mean? Did the model make a useful prediction?
+
+We take those questions one step at a time. You will begin with a few records you can check by hand, then work through a real milk microbiology dataset in R. Along the way, you will practise asking AI for small pieces of help, checking its suggestions and explaining your results. My aim is to help you build enough understanding to take responsibility for your analysis.
+
+## About the author
+
+I'm Congjia Chen, a teaching assistant for *Machine Learning for Food Safety and Toxicology*. I also wrote [Start Your R Journey](https://nedchen2.github.io/StartYourRJourney/intro.html), an introductory R tutorial for biology students. This guide continues that approach, with a focus on using AI to support small, understandable and reproducible analyses.
 
 ## Choose your next step
 

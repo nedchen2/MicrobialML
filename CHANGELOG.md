@@ -1,5 +1,11 @@
 # Changes
 
+## Homepage update — Author and purpose
+
+- Add Congjia Chen’s teaching-assistant byline, a brief welcome and a first-person explanation of why this guide was written.
+- Link the earlier Start Your R Journey tutorial in a short author introduction.
+- Keep the Chapter 0 entry, learning navigation and student downloads together on the homepage.
+
 ## v0.7 — Make the first model understandable before validating it
 
 - Replace the custom package check with explicit one-time installation instructions and `library(rpart)` in each tree session.
