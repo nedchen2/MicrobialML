@@ -20,8 +20,9 @@ Textbook: https://nedchen2.github.io/MicrobialML/
 9. To rebuild the real-data BASELINE, restart R and run a my- copy of
    scripts/worked-example.R from top to bottom. No previous checkpoint is needed.
 10. Continue with 08-first-tree.R, 09-choose-tree.R, then 10-test-tree.R.
-    Restart R before each chapter. Chapter 8 checks the rpart package and downloads
-    the original survey file. Follow its message if a one-time installation is needed.
+    Restart R before each chapter. Chapter 8 shows install.packages("rpart") once
+    if needed, and library(rpart) in each session; it also downloads the original
+    survey. First fit and inspect a tree, then choose depth in Chapter 9.
 11. After the tree route, scripts/full-analysis.R recreates BOTH real workflows
     from the beginning. Keep optional changed-input results under another filename;
     this script recreates the supplied reference results.

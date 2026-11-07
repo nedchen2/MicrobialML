@@ -1,15 +1,15 @@
 # Generated from tree-workflow.R for Chapter 09; edit that canonical source as author.
 # Students: save a working copy as my-09-choose-tree.R; follow the matching page.
+# %% validation-package
+library(rpart)
 # %% load-tree-input
 source("scripts/tree_helpers.R")
-require_tree_package()
 if (!file.exists("outputs/checkpoints/tree-input.rds")) stop("Run Chapter 8 first to create tree-input.rds.")
 tree_input <- readRDS("outputs/checkpoints/tree-input.rds")
 train_survey <- tree_input$train
-# %% tree-formula
-tree_formula <- log10_msc ~ pasture_hours + milking_cows
-tree_formula
+# %% depth-candidates
 candidate_depths <- 1:3
+candidate_depths
 # %% training-folds
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
 set.seed(2027)
@@ -20,8 +20,32 @@ row_fold <- fold_table$fold[match(train_survey$FarmID, fold_table$FarmID)]
 stopifnot(!any(fold_table$FarmID %in% tree_input$test$FarmID))
 data.frame(fold = 1:5, validation_farms = as.integer(table(fold_labels)),
            validation_records = as.integer(table(row_fold)))
+# %% one-round-data
+fitting <- train_survey[row_fold != 1, ]
+validation <- train_survey[row_fold == 1, ]
+data.frame(role = c("Fit", "Validate"), records = c(nrow(fitting), nrow(validation)),
+           farms = c(length(unique(fitting$FarmID)), length(unique(validation$FarmID))))
+# %% one-round-prepare
+# Same median rule as Chapter 8, now learned only from this round's fitting records.
+round_medians <- learn_medians(fitting)
+fitting_ready <- fill_predictors(fitting, round_medians)
+validation_ready <- fill_predictors(validation, round_medians)
+data.frame(feature = tree_features, fitting_median = unname(round_medians))
+# %% one-round-fit
+round_settings <- fixed_tree_settings
+round_settings$maxdepth <- 1
+round_tree <- rpart(log10_msc ~ pasture_hours + milking_cows,
+                    data = fitting_ready, method = "anova", control = round_settings)
+# %% one-round-predict
+round_predictions <- predict(round_tree, newdata = validation_ready)
+head(data.frame(observed_log10 = validation_ready$log10_msc,
+                predicted_log10 = as.numeric(round_predictions)), 3)
+# %% one-round-error
+round_errors <- validation_ready$log10_msc - round_predictions
+sqrt(mean(round_errors^2))
 # %% validate-depth
-# Each record is predicted once by a fit that has never seen its farm.
+# Repeat the illustrated fit/predict steps for all five folds and three depths.
+tree_formula <- log10_msc ~ pasture_hours + milking_cows
 oof <- matrix(NA_real_, nrow(train_survey), length(candidate_depths))
 oof_baseline <- rep(NA_real_, nrow(train_survey))
 fold_medians <- list()
@@ -36,8 +60,8 @@ for (fold in 1:5) {
   validation <- fill_predictors(validation, medians)
   oof_baseline[row_fold == fold] <- mean(fitting$log10_msc)
   for (j in seq_along(candidate_depths)) {
-    candidate <- rpart::rpart(tree_formula, data = fitting, method = "anova",
-                              control = tree_control(candidate_depths[j]))
+    candidate <- rpart(tree_formula, data = fitting, method = "anova",
+                       control = tree_control(candidate_depths[j]))
     candidate_nodes <- extract_tree_nodes(candidate)
     candidate_nodes$fold <- fold
     candidate_nodes$depth <- candidate_depths[j]
@@ -58,19 +82,20 @@ validation_scores$selected <- validation_scores$depth == chosen_depth
 validation_scores
 baseline_validation
 chosen_depth
-# %% fit-tree
-training_medians <- learn_medians(train_survey)
-train_filled <- fill_predictors(train_survey, training_medians)
-final_tree <- rpart::rpart(tree_formula, data = train_filled, method = "anova",
-                          control = tree_control(chosen_depth))
-data.frame(feature = tree_features, training_median = unname(training_medians))
 # %% training-check
 # An illustration after selection: these fits do not alter the chosen depth.
+training_medians <- learn_medians(train_survey)
+train_filled <- fill_predictors(train_survey, training_medians)
 validation_scores$training_RMSE_log10 <- vapply(candidate_depths, function(depth) {
-  fitted <- rpart::rpart(tree_formula, data = train_filled, method = "anova", control = tree_control(depth))
+  fitted <- rpart(tree_formula, data = train_filled, method = "anova", control = tree_control(depth))
   sqrt(mean((train_filled$log10_msc - predict(fitted, newdata = train_filled))^2))
 }, numeric(1))
 validation_scores[c("depth", "training_RMSE_log10", "OOF_RMSE_log10", "selected")]
+# %% fit-tree
+selected_settings <- fixed_tree_settings
+selected_settings$maxdepth <- chosen_depth
+final_tree <- rpart(log10_msc ~ pasture_hours + milking_cows,
+                    data = train_filled, method = "anova", control = selected_settings)
 # %% save-tree-fit
 write.csv(fold_table, "outputs/tree/training-farm-folds.csv", row.names = FALSE)
 write.csv(do.call(rbind, fold_medians), "outputs/tree/fold-medians.csv", row.names = FALSE)

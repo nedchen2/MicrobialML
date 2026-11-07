@@ -38,4 +38,4 @@ After the guided route, open `scripts/worked-example.R` from the [student projec
 
 Continue with [8. From one mean to a tree](08-first-tree.ipynb), [9. Choose depth](09-choose-tree.ipynb), then [10. Predict and explain](10-test-tree.ipynb). The same farms and target stay fixed. You will add two original survey answers and check whether a shallow tree improves the prediction.
 
-After that route, `scripts/full-analysis.R` recreates both the baseline and tree from the beginning. The tree requires the rpart package; Chapter 8 checks it before fitting.
+After that route, `scripts/full-analysis.R` recreates both the baseline and tree from the beginning. The tree requires the rpart package; Chapter 8 shows installation if needed and loading with `library(rpart)`, then fits and draws a first tree before depth selection.

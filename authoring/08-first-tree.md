@@ -1,12 +1,32 @@
 # 8. Can two averages beat one?
 
-**Open:** restart R; save the supplied script as `scripts/my-08-first-tree.R`.
+**Open:** restart R; save the supplied script as `scripts/my-08-first-tree.R`. Finish Chapter 7 first.
 
-**Input:** the farm split from Chapters 6–7. **Question:** could different samples deserve different predictions?
+**Today:** build a rule by hand, fit a real tree, look at its branches and make two predictions. We will choose its depth in Chapter 9; no test score is needed today.
 
-## 8.1 Build the idea before using software
+## 8.1 Install once, load each session
 
-These four records are **invented**, chosen to make the arithmetic easy. They do not show a real effect of pasture time.
+A **package** adds functions to R. We use the package **rpart** to fit a tree.
+
+If you have not installed it, type this in the **Console** once. It needs internet; this installation line is not a step to repeat on every run:
+
+```r
+install.packages("rpart")
+```
+
+Then run the script's `tree-package` block:
+
+{{r:tree-package}}
+
+Installing puts the package on your computer. `library(rpart)` makes its functions available in the current R session. After restarting R, run `library(rpart)` again; you usually do not need to install again. A successful load may print nothing. If it says there is no package called rpart, run the installation line above and retry the load.
+
+**Supplied setup — `tree-load`:** run this block to restore Chapter 7's split. Its file checks are supporting code; they do not train a model.
+
+{{r:tree-load}}
+
+## 8.2 Make two group averages yourself
+
+These four records are **invented**. Their values make the arithmetic easy; they do not show a real effect of pasture time.
 
 | Pasture hours/day | MSC CFU/mL | log10 MSC |
 |---:|---:|---:|
@@ -15,14 +35,34 @@ These four records are **invented**, chosen to make the arithmetic easy. They do
 | 12 | 100 | 2 |
 | 16 | 100 | 2 |
 
-One average predicts **1 on the log10 scale** for everyone. Its residuals are −1, −1, 1 and 1; their squared values sum to 4.
+Run `hand-data` to create this table:
 
-**Try first:** split at 8 pasture hours. What average would you predict in each group? Where would a new input of 6 hours go?
+{{r:hand-data}}
+
+**Guess:** what single log10 value would the Chapter 7 baseline give everyone? Run `hand-mean`:
+
+{{r:hand-mean}}
+
+The answer is `(0 + 0 + 2 + 2) / 4 = 1`, equivalent to 10 CFU/mL.
+
+Now **we choose** a cut at 8 pasture hours for this hand exercise. It is not a biological threshold. Software will later compare candidate cuts; we are not fitting software to these four rows.
+
+Run `hand-left`. The condition before the comma selects rows; the empty position after the comma keeps all columns:
+
+{{r:hand-left}}
+
+You should see the 0-hour and 4-hour records, then their mean log10 MSC: **0**.
+
+Run `hand-right`. `>=` means “greater than or equal to”:
+
+{{r:hand-right}}
+
+You should see the 12-hour and 16-hour records, then their mean: **2**.
 
 ```mermaid
 flowchart TB
-    accTitle: Two Training Means Make Predictions
-    accDescr: In an invented example, a split at eight pasture hours sends an input to a leaf that predicts its own training mean on the log10 scale.
+    accTitle: Two Group Means Make Predictions
+    accDescr: In an invented example, a cut at eight pasture hours sends an input to a final group that predicts its own training mean on the log10 scale.
     pasture_split{"Pasture hours below 8?"}
     low_leaf["Leaf: mean log10 = 0"]
     high_leaf["Leaf: mean log10 = 2"]
@@ -30,63 +70,140 @@ flowchart TB
     pasture_split -->|No| high_leaf
 ```
 
-A **leaf** is a final group. The left leaf predicts `(0 + 0) / 2 = 0`; the right predicts `(2 + 2) / 2 = 2`. At 6 hours, predict 0 log10, equivalent to `10^0 = 1` CFU/mL. The training error becomes zero—but we have not checked any new farm.
+A **leaf** is a final group. A new input follows the questions to a leaf and receives that group's training mean.
 
-This is the bridge: **the baseline uses one training mean; a regression tree divides records into groups and uses each group's training mean.** A tree's software searches for useful cuts, then repeats within groups. It does not search every possible complete tree.
+**Before running:** where does a new input of 6 hours go? Run `hand-new`. Read `ifelse(question, yes_value, no_value)` as “choose this value if yes, otherwise that value”:
 
-## 8.2 Check the hand calculation in R
+{{r:hand-new}}
 
-Run the supplied `tree-load` block. It reloads the existing split and checks for **rpart**, the R package used to fit trees:
+It goes left: predict 0 log10 MSC, equivalent to `10^0 = 1` CFU/mL. We do not need its MSC result to make this prediction.
 
-{{r:tree-load}}
+## 8.3 A perfect training fit can still surprise us
 
-A package provides additional R functions. rpart comes with many R installations. If it is missing, the error gives a one-time Console installation command; install it, restart R and rerun the block. Chapters 1–7 continue to need only base R.
+Run `hand-errors`. The four group predictions are 0, 0, 2 and 2; `^2` squares each error:
 
-Run `hand-tree`:
+{{r:hand-errors}}
 
-{{r:hand-tree}}
+The two printed squared-error sums are **4** for one mean and **0** for the two means.
 
-**Check:** one mean gives squared-error sum 4; the two leaf means give 0. This is a hand-built rule, not a software fit to four records. Does zero training error alone establish useful prediction?
+Now invent one more record, specifically to challenge the rule: it has **6 pasture hours**, but its lab result turns out to be **100 CFU/mL**. This is a constructed counterexample, not a real survey observation.
 
-## 8.3 Choose information available before the answer
+| For this new record | Baseline | Hand-built tree |
+|---|---:|---:|
+| Prediction, CFU/mL | 10 | 1 |
+| Prediction, log10 MSC | 1 | 0 |
+| Observed log10 MSC | 2 | 2 |
+| Observed minus predicted | 1 | 2 |
 
-For the real tree, use two survey answers from the sampling visit:
+Run `hand-surprise` to check the last row:
 
-| Predictor | Meaning | Before using it, ask… |
+{{r:hand-surprise}}
+
+**Explain:** which prediction missed by more on this record? A rule can perfectly match the records used to build it and still miss a new one. That is why we need hidden farms, not just a small training error.
+
+**The baseline uses one training mean; a regression tree divides records into groups and uses each group's training mean.** Its software searches candidate cuts, then can repeat within groups. It does not search every possible complete tree.
+
+## 8.4 Meet the real model's two inputs
+
+We offer the real tree two survey answers from the sampling visit:
+
+| R column | Meaning | Role |
 |---|---|---|
-| `pasture_hours` | Current hours per day on pasture | Could the farm report this before the assay result? |
-| `milking_cows` | Number of milking cows that day | Is this the count for the sampling visit? |
+| `pasture_hours` | Current hours per day on pasture | Possible input |
+| `milking_cows` | Number of milking cows that day | Possible input |
+| `log10_msc` | Lab MSC result on the log10 scale | Answer to learn from in training |
 
-We assume these answers can be obtained before the lab result. That needs checking in an actual application. A predictor need not be a cause: a useful association would not prove that changing herd size or pasture time changes MSC.
+We assume the survey answers can be obtained before the lab result; an actual application must check that timing. Farm labels help match records and separate farms; they are not prediction inputs. Another assay result or a summary of microbial outcomes would not be an appropriate replacement for these survey inputs.
 
-Run the supplied `survey-source` block. It retrieves the fixed **original survey**, matches by farm **and** sampling round, and preserves the earlier outcomes and farm roles:
+**Supplied data preparation — `survey-source`:** run this block. It downloads the fixed original survey and matches each record by **farm and sampling round**, preserving the original training/test roles.
 
 {{r:survey-source}}
 
-Farm labels identify the join and split; they are not model inputs. We do not use another assay result, a summary calculated from microbial results, or the author's preprocessed combined table.
+Run `predictor-preview` to inspect three training records. Read across a row: these two inputs accompany this known training answer.
 
-## 8.4 Inspect missing information
+{{r:predictor-preview}}
 
-**Predict first:** if a survey answer is missing, does that mean zero pasture hours or zero cows?
+## 8.5 Give missing inputs an explicit rule
 
-Run `predictor-audit`:
+**Predict first:** does an unknown cow count mean zero cows? Run the supplied `predictor-audit` block:
 
 {{r:predictor-audit}}
 
-There are **29 unmatched farm-round records**, plus two unknown cow counts among matched training records. We keep all 420 training and 105 test records so the model comparison uses the same samples.
+There are **29 unmatched farm-round records**: 18 training and 11 test records. Two additional matched training records have unknown cow counts. We keep all 420 training and 105 test records for the same-sample comparison.
 
-Our supplied missing-value rule is a training **median**: the middle value after sorting. For example, 30, 40 and 200 have median 40. With an even number of values, average the two middle values. An unknown value gets that training reference in a separate model-input table; the original answer remains missing. This is an assumption, not a recovered measurement.
+This is different from making up a missing lab answer:
 
-Chapter 9 learns each median from the records fitting that particular tree. Hidden validation farms and final test farms cannot help choose it.
+| What is missing? | Our action | Why? |
+|---|---|---|
+| MSC answer | Do not invent an answer to train or score against | We do not know the correct result |
+| Survey input | Fill a separate model-input copy using a training reference | The model needs a usable input; this is an explicit assumption |
 
-## 8.5 Save the input
+Chapter 3 rejected silently treating an unknown count as zero. Here we deliberately state a different assumption for **prediction inputs**, preserve the recorded values and later evaluate the complete procedure. Filling an input does not recover its true measurement.
 
-Run `save-tree-input`:
+Our reference is the training **median**: sort the known values and take the middle one. The median of 30, 40 and 200 is 40. With an even count, average the two middle values.
+
+Run `median-example` on these invented cow counts. `[is.na(model_cows)]` selects only the missing positions:
+
+{{r:median-example}}
+
+**Check:** the recorded column still contains NA. Only the model copy uses 40.
+
+Now run `first-medians` on the real **training** records:
+
+{{r:first-medians}}
+
+The references are 9 hours and 72 cows. `[["milking_cows"]]` selects that named reference from `training_medians`. Run `first-fill` to copy the table and fill its missing inputs:
+
+{{r:first-fill}}
+
+No test record helped calculate these references. Chapter 9 will apply the same rule separately inside each validation round.
+
+## 8.6 Fit your first real tree and look at it
+
+**Fit** means use training records to learn a rule. Run `first-fit`:
+
+{{r:first-fit}}
+
+Read the fitting call in pieces:
+
+| Code | Meaning |
+|---|---|
+| `first_tree <- rpart(...)` | Learn a tree and store it as `first_tree` |
+| `log10_msc ~ pasture_hours + milking_cows` | Predict log10 MSC using these two possible inputs |
+| `data = train_ready` | Learn from the prepared training table |
+| `method = "anova"` | Tell rpart this is a numeric prediction task |
+| `first_settings$maxdepth <- 1` | Allow at most one question along a path |
+
+Here `~` means “predict using”; `+` lists inputs, rather than adding hours to cows. The supplied `fixed_tree_settings` holds the other settings constant. Copy it, then set the visible depth. You do not need to write a settings helper. Optional details are in [the fixed settings note](../reference/data-audit.md#tree-settings).
+
+The depth of 1 is a **starting demonstration**, not a decision that it is best. We have not calculated a tree test score.
+
+**Supplied plot — `first-plot`:** run this block, then open `outputs/tree/first-tree.png` in Files. It saves the image directly; it may not appear in the Plots pane.
+
+{{r:first-plot}}
+
+![A first depth-one tree learned from training data. Each leaf shows its training mean log10 MSC and number of training records.](../outputs/tree/first-tree.png)
+
+The software chose a question about **milking cows**, not pasture hours. Its cut at 36.5 separates integer counts of **36 or fewer** from **37 or more**. There is no half cow. The cut was learned from these training records; it is not advice to change herd size or a milk-safety threshold.
+
+## 8.7 Predict by eye, then use predict()
+
+The next two inputs are **invented** and have no known MSC results. Run `first-inputs`:
+
+{{r:first-inputs}}
+
+Before running the next block, point to the leaf for 50 cows, then for 30 cows. What log10 value should each receive? Run `first-predict`:
+
+{{r:first-predict}}
+
+`predict(first_tree, newdata = first_inputs)` applies the learned rule to the new rows. It does **not** train again. Neither row needs an MSC column. Their predictions are about 0.6873 and 1.0545 log10 MSC. Without observed outcomes, these rows cannot tell us whether prediction is accurate.
+
+**Explain:** which operation learned the branches, and which just followed them? Does changing pasture hours alone change this particular tree's prediction?
+
+**Supplied save — `save-tree-input`:** run this last block. It saves the original survey inputs, including their missing values, for Chapter 9 to prepare within each fitting round.
 
 {{r:save-tree-input}}
 
-**Find:** `outputs/checkpoints/tree-input.rds` and `outputs/tree/predictor-audit.csv`.
+**Find:** `outputs/checkpoints/tree-input.rds`, `outputs/tree/predictor-audit.csv` and `outputs/tree/first-tree.png`.
 
-**Explain before moving on:** what a leaf predicts, why the invented training error is insufficient, and why an unknown cow count is not zero.
-
-**Next:** [let training farms choose the depth](09-choose-tree.ipynb).
+**Next:** [how deep should the tree grow?](09-choose-tree.ipynb)

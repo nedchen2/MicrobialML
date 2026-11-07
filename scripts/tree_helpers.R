@@ -1,12 +1,6 @@
 # Supplied support for Chapters 8-10. Expand when needed; decisions are in the book.
 tree_features <- c("pasture_hours", "milking_cows")
 
-require_tree_package <- function() {
-  if (!requireNamespace("rpart", quietly = TRUE)) {
-    stop('This lesson needs rpart. In the Console run install.packages("rpart", repos="https://cloud.r-project.org"), then restart R and rerun the chapter.')
-  }
-}
-
 read_survey_features <- function(path) {
   survey <- read.csv(path, fileEncoding = "UTF-8-BOM", check.names = FALSE,
                      stringsAsFactors = FALSE, na.strings = c("", "NA", "??"))
@@ -51,9 +45,14 @@ fill_predictors <- function(data, medians) {
   out
 }
 
+# Supplied fixed settings. Students change maxdepth explicitly in the lessons.
+fixed_tree_settings <- rpart::rpart.control(maxdepth = 1, minsplit = 20, minbucket = 10,
+  cp = 0, xval = 0, maxcompete = 0, maxsurrogate = 0, usesurrogate = 0)
+
 tree_control <- function(depth) {
-  rpart::rpart.control(maxdepth = depth, minsplit = 20, minbucket = 10,
-    cp = 0, xval = 0, maxcompete = 0, maxsurrogate = 0, usesurrogate = 0)
+  settings <- fixed_tree_settings
+  settings$maxdepth <- depth
+  settings
 }
 
 extract_tree_nodes <- function(fit) {

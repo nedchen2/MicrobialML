@@ -1,5 +1,15 @@
 # Changes
 
+## v0.7 — Make the first model understandable before validating it
+
+- Replace the custom package check with explicit one-time installation instructions and `library(rpart)` in each tree session.
+- Split the hand example into short visible calculations; add an invented hidden-record counterexample to perfect training fit.
+- Show missing recorded inputs beside the model copy and distinguish predictor filling from inventing missing outcomes.
+- Fit, draw and use a provisional depth-one tree in Chapter 8 before explaining validation; preserve the original modeling protocol and scores.
+- Walk through one full validation round before rotating all five whole-farm batches.
+- Put the selected tree diagram before branch tracing and evaluation; expose fit, predict, error, save and reload operations.
+- Add changed-input exercises and a small checked AI fitting/prediction task with an explicit insertion point.
+
 ## v0.6 — Learn one predictor model step by step
 
 - Add Chapters 8–10: hand-build two leaf means, audit two original survey predictors, choose depth within training farms, then predict and explain a shallow regression tree.

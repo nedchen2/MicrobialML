@@ -62,6 +62,35 @@ def main(cold):
                                     text=True, capture_output=True, timeout=180)
             if result.returncode:
                 raise AssertionError(result.stdout + result.stderr)
+        # Check the new learning bridges against the actual fitted workflow.
+        # This is a reference-code check, not a claimed live AI interaction.
+        learning_checks = r'''
+source("scripts/08-first-tree.R")
+stopifnot(hand_baseline == 1, left_mean == 0, right_mean == 2)
+stopifnot(hand_new_prediction == 0, sum(one_mean_errors^2) == 4, sum(two_mean_errors^2) == 0)
+stopifnot(surprise_observed - hand_baseline == 1, surprise_observed - hand_new_prediction == 2)
+stopifnot(is.na(recorded_cows[3]), identical(model_cows, c(30, 40, 40, 200)))
+stopifnot(sum(is.na(train_survey$milking_cows)) == 20, sum(is.na(train_ready$milking_cows)) == 0)
+first_fit_for_check <- first_tree
+source("scripts/09-choose-tree.R")
+stopifnot(isTRUE(all.equal(as.numeric(round_predictions), as.numeric(oof[row_fold == 1, 1]))))
+stopifnot(isTRUE(all.equal(first_fit_for_check$frame, final_tree$frame)))
+stopifnot(isTRUE(all.equal(first_fit_for_check$splits, final_tree$splits)))
+source("scripts/10-test-tree.R")
+quiz_inputs <- data.frame(pasture_hours = c(6, 6, 6, 6, 18, 6), milking_cows = c(50, 60, 36, 37, 50, 30))
+quiz_predictions <- as.numeric(predict(saved_model$fit, newdata = quiz_inputs))
+stopifnot(quiz_predictions[1] == quiz_predictions[2], quiz_predictions[1] == quiz_predictions[5])
+stopifnot(quiz_predictions[1] == quiz_predictions[4], quiz_predictions[3] == quiz_predictions[6])
+stopifnot(quiz_predictions[3] != quiz_predictions[4])
+ai_tree <- rpart(log10_msc ~ pasture_hours + milking_cows, data = train_filled,
+                 method = "anova", control = selected_settings)
+ai_prediction <- predict(ai_tree, newdata = test_filled)
+stopifnot(isTRUE(all.equal(as.numeric(ai_prediction), as.numeric(tree_prediction))))
+'''
+        learning = subprocess.run(["Rscript", "--vanilla", "-e", learning_checks], cwd=project,
+                                  text=True, capture_output=True, timeout=120)
+        if learning.returncode:
+            raise AssertionError(learning.stdout + learning.stderr)
         changed = read(project / "outputs/practice/practice_counts_changed.csv")
         original_practice = read(project / "data/practice_counts.csv")
         assert [float(r["count_cfu_ml"]) for r in changed] == [10, 20, 30, 40]
@@ -182,6 +211,10 @@ saveRDS(original_fit, "outputs/checkpoints/tree-fit.rds")
             "source_MD5_verified": True,
             "full_analysis_recreates_baseline_and_tree": True,
             "test_outcomes_and_features_cannot_change_tree_selection_or_fit": True,
+            "hand_tree_counterexample_and_missing_input_copy_checked": True,
+            "first_fit_and_one_round_demo_agree_with_selected_workflow": True,
+            "branch_change_exercises_and_AI_reference_code_checked": True,
+            "live_AI_interaction_automated_or_claimed": False,
             "independent_tree_checks": tree_info,
             "independent_results": {"training_mean_log10": mean, "rmse": rmse, "mae": mae}}
     (ROOT / "validation/student-project-check.json").write_text(json.dumps(info, indent=2))

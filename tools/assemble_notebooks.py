@@ -13,11 +13,17 @@ REAL_STAGES = {
                     "save", "plot", "audit-save"],
 }
 TREE_STAGES = {
-    "08-first-tree": ["tree-load", "hand-tree", "survey-source", "predictor-audit", "save-tree-input"],
-    "09-choose-tree": ["load-tree-input", "tree-formula", "training-folds", "validate-depth",
-                        "choose-depth", "fit-tree", "training-check", "save-tree-fit"],
-    "10-test-tree": ["load-tree-fit", "predict-tree", "tree-test-scores", "check-leaves",
-                      "trace-one", "save-tree-results", "new-samples", "plot-tree"],
+    "08-first-tree": ["tree-package", "tree-load", "hand-data", "hand-mean", "hand-left", "hand-right",
+                      "hand-new", "hand-errors", "hand-surprise", "survey-source", "predictor-preview",
+                      "predictor-audit", "median-example", "first-medians", "first-fill", "first-fit",
+                      "first-plot", "first-inputs", "first-predict", "save-tree-input"],
+    "09-choose-tree": ["validation-package", "load-tree-input", "depth-candidates", "training-folds",
+                        "one-round-data", "one-round-prepare", "one-round-fit", "one-round-predict",
+                        "one-round-error", "validate-depth", "choose-depth", "training-check",
+                        "fit-tree", "save-tree-fit"],
+    "10-test-tree": ["prediction-package", "load-tree-fit", "plot-tree", "prepare-test", "predict-tree",
+                      "trace-one", "check-leaves", "tree-errors", "tree-test-scores", "save-tree-results",
+                      "save-model", "reload-model", "new-samples", "prepare-new", "new-predict", "ai-settings"],
 }
 WORKFLOWS = {"worked-example.R": REAL_STAGES, "tree-workflow.R": TREE_STAGES}
 LESSONS = ["01-first-run", "02-minimum-r", "03-working-with-ai", "04-small-farm-example", *REAL_STAGES, *TREE_STAGES]
@@ -39,13 +45,17 @@ CELL_DISPLAY = {
     "07-baseline": {"load-split": ["hide-input"], "baseline-scale": ["hide-input"], "independent": ["hide-input"],
                     "sensitivity": ["hide-input", "hide-output"], "save": ["hide-input"],
                     "plot": ["hide-input"], "audit-save": ["hide-input"]},
-    "08-first-tree": {"tree-load": ["hide-input"], "hand-tree": ["hide-input"],
-                       "survey-source": ["hide-input"], "predictor-audit": ["hide-input"], "save-tree-input": ["hide-input"]},
+    "08-first-tree": {"tree-load": ["hide-input"], "survey-source": ["hide-input"],
+                       "predictor-audit": ["hide-input"], "first-plot": ["hide-input"],
+                       "save-tree-input": ["hide-input"]},
     "09-choose-tree": {"load-tree-input": ["hide-input"], "training-folds": ["hide-input"],
+                        "one-round-prepare": ["hide-input"],
                         "validate-depth": ["hide-input", "hide-output"], "choose-depth": ["hide-input"],
                         "training-check": ["hide-input"], "save-tree-fit": ["hide-input"]},
-    "10-test-tree": {"load-tree-fit": ["hide-input"], "check-leaves": ["hide-input"],
-                      "trace-one": ["hide-input"], "save-tree-results": ["hide-input"], "plot-tree": ["hide-input"]},
+    "10-test-tree": {"load-tree-fit": ["hide-input"], "plot-tree": ["hide-input"],
+                      "prepare-test": ["hide-input"], "check-leaves": ["hide-input"],
+                      "trace-one": ["hide-input"], "tree-test-scores": ["hide-input"],
+                      "save-tree-results": ["hide-input"], "prepare-new": ["hide-input"]},
 }
 
 

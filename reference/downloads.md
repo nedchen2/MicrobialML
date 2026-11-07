@@ -6,7 +6,7 @@
 2. Open `microbial-ml.Rproj` in RStudio.
 3. Start with Chapter 1. Save your edits in my- copies of the reference scripts.
 
-The supplied analysis uses R and RStudio. Chapters 1–7 use base R; Chapter 8 checks the rpart package needed for trees. Ask the TA for the course-approved AI chat link; Chapter 3 also includes a labeled inspection dialogue.
+The supplied analysis uses R and RStudio. Chapters 1–7 use base R; Chapter 8 shows how to install rpart once and load it with `library(rpart)` in each new session. Ask the TA for the course-approved AI chat link; Chapter 3 also includes a labeled inspection dialogue.
 
 ## What is in the folder?
 
