@@ -32,7 +32,12 @@ explanation and check. Chapter 3 creates outputs/ch03/ai-use-log.txt; edit and s
 route. Its illustrative dialogue is a teaching example, not a real model log.
 Chapter 3 also produces a real R object-name error; follow the page's one-line
 Run step, then its supplied block to record the error and continue.
-Use the approved chat when available. Chapters 1-7 need only base R; Chapters 8-10
+AI access: start at https://genai.hku.hk/ with your HKU Portal account, or use
+Gemini, Microsoft Copilot or Poe as linked in Chapter 1, section 1.5.
+No TA link, API setup or paid subscription is needed for these exercises.
+If live chat is unavailable, use the supplied dialogue/code-inspection route
+and record it honestly. Follow the website's recovery steps for errors or source
+downloads; the optional completion card now covers Chapters 1-10. Chapters 1-7 need only base R; Chapters 8-10
 use rpart. Students do not need API keys, Python, Node.js or Jupyter Book.
 
 The changed-copy exercise creates outputs/practice/practice_counts_changed.csv.

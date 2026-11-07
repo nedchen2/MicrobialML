@@ -114,7 +114,7 @@ The predictions are about 0.6873 and 1.0545 log10 MSC, just as the diagram sugge
 
 ## 10.5 Ask AI for two familiar operations
 
-Use the course-approved chat and your **my- copy**, keeping the supplied reference script intact. The chat cannot inspect your R session unless you provide its contents.
+Choose a chat from [AI access](01-first-run.ipynb#id-1-5-ai-access) and use your **my- copy**, keeping the supplied reference script intact. The chat cannot inspect your R session unless you provide its contents.
 
 Give AI this small, explicit task:
 
@@ -152,6 +152,11 @@ For an equivalent fit, expect TRUE. If it differs or errors, give AI the actual 
 | `model.rds` and `example-predictions.csv` | Reuse of the rule and its preparation |
 
 **Write three sentences:** name the inputs and validation choice; compare the two test errors; state one limit. Missing survey answers were filled by a simple assumption, samples repeat within farms, and this split cannot establish performance in another region, causal effects or milk safety.
+
+```{admonition} Reference conclusion — open after writing yours
+:class: tip dropdown
+A regression tree used pasture hours and milking-cow count, with depth 1 selected by five-fold validation within the training farms. On the same 105 test records from 21 farms, tree RMSE was about 0.545 versus 0.529 for the mean baseline, so the tree did not improve this comparison. Missing-input filling and the study's fixed split limit interpretation; these predictions do not establish causality or milk safety.
+```
 
 | Step | When the algorithm changes |
 |---|---|

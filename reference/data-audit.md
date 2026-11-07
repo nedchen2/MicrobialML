@@ -47,6 +47,6 @@ The scores compare fixed procedures on held-out records in this study setting. T
 
 ## How do I get the data?
 
-Run the supplied download blocks in Chapters 5 and 8. They retrieve fixed author-file versions and check them; complete raw datasets are not inside the student ZIP. First access needs internet. If it fails, use the [help page](troubleshooting.md) or ask the TA for an approved access route.
+Run the supplied download blocks in Chapters 5 and 8. They retrieve fixed author-file versions and check them; complete raw datasets are not inside the student ZIP. First access needs internet. If it fails, follow the [download recovery steps](troubleshooting.md#download-the-source-files-yourself).
 
 For citation, version identifiers, checksums and detailed reuse notes, maintainers can consult the [full provenance record](https://github.com/nedchen2/MicrobialML/blob/main/DATA_NOTES.md).

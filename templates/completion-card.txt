@@ -7,3 +7,6 @@ Chapter | My saved script | Output file I found | One result I can explain | One
 5 | | | |
 6 | | | |
 7 | | | |
+8 | | | |
+9 | | | |
+10 | | | |

@@ -6,7 +6,7 @@
 2. Open `microbial-ml.Rproj` in RStudio.
 3. Start with Chapter 1. Save your edits in my- copies of the reference scripts.
 
-The supplied analysis uses R and RStudio. Chapters 1–7 use base R; Chapter 8 shows how to install rpart once and load it with `library(rpart)` in each new session. Ask the TA for the course-approved AI chat link; Chapter 3 also includes a labeled inspection dialogue.
+The supplied analysis uses R and RStudio. Chapters 1–7 use base R; Chapter 8 shows how to install rpart once and load it with `library(rpart)` in each new session. Use the direct HKU and alternative platform links in [AI access](../chapters/01-first-run.ipynb#id-1-5-ai-access); Chapter 3 also includes a labeled inspection dialogue.
 
 ## What is in the folder?
 
@@ -39,4 +39,4 @@ The [baseline workflow](../scripts/worked-example.R), [tree workflow](../scripts
 
 The real assay and survey data are downloaded from the fixed author source on first use; they are not redistributed in this ZIP. Read the [data sheet](data-audit.md) before reuse.
 
-If your TA specifies a classroom version, use that [release's student ZIP](https://github.com/nedchen2/MicrobialML/releases). Otherwise use the download at the top of this page.
+For self-study, use the current student ZIP at the top of this page. [Releases](https://github.com/nedchen2/MicrobialML/releases) keep older fixed versions; use a matching book version when reproducing an older edition.

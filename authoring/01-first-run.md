@@ -11,7 +11,7 @@ Follow the steps in order. Run the supplied code in your **my-** working copy.
 | R | Performs the calculations | [Official R downloads](https://cran.r-project.org/) |
 | RStudio Desktop | Provides the editor, Console and file browser | [Official RStudio guide](https://docs.posit.co/ide/user/download.html) |
 
-Install R first, then RStudio. On Windows choose R's base installation. On macOS choose the installer for your processor, following the download page's compatibility notes. On a prepared lab computer, open RStudio and continue. Ask the TA for installation help if the computer is managed by your institution.
+Install R first, then RStudio. On Windows choose R's base installation. On macOS choose the installer for your processor, following the download page's compatibility notes. Use a computer where you can install software, or one that already has R and RStudio. If a managed computer blocks installation, use an available computer with these tools installed or your own computer. A phone or tablet alone does not support this desktop route.
 
 This first run needs only base R. The later tree lessons check their additional package when you reach Chapter 8.
 
@@ -67,9 +67,33 @@ In **Files → outputs → practice**, find `first-run.txt`. Read it back:
 
 **Save the script too:** use Ctrl/Cmd + S. Saving the `.R` file preserves your instructions. Running `writeLines()` creates the result file.
 
-## 1.5 Try your first AI exchange
+## 1.5 AI access
 
-Use the course-approved chat; obtain its access link from the TA. If access is unavailable, continue with R and record the live-chat step as pending.
+### Start with HKU GenAI
+
+For HKU students, the recommended starting point is the **[HKU GenAI App](https://genai.hku.hk/)**. [HKU ITS's launch guide](https://its.hku.hk/news/introducing-hku-genai-app-the-new-home-for-hku-chatgpt-and-dall%C2%B7e/) confirms that it uses your HKU Portal login.
+
+1. Open the app and sign in with your **HKU Portal account**.
+2. Choose a text model from the app's current list, then start a new chat. ITS lists GPT, Gemini and DeepSeek among the available model families; the app shows the current choices.
+3. Paste a short practice prompt, such as the one below. Keep RStudio open separately to run and check any returned code.
+
+**Student allowance:** as checked on **7 November 2026**, ITS states **500,000 AI Credits per month**, replenished on the first day of each month and shared across the app and API Developer Portal. Credits are the platform's usage allowance, not a count of questions. Check the live [ITS quota page](https://its.hku.hk/services/ai-as-a-service/hku-genai/) for changes. This tutorial uses browser chat; no API setup or paid subscription is required.
+
+The remaining balance appears at the top right of the app. The info icon gives current usage limits. See the ITS guides for [checking your balance](https://its.hku.hk/kb/how-do-i-see-how-many-ai-credits-i-have-left/) and [model limits](https://its.hku.hk/kb/how-can-i-view-current-usage-and-limits-of-ai-models/).
+
+### Other browser chats available in Hong Kong
+
+You can use one of these alternatives if you do not have an HKU account or prefer another chat. These are alternatives, not extra tools to install or subscribe to.
+
+| Service | Open it | Access note and official information |
+|---|---|---|
+| Google Gemini | [gemini.google.com](https://gemini.google.com/) | Hong Kong is on Google's [supported web-app regions](https://support.google.com/gemini/answer/13575153?hl=en&mainArticle=true). Account eligibility and features can vary. |
+| Microsoft Copilot | [copilot.com](https://copilot.com/) | Microsoft's [availability page](https://support.microsoft.com/en-au/microsoft-365-copilot/supported-languages-for-microsoft-365-copilot) includes Hong Kong. Sign-in and feature limits depend on the account. This is browser chat, not GitHub Copilot. |
+| Poe | [poe.com](https://poe.com/) | Poe's [official FAQ](https://help.poe.com/hc/en-us/articles/19945140063636-Poe-Purchases-FAQs) lists Hong Kong. Free users have limited access; points and model availability vary. |
+
+Availability was checked on **7 November 2026**; use the linked provider pages for current conditions. Pick one service that opens for you. If an account or quota blocks access, try another listed option or use Chapter 3's supplied dialogue for code inspection. You can continue the R lessons without waiting for live chat. Record the route you actually used.
+
+### Try one small exchange
 
 1. Start a new chat and send the prompt below.
 2. Read the reply. If it contains code, copy only the R instructions, without triple backticks or prose.

@@ -139,4 +139,9 @@ Run the supplied `save-tree-fit` block:
 
 **Explain before moving on:** why are validation farms still part of the training set overall? Why do we fit once more after choosing depth? Which farms must stay out of both choices?
 
+```{admonition} Check your explanation
+:class: tip dropdown
+Validation farms belong to the original 81 training farms: each batch is temporarily hidden while the others fit a candidate. After choosing depth, fit again on all 81 training farms because each round used fewer farms. The 21 final test farms help neither choose depth nor learn the tree or missing-input references.
+```
+
 **Next:** [read the tree, predict and compare](10-test-tree.ipynb).

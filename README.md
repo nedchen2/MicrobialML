@@ -10,7 +10,7 @@ Start with no programming experience. Learn to ask a small scientific question, 
 
 Read in your browser. Download the **complete student ZIP** from the book's [Downloads page](https://nedchen2.github.io/MicrobialML/downloads/), extract it, and open `microbial-ml.Rproj` in RStudio.
 
-Students need R and RStudio. Chapters 1–7 use base R; Chapters 8–10 use the rpart package, installed if needed and loaded explicitly in Chapter 8. No GitHub account, Python, Node.js, Jupyter Book or API key is required. Original-source downloads need internet the first time. Use the course-approved AI chat; a clearly labeled illustrative dialogue is also provided for inspection practice.
+Students need R and RStudio. Chapters 1–7 use base R; Chapters 8–10 use the rpart package, installed if needed and loaded explicitly in Chapter 8. No GitHub account, Python, Node.js, Jupyter Book or API key is required. Original-source downloads need internet the first time. Start with HKU GenAI or a Hong Kong browser-chat alternative through [AI access](https://nedchen2.github.io/MicrobialML/first-run/#id-1-5-ai-access); a clearly labeled illustrative dialogue is also provided for inspection practice.
 
 ## Your learning route
 
@@ -24,7 +24,7 @@ Students need R and RStudio. Chapters 1–7 use base R; Chapters 8–10 use the 
 | [5–7. Real-data analysis](https://nedchen2.github.io/MicrobialML/worked-example/) | Inspect MSC data, keep farms together, then fit and evaluate a baseline |
 | [8–10. A first regression tree](https://nedchen2.github.io/MicrobialML/first-tree/) | Fit and read a first tree, validate depth within training farms, then compare and reuse it |
 
-Each chapter names a working file, a stopping point, an expected output and a check. Save your edits in a `my-` copy of the supplied reference script. The complete real-data script is included for a final run from the beginning.
+The route supports independent self-study: direct setup and AI links, download recovery, displayed results and reference explanations let students check their work without a TA handoff. Each chapter names a working file, a stopping point, an expected output and a check. Save your edits in a `my-` copy of the supplied reference script. The complete real-data script is included for a final run from the beginning.
 
 ## The scientific case
 

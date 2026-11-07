@@ -36,6 +36,17 @@ Opening a file in RStudio does not automatically share it with a chat assistant.
 
 **Add a model — Chapters 8–10.** Build the idea of a tree from group averages, choose its depth within training farms, then predict and compare it with the baseline.
 
+## How to study on your own
+
+This route provides the files, prompts, example results and checks you need to work through it independently. Use a computer that runs R and RStudio, with internet for first downloads and live chat. [AI access](01-first-run.ipynb#id-1-5-ai-access) gives HKU login instructions and alternative browser chats.
+
+1. Work through Chapters 1–10 in order. Run each matching script block, including supplied blocks whose code is folded on the page.
+2. Try each question before reading its explanation or opening a reference answer. Compare your R output with the displayed result; an AI reply's wording may differ.
+3. At the end of each chapter, locate the named output and explain one check. Use the completion card to record your progress.
+4. If you get stuck, follow the [recovery guide](../reference/troubleshooting.md): check the error, restart from the reference script, and repair one small step. Direct source-download links are included there.
+
+For a live AI exercise, use an actual reply and check it in R. If no chat is accessible, complete the supplied inspection exercise and label it that way in your log. At the end, the full-analysis script checks that the supplied workflow can run again from the beginning.
+
 ## One working-file rule
 
 1. Open the chapter's supplied script, for example `scripts/02-minimum-r.R`.

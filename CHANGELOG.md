@@ -1,5 +1,13 @@
 # Changes
 
+## v0.8 — Independent self-study and AI access in Hong Kong
+
+- Give HKU GenAI's direct Portal-login route, dated student allowance and official quota/balance references.
+- List Gemini, Microsoft Copilot and Poe with provider evidence for Hong Kong availability.
+- Replace TA-dependent setup, chat and download instructions with direct steps, a source-download fallback and error recovery.
+- Add self-study guidance, end-of-model reference explanations and progress tracking through Chapter 10.
+- Keep actual live-chat records distinct from the supplied inspection route; retain the original analysis protocol and scores.
+
 ## Homepage update — Author and purpose
 
 - Add Congjia Chen’s teaching-assistant byline, a brief welcome and a first-person explanation of why this guide was written.

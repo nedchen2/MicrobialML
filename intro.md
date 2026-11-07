@@ -9,7 +9,7 @@ subtitle: Read, ask, run, check.
 
 *Congjia Chen · Teaching assistant*
 
-Welcome. This guide is for biology students starting with little or no programming experience. You will use R and AI assistance to work through one microbial prediction project, step by step.
+Welcome. This guide is for biology students starting with little or no programming experience. You will use R and AI assistance to work through one microbial prediction project, step by step. Follow the chapters at your own pace, using their example outputs and checks to assess your work.
 
 **[Begin with Chapter 0 →](chapters/00-start-here.md)**
 
@@ -40,4 +40,4 @@ I'm Congjia Chen, a teaching assistant for *Machine Learning for Food Safety and
 
 **Your final evidence:** a saved script, a result table, a plot and a short AI-use record. Explain one row, one prediction and one independent check. Chapters 8–10 add a shallow regression tree, using the same question and farm split to test whether extra complexity helps.
 
-[Need a file again?](reference/downloads.md) · [Something went wrong?](reference/troubleshooting.md) · [Data source and decisions](reference/data-audit.md)
+[AI access in Hong Kong](chapters/01-first-run.ipynb#id-1-5-ai-access) · [Need a file again?](reference/downloads.md) · [Something went wrong?](reference/troubleshooting.md) · [Data source and decisions](reference/data-audit.md)
