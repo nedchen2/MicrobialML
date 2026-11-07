@@ -6,11 +6,13 @@
 
 ## 7.1 Fit one transparent rule
 
-Run the supplied `load-split` block to restore the training and test tables:
+Run the supplied {span .script-block}`BLOCK · load-split` block to restore the training and test tables:
 
 {{r:load-split}}
 
 Compute a mean using **training outcomes only**, then repeat it for each test record:
+
+{span .script-block}`BLOCK · baseline`
 
 {{r:baseline}}
 
@@ -18,7 +20,7 @@ The learned value is about **0.7450 log10 CFU/mL**. Every held-out sample receiv
 
 **Connect it to Chapter 5:** the invented example's mean log10 prediction was 1, equivalent to `10^1 = 10` CFU/mL. Here it is 0.7450, equivalent to `10^0.7450`, about **5.56 CFU/mL**.
 
-Run the supplied `baseline-scale` block. It compares three calculations from the same training records:
+Run the supplied {span .script-block}`BLOCK · baseline-scale` block. It compares three calculations from the same training records:
 
 {{r:baseline-scale}}
 
@@ -29,6 +31,8 @@ The original-scale arithmetic mean is about **16.78 CFU/mL**. The inverse log10 
 ## 7.2 Read the result table
 
 A residual is observed minus predicted. As in the hand example, MAE averages absolute residuals; RMSE averages their squares and takes a square root.
+
+{span .script-block}`BLOCK · metrics`
 
 {{r:metrics}}
 
@@ -56,13 +60,13 @@ Invented example: farm A has one record of 10, and farm B has three records of 3
 
 ## 7.3 Reconstruct one error yourself
 
-Run the supplied `independent` check. It also displays three observed values, predictions and residuals:
+Run the supplied {span .script-block}`BLOCK · cross-check-error-metrics` check. It also displays three observed values, predictions and residuals:
 
-{{r:independent}}
+{{r:cross-check-error-metrics}}
 
 Choose the first row. Subtract predicted from observed by hand and compare with its residual. Display rounding can cause a small difference; the automated check uses full precision.
 
-**Check the scope:** the three printed rows are a preview, not all 105 test records. Run `rmse-scope`:
+**Check the scope:** the three printed rows are a preview, not all 105 test records. Run {span .script-block}`BLOCK · rmse-scope`:
 
 {{r:rmse-scope}}
 
@@ -70,25 +74,25 @@ The three-row RMSE is about **0.616**, while the full 105-row RMSE is about **0.
 
 ## 7.4 Save and inspect the evidence
 
-Select **all remaining supplied blocks**, from `sensitivity` through `audit-save`, and Run. These are **required supplied blocks**. The target-limit calculation creates objects used by the export, so run it even if you leave the details folded. They then save the outputs. The blocks still run even if you leave their technical details collapsed.
+Select **all remaining supplied blocks**, from {span .script-block}`BLOCK · score-quantified-records` through {span .script-block}`BLOCK · audit-save`, and Run. These are **required supplied blocks**. The target-limit calculation creates objects used by the export, so run it even if you leave the details folded. They then save the outputs. The blocks still run even if you leave their technical details collapsed.
 
-**Required supplied calculation — `sensitivity`:** the same fixed predictions are evaluated on the quantified test subset. This describes another subset; it does not recover true below-detection concentrations or fix that limitation.
+**Required supplied calculation — {span .script-block}`BLOCK · score-quantified-records`:** the same fixed predictions are evaluated on the quantified test subset. This describes another subset; it does not recover true below-detection concentrations or fix that limitation.
 
-{{r:sensitivity}}
+{{r:score-quantified-records}}
 
-**File export — `save`:**
+**File export — {span .script-block}`BLOCK · save-baseline-results`:**
 
-{{r:save}}
+{{r:save-baseline-results}}
 
-**Plot export — `plot`:**
+**Plot export — {span .script-block}`BLOCK · plot-training-counts`:**
 
-{{r:plot}}
+{{r:plot-training-counts}}
 
 ![Training log10 MSC distribution with the training mean marked by a vertical line.](../outputs/baseline/training-distribution.png)
 
 The plot is written directly to `outputs/baseline/training-distribution.png`. Open that file in Files; it may not appear in the Plots pane.
 
-**Selection record — `audit-save`:**
+**Selection record — {span .script-block}`BLOCK · audit-save`:**
 
 {{r:audit-save}}
 
@@ -121,6 +125,8 @@ Different questions require different evidence:
 ## 7.6 Check the full score with AI
 
 **Optional live activity:** keep the reference blocks intact. At the end of your my- script, the supplied work area contains comments only until you add code:
+
+{span .script-block}`BLOCK · baseline-live-workspace`
 
 {{r:baseline-live-workspace}}
 

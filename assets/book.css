@@ -16,3 +16,17 @@ article .student-turn { border-left: 4px solid #267970; background: #edf6f2; }
 article .assistant-turn { border-left: 4px solid #b3843b; background: #fff7e9; }
 article blockquote { font-style: normal; }
 article .student-turn pre, article .assistant-turn pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+article .script-block {
+  display: inline-block;
+  max-width: 100%;
+  padding: .1em .48em;
+  border: 1px solid #a0b3c5;
+  border-radius: .35em;
+  background: #e8eff6;
+  color: #253e54;
+  font-size: .86em;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}

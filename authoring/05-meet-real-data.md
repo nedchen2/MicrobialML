@@ -8,9 +8,11 @@
 
 The source is the organic milk study by [Qian and colleagues (2025)](https://doi.org/10.1016/j.jfp.2025.100477). The supplied helper retrieves the fixed source file and checks that it is the expected version. First use needs internet.
 
-Run `source`, then `raw-preview`:
+Run {span .script-block}`BLOCK · load-milk-data`.
 
-{{r:source}}
+{{r:load-milk-data}}
+
+Run {span .script-block}`BLOCK · raw-preview` to display the first three rows.
 
 {{r:raw-preview}}
 
@@ -24,15 +26,17 @@ Run `source`, then `raw-preview`:
 
 `head(milk, 3)` displays only the first three rows; it does not shrink `milk`. One farm can appear in several assays and rounds. Check `Test` before assigning meaning to `Conc`; different assays must not be pooled into one outcome.
 
-**Optional inventory — `assays`.** Expand to see all assay record counts. This display does not create an input needed later:
+**Optional inventory — {span .script-block}`BLOCK · list-assays`.** Expand to see all assay record counts. This display does not create an input needed later:
 
-{{r:assays}}
+{{r:list-assays}}
 
 ## 5.2 Follow the selection rule
 
 We choose **MSC: mesophilic spore count**, measured here in **CFU/mL**.
 
-{{r:select}}
+{span .script-block}`BLOCK · select-msc-records`
+
+{{r:select-msc-records}}
 
 | Selection | Records |
 |---|---:|
@@ -44,11 +48,13 @@ We choose **MSC: mesophilic spore count**, measured here in **CFU/mL**.
 
 The notes comprise 34 laboratory errors, two TNTC results (too numerous to count), and one unresolved note. This is an explicit teaching eligibility rule; exclusion can affect which samples are represented.
 
-Run `quality`. `&` requires both conditions; `|` allows either. The supplied checks stop if the expected counts or unique farm-round keys differ:
+Run {span .script-block}`BLOCK · filter-usable-msc-records`. `&` requires both conditions; `|` allows either. The supplied checks stop if the expected counts or unique farm-round keys differ:
 
-{{r:quality}}
+{{r:filter-usable-msc-records}}
 
 You should have **525 records from 102 farms**. Inspect three selected rows:
+
+{span .script-block}`BLOCK · usable-preview`
 
 {{r:usable-preview}}
 
@@ -69,7 +75,9 @@ Compare three kinds of laboratory result. They do not carry the same information
 | A method records zero | Interpret it using that method's reporting rules; it does not automatically prove absolute absence. Zero is not eligible for this positive-count log10 exercise. |
 | Below-limit result, encoded here as 0.125 | A substitution lets the source store a number; it does not establish that the sample's exact concentration was 0.125. |
 
-{{r:target}}
+{span .script-block}`BLOCK · create-log10-msc`
+
+{{r:create-log10-msc}}
 
 We predict **log10 MSC**, not the original concentration. Keep this small conversion table nearby:
 
@@ -91,7 +99,7 @@ A negative log10 value can represent a positive concentration below 1 CFU/mL. It
 | Average on the target scale | `(0 + 1 + 2) / 3 = 1` |
 | Express that fixed prediction as a concentration | `10^1 = 10` CFU/mL |
 
-Run the supplied `log-intuition` block to check this and compare with the original-scale average:
+Run the supplied {span .script-block}`BLOCK · log-intuition` block to check this and compare with the original-scale average:
 
 {{r:log-intuition}}
 
@@ -101,9 +109,11 @@ The original-scale arithmetic mean is **37**, whereas the inverse of the mean lo
 
 ## 5.4 Save the prepared input
 
-Select the supplied blocks from `prepare-audit` through `save-prepared`, then Run. They record the selection counts and write a checkpoint for the next session.
+Select the supplied blocks from {span .script-block}`BLOCK · prepare-audit` through {span .script-block}`BLOCK · save-prepared`, then Run. They record the selection counts and write a checkpoint for the next session.
 
 {{r:prepare-audit}}
+
+{span .script-block}`BLOCK · save-prepared`
 
 {{r:save-prepared}}
 

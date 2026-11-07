@@ -14,15 +14,15 @@ If you have not installed it, type this in the **Console** once. It needs intern
 install.packages("rpart")
 ```
 
-Then run the script's `tree-package` block:
+Then run the script's {span .script-block}`BLOCK · load-rpart-for-first-tree` block:
 
-{{r:tree-package}}
+{{r:load-rpart-for-first-tree}}
 
 Installing puts the package on your computer. `library(rpart)` makes its functions available in the current R session. After restarting R, run `library(rpart)` again; you usually do not need to install again. A successful load may print nothing. If it says there is no package called rpart, run the installation line above and retry the load.
 
-**Supplied setup — `tree-load`:** run this block to restore Chapter 7's split. Its file checks are supporting code; they do not train a model.
+**Supplied setup — {span .script-block}`BLOCK · load-farm-split-for-tree`:** run this block to restore Chapter 7's split. Its file checks are supporting code; they do not train a model.
 
-{{r:tree-load}}
+{{r:load-farm-split-for-tree}}
 
 ## 8.2 Make two group averages yourself
 
@@ -35,11 +35,11 @@ These four records are **invented**. Their values make the arithmetic easy; they
 | 12 | 100 | 2 |
 | 16 | 100 | 2 |
 
-Run `hand-data` to create this table:
+Run {span .script-block}`BLOCK · hand-data` to create this table:
 
 {{r:hand-data}}
 
-**Guess:** what single log10 value would the Chapter 7 baseline give everyone? Run `hand-mean`:
+**Guess:** what single log10 value would the Chapter 7 baseline give everyone? Run {span .script-block}`BLOCK · hand-mean`:
 
 {{r:hand-mean}}
 
@@ -47,13 +47,13 @@ The answer is `(0 + 0 + 2 + 2) / 4 = 1`, equivalent to 10 CFU/mL.
 
 Now **we choose** a cut at 8 pasture hours for this hand exercise. It is not a biological threshold. Software will later compare candidate cuts; we are not fitting software to these four rows.
 
-Run `hand-left`. The condition before the comma selects rows; the empty position after the comma keeps all columns:
+Run {span .script-block}`BLOCK · hand-left`. The condition before the comma selects rows; the empty position after the comma keeps all columns:
 
 {{r:hand-left}}
 
 You should see the 0-hour and 4-hour records, then their mean log10 MSC: **0**.
 
-Run `hand-right`. `>=` means “greater than or equal to”:
+Run {span .script-block}`BLOCK · hand-right`. `>=` means “greater than or equal to”:
 
 {{r:hand-right}}
 
@@ -72,7 +72,7 @@ flowchart TB
 
 A **leaf** is a final group. A new input follows the questions to a leaf and receives that group's training mean.
 
-**Before running:** where does a new input of 6 hours go? Run `hand-new`. Read `ifelse(question, yes_value, no_value)` as “choose this value if yes, otherwise that value”:
+**Before running:** where does a new input of 6 hours go? Run {span .script-block}`BLOCK · hand-new`. Read `ifelse(question, yes_value, no_value)` as “choose this value if yes, otherwise that value”:
 
 {{r:hand-new}}
 
@@ -80,7 +80,7 @@ It goes left: predict 0 log10 MSC, equivalent to `10^0 = 1` CFU/mL. We do not ne
 
 ## 8.3 A perfect training fit can still surprise us
 
-Run `hand-errors`. The four group predictions are 0, 0, 2 and 2; `^2` squares each error:
+Run {span .script-block}`BLOCK · hand-errors`. The four group predictions are 0, 0, 2 and 2; `^2` squares each error:
 
 {{r:hand-errors}}
 
@@ -95,7 +95,7 @@ Now invent one more record, specifically to challenge the rule: it has **6 pastu
 | Observed log10 MSC | 2 | 2 |
 | Observed minus predicted | 1 | 2 |
 
-Run `hand-surprise` to check the last row:
+Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 
 {{r:hand-surprise}}
 
@@ -117,17 +117,17 @@ We offer the real tree two survey answers from the sampling visit:
 
 We assume the survey answers can be obtained before the lab result; an actual application must check that timing. Farm labels help match records and separate farms; they are not prediction inputs. Another assay result or a summary of microbial outcomes would not be an appropriate replacement for these survey inputs.
 
-**Supplied data preparation — `survey-source`:** run this block. It downloads the fixed original survey and matches each record by **farm and sampling round**, preserving the original training/test roles.
+**Supplied data preparation — {span .script-block}`BLOCK · join-farm-survey`:** run this block. It downloads the fixed original survey and matches each record by **farm and sampling round**, preserving the original training/test roles.
 
-{{r:survey-source}}
+{{r:join-farm-survey}}
 
-Run `predictor-preview` to inspect three training records. Read across a row: these two inputs accompany this known training answer.
+Run {span .script-block}`BLOCK · predictor-preview` to inspect three training records. Read across a row: these two inputs accompany this known training answer.
 
 {{r:predictor-preview}}
 
 ## 8.5 Give missing inputs an explicit rule
 
-**Predict first:** does an unknown cow count mean zero cows? Run the supplied `predictor-audit` block:
+**Predict first:** does an unknown cow count mean zero cows? Run the supplied {span .script-block}`BLOCK · predictor-audit` block:
 
 {{r:predictor-audit}}
 
@@ -144,19 +144,19 @@ Chapter 3 rejected silently treating an unknown count as zero. Here we deliberat
 
 Our reference is the training **median**: sort the known values and take the middle one. The median of 30, 40 and 200 is 40. With an even count, average the two middle values.
 
-Run `median-example` on these invented cow counts. `[is.na(model_cows)]` selects only the missing positions:
+Run {span .script-block}`BLOCK · median-example` on these invented cow counts. `[is.na(model_cows)]` selects only the missing positions:
 
 {{r:median-example}}
 
 **Check:** the recorded column still contains NA. Only the model copy uses 40.
 
-Now run `first-medians` on the real **training** records:
+Now run {span .script-block}`BLOCK · learn-training-medians` on the real **training** records:
 
-{{r:first-medians}}
+{{r:learn-training-medians}}
 
-The references are 9 hours and 72 cows. `[["milking_cows"]]` selects that named reference from `training_medians`. Run `first-fill` to copy the table and fill its missing inputs:
+The references are 9 hours and 72 cows. `[["milking_cows"]]` selects that named reference from `training_medians`. Run {span .script-block}`BLOCK · fill-missing-training-inputs` to copy the table and fill its missing inputs:
 
-{{r:first-fill}}
+{{r:fill-missing-training-inputs}}
 
 No test record helped calculate these references. Chapter 9 will apply the same rule separately inside each validation round.
 
@@ -176,11 +176,11 @@ flowchart TB
     invented_inputs["first_inputs: two invented rows"] -->|newdata| prediction_values
 ```
 
-`tree-load` also provides `fixed_tree_settings`, the preset settings used below. `library(rpart)` loads functions; it does not create our tables or settings. The fitting and prediction steps create the last two objects as you proceed.
+{span .script-block}`BLOCK · load-farm-split-for-tree` also provides `fixed_tree_settings`, the preset settings used below. `library(rpart)` loads functions; it does not create our tables or settings. The fitting and prediction steps create the last two objects as you proceed.
 
-**Fit** means use training records to learn a rule. Run `first-fit`:
+**Fit** means use training records to learn a rule. Run {span .script-block}`BLOCK · fit-first-tree`:
 
-{{r:first-fit}}
+{{r:fit-first-tree}}
 
 Read the fitting call in pieces:
 
@@ -196,7 +196,7 @@ Here `~` means “predict using”; `+` lists inputs, rather than adding hours t
 
 The depth of 1 is a **starting demonstration**, not a decision that it is best. We have not calculated a tree test score.
 
-**Supplied plot — `first-plot`:** run this block, then open `outputs/tree/first-tree.png` in Files. It saves the image directly; it may not appear in the Plots pane.
+**Supplied plot — {span .script-block}`BLOCK · first-plot`:** run this block, then open `outputs/tree/first-tree.png` in Files. It saves the image directly; it may not appear in the Plots pane.
 
 {{r:first-plot}}
 
@@ -206,11 +206,11 @@ The software chose a question about **milking cows**, not pasture hours. Its cut
 
 ## 8.7 Predict by eye, then use predict()
 
-The next two inputs are **invented** and have no known MSC results. Run `first-inputs`:
+The next two inputs are **invented** and have no known MSC results. Run {span .script-block}`BLOCK · first-inputs`:
 
 {{r:first-inputs}}
 
-Before running the next block, point to the leaf for 50 cows, then for 30 cows. What log10 value should each receive? Run `first-predict`:
+Before running the next block, point to the leaf for 50 cows, then for 30 cows. What log10 value should each receive? Run {span .script-block}`BLOCK · first-predict`:
 
 {{r:first-predict}}
 
@@ -218,7 +218,7 @@ Before running the next block, point to the leaf for 50 cows, then for 30 cows. 
 
 **Explain:** which operation learned the branches, and which just followed them? Does changing pasture hours alone change this particular tree's prediction?
 
-**Supplied save — `save-tree-input`:** run this last block. It saves the original survey inputs, including their missing values, for Chapter 9 to prepare within each fitting round.
+**Supplied save — {span .script-block}`BLOCK · save-tree-input`:** run this last block. It saves the original survey inputs, including their missing values, for Chapter 9 to prepare within each fitting round.
 
 {{r:save-tree-input}}
 

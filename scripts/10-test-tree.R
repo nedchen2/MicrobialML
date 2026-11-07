@@ -1,6 +1,6 @@
 # Generated from tree-workflow.R for Chapter 10; edit that canonical source as author.
 # Students: save a working copy as my-10-test-tree.R; follow the matching page.
-# %% prediction-package
+# %% load-rpart
 library(rpart)
 # %% load-tree-fit
 source("scripts/tree_helpers.R")
@@ -23,7 +23,7 @@ test_filled <- fill_predictors(chosen$test, chosen$medians)
 tree_prediction <- predict(final_tree, newdata = test_filled)
 head(data.frame(observed_log10 = test_filled$log10_msc,
                 tree_prediction = as.numeric(tree_prediction)), 3)
-# %% trace-one
+# %% trace-one-test-prediction
 first_route <- trace_tree(test_filled[1, ], nodes)
 data.frame(feature = tree_features, recorded = unlist(chosen$test[1, tree_features], use.names = FALSE),
            used_by_model = unlist(test_filled[1, tree_features], use.names = FALSE))
@@ -84,7 +84,7 @@ example_predictions <- data.frame(new_samples, prediction_log10 = as.numeric(new
                                   concentration_expression_CFU_ml = 10^as.numeric(new_prediction))
 example_predictions
 write.csv(example_predictions, "outputs/tree/example-predictions.csv", row.names = FALSE)
-# %% ai-settings
+# %% restore-selected-tree-settings
 selected_settings <- fixed_tree_settings
 selected_settings$maxdepth <- chosen$chosen_depth
 # My live AI attempt: add returned code and your check below in your my- copy.

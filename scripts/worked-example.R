@@ -1,6 +1,6 @@
 # Complete real-data workflow. Chapters 5-7 are generated from these same cells.
 # Open microbial-ml.Rproj; run from the top in a fresh session.
-# %% source
+# %% load-milk-data
 source("scripts/course_setup.R")
 source_file <- fetch_course_data()
 milk <- read.csv(source_file, stringsAsFactors = FALSE, na.strings = c("", "NA"))
@@ -10,13 +10,13 @@ stopifnot(identical(names(milk), c("FarmID", "Sampling", "Test", "Conc", "Notes"
 stopifnot(nrow(milk) == 2736)
 # %% raw-preview
 head(milk, 3)
-# %% assays
+# %% list-assays
 table(milk$Test)
-# %% select
+# %% select-msc-records
 msc <- milk[milk$Test == "MSC", ]
 nrow(msc)
 table(msc$Notes, useNA = "ifany")
-# %% quality
+# %% filter-usable-msc-records
 blank_note <- is.na(msc$Notes) | trimws(msc$Notes) == ""
 positive_count <- is.finite(msc$Conc) & msc$Conc > 0
 usable <- msc[blank_note & positive_count, ]
@@ -28,7 +28,7 @@ stopifnot(length(unique(usable$FarmID)) == 102)
 stopifnot(anyDuplicated(usable[c("FarmID", "Sampling")]) == 0)
 # %% usable-preview
 head(usable[c("FarmID", "Sampling", "Conc")], 3)
-# %% target
+# %% create-log10-msc
 usable$left_censored <- usable$Conc == 0.125
 usable$log10_msc <- log10(usable$Conc)
 table(usable$left_censored)
@@ -59,7 +59,7 @@ if (!file.exists("outputs/checkpoints/msc-prepared.rds")) stop("Run Chapter 5 fi
 prepared <- readRDS("outputs/checkpoints/msc-prepared.rds")
 usable <- prepared$data
 stopifnot(nrow(usable) == 525)
-# %% split
+# %% split-by-farm
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
 set.seed(2026)
 farm_ids <- sort(unique(usable$FarmID), method = "radix")
@@ -69,7 +69,7 @@ test <- usable[usable$FarmID %in% test_farms, ]
 c(train_rows = nrow(train), test_rows = nrow(test),
   train_farms = length(unique(train$FarmID)),
   test_farms = length(unique(test$FarmID)))
-# %% overlap
+# %% check-farm-overlap
 overlap <- intersect(unique(train$FarmID), unique(test$FarmID))
 overlap
 stopifnot(length(overlap) == 0)
@@ -103,7 +103,7 @@ rmse <- sqrt(mean(test$error_log10^2))
 mae <- mean(abs(test$error_log10))
 data.frame(model = "Training-mean baseline", n_test = nrow(test),
            RMSE_log10_CFU_ml = rmse, MAE_log10_CFU_ml = mae)
-# %% independent
+# %% cross-check-error-metrics
 rmse_check <- sqrt(sum((test$log10_msc - baseline_log10)^2) / nrow(test))
 mae_check <- sum(abs(test$log10_msc - baseline_log10)) / nrow(test)
 stopifnot(isTRUE(all.equal(rmse, rmse_check)))
@@ -116,14 +116,14 @@ round(data.frame(observed = head(test$log10_msc, 3),
 preview_errors <- head(test$error_log10, 3)
 data.frame(records_used = c(length(preview_errors), nrow(test)),
            RMSE_log10 = c(sqrt(mean(preview_errors^2)), rmse))
-# %% sensitivity
+# %% score-quantified-records
 # Evaluation subset only: the baseline is not refitted or chosen using this result.
 quantified_test <- test[!test$left_censored, ]
 quantified_rmse <- sqrt(mean(quantified_test$error_log10^2))
 data.frame(evaluation = c("All eligible test records", "Quantified test records only"),
            n = c(nrow(test), nrow(quantified_test)),
            RMSE_log10_CFU_ml = c(rmse, quantified_rmse))
-# %% save
+# %% save-baseline-results
 dir.create("outputs/baseline", recursive = TRUE, showWarnings = FALSE)
 score <- data.frame(model = "Training-mean baseline", training_mean_log10 = baseline_log10,
                     train_rows = nrow(train), test_rows = nrow(test),
@@ -138,7 +138,7 @@ write.csv(test[c("FarmID", "Sampling", "left_censored", "log10_msc", "prediction
           "outputs/baseline/test-predictions.csv", row.names = FALSE)
 writeLines(capture.output(sessionInfo()), "outputs/baseline/session-info.txt")
 file.exists("outputs/baseline/scores.csv")
-# %% plot
+# %% plot-training-counts
 png("outputs/baseline/training-distribution.png", width = 1200, height = 720, res = 150)
 par(mar = c(4.5, 4.5, 2.5, 1), family = "sans", col.axis = "#294943", col.lab = "#294943")
 hist(train$log10_msc, breaks = 18, col = "#8cc7b6", border = "white",

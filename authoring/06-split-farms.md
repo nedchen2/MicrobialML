@@ -18,7 +18,7 @@ A row-wise split can put records from the same farm on both sides. It then answe
 
 ## 6.2 Load and make the real split
 
-Run the supplied `load-prepared` block to reload the saved table. After a restart, an empty Environment is expected. This block reads the disk checkpoint with `readRDS()`, then takes its `data` item as `usable`. If the file is missing, complete Chapter 5 first:
+Run the supplied {span .script-block}`BLOCK · load-prepared` block to reload the saved table. After a restart, an empty Environment is expected. This block reads the disk checkpoint with `readRDS()`, then takes its `data` item as `usable`. If the file is missing, complete Chapter 5 first:
 
 {{r:load-prepared}}
 
@@ -26,9 +26,9 @@ Run the supplied `load-prepared` block to reload the saved table. After a restar
 
 The seed lets us reproduce this random choice; the number 2026 does not make the split scientifically better than another seed.
 
-Run the supplied `split` block unchanged. Expand its code if you want to inspect the random selection and row assignment:
+Run the supplied {span .script-block}`BLOCK · split-by-farm` block unchanged. Expand its code if you want to inspect the random selection and row assignment:
 
-{{r:split}}
+{{r:split-by-farm}}
 
 ## 6.3 Read the checks as evidence
 
@@ -41,15 +41,15 @@ Run the supplied `split` block unchanged. Expand its code if you want to inspect
 
 Record counts need not divide into exactly 80% and 20%, because farms contribute different numbers of records.
 
-Run `overlap` to inspect the actual shared labels:
+Run {span .script-block}`BLOCK · check-farm-overlap` to inspect the actual shared labels:
 
-{{r:overlap}}
+{{r:check-farm-overlap}}
 
 **Expected:** `character(0)`, an empty list of farm labels. If you see any label, repair the split before fitting a model. This addresses farm overlap; it does not establish independence of every record or performance in a new region.
 
 ## 6.4 Save a starting point for evaluation
 
-Run the supplied `save-split` block:
+Run the supplied {span .script-block}`BLOCK · save-split` block:
 
 {{r:save-split}}
 

@@ -1,9 +1,9 @@
 # Predictor workflow for Chapters 8-10; canonical source for the stage scripts.
 # First finish Chapter 7, or run scripts/full-analysis.R to recreate everything.
-# %% tree-package
+# %% load-rpart-for-first-tree
 # If not installed yet, run install.packages("rpart") in the Console once.
 library(rpart)
-# %% tree-load
+# %% load-farm-split-for-tree
 source("scripts/course_setup.R")
 source("scripts/tree_helpers.R")
 if (!file.exists("outputs/checkpoints/farm-split.rds")) stop("Run Chapter 7 first, or scripts/full-analysis.R, to create the baseline inputs.")
@@ -43,7 +43,7 @@ sum(two_mean_errors^2)
 surprise_observed <- log10(100)
 surprise_observed - hand_baseline
 surprise_observed - hand_new_prediction
-# %% survey-source
+# %% join-farm-survey
 survey <- read_survey_features(fetch_course_survey())
 train_survey <- attach_survey(outer_split$train, survey)
 test_survey <- attach_survey(outer_split$test, survey)
@@ -72,17 +72,17 @@ reference_cows <- median(recorded_cows, na.rm = TRUE)
 model_cows <- recorded_cows
 model_cows[is.na(model_cows)] <- reference_cows
 data.frame(recorded = recorded_cows, used_by_model = model_cows)
-# %% first-medians
+# %% learn-training-medians
 training_medians <- c(
   pasture_hours = median(train_survey$pasture_hours, na.rm = TRUE),
   milking_cows = median(train_survey$milking_cows, na.rm = TRUE)
 )
 training_medians
-# %% first-fill
+# %% fill-missing-training-inputs
 train_ready <- train_survey
 train_ready$pasture_hours[is.na(train_ready$pasture_hours)] <- training_medians[["pasture_hours"]]
 train_ready$milking_cows[is.na(train_ready$milking_cows)] <- training_medians[["milking_cows"]]
-# %% first-fit
+# %% fit-first-tree
 first_settings <- fixed_tree_settings
 first_settings$maxdepth <- 1
 first_tree <- rpart(log10_msc ~ pasture_hours + milking_cows,
@@ -106,7 +106,7 @@ write.csv(predictor_audit, "outputs/tree/predictor-audit.csv", row.names = FALSE
 saveRDS(list(train = train_survey, test = test_survey, audit = predictor_audit),
         "outputs/checkpoints/tree-input.rds")
 file.exists("outputs/checkpoints/tree-input.rds")
-# %% validation-package
+# %% load-rpart-for-validation
 library(rpart)
 # %% load-tree-input
 source("scripts/tree_helpers.R")
@@ -188,7 +188,7 @@ validation_scores$selected <- validation_scores$depth == chosen_depth
 validation_scores
 baseline_validation
 chosen_depth
-# %% training-check
+# %% compare-training-and-validation-errors
 # An illustration after selection: these fits do not alter the chosen depth.
 training_medians <- learn_medians(train_survey)
 train_filled <- fill_predictors(train_survey, training_medians)
@@ -217,7 +217,7 @@ saveRDS(list(fit = final_tree, medians = training_medians, chosen_depth = chosen
              validation = validation_scores, baseline_validation = baseline_validation),
         "outputs/checkpoints/tree-fit.rds")
 cat("Saved tree-fit.rds; no tree test score has been calculated.\n")
-# %% prediction-package
+# %% load-rpart
 library(rpart)
 # %% load-tree-fit
 source("scripts/tree_helpers.R")
@@ -240,7 +240,7 @@ test_filled <- fill_predictors(chosen$test, chosen$medians)
 tree_prediction <- predict(final_tree, newdata = test_filled)
 head(data.frame(observed_log10 = test_filled$log10_msc,
                 tree_prediction = as.numeric(tree_prediction)), 3)
-# %% trace-one
+# %% trace-one-test-prediction
 first_route <- trace_tree(test_filled[1, ], nodes)
 data.frame(feature = tree_features, recorded = unlist(chosen$test[1, tree_features], use.names = FALSE),
            used_by_model = unlist(test_filled[1, tree_features], use.names = FALSE))
@@ -301,7 +301,7 @@ example_predictions <- data.frame(new_samples, prediction_log10 = as.numeric(new
                                   concentration_expression_CFU_ml = 10^as.numeric(new_prediction))
 example_predictions
 write.csv(example_predictions, "outputs/tree/example-predictions.csv", row.names = FALSE)
-# %% ai-settings
+# %% restore-selected-tree-settings
 selected_settings <- fixed_tree_settings
 selected_settings$maxdepth <- chosen$chosen_depth
 # My live AI attempt: add returned code and your check below in your my- copy.

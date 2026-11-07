@@ -23,7 +23,7 @@ rmse <- sqrt(mean(test$error_log10^2))
 mae <- mean(abs(test$error_log10))
 data.frame(model = "Training-mean baseline", n_test = nrow(test),
            RMSE_log10_CFU_ml = rmse, MAE_log10_CFU_ml = mae)
-# %% independent
+# %% cross-check-error-metrics
 rmse_check <- sqrt(sum((test$log10_msc - baseline_log10)^2) / nrow(test))
 mae_check <- sum(abs(test$log10_msc - baseline_log10)) / nrow(test)
 stopifnot(isTRUE(all.equal(rmse, rmse_check)))
@@ -36,14 +36,14 @@ round(data.frame(observed = head(test$log10_msc, 3),
 preview_errors <- head(test$error_log10, 3)
 data.frame(records_used = c(length(preview_errors), nrow(test)),
            RMSE_log10 = c(sqrt(mean(preview_errors^2)), rmse))
-# %% sensitivity
+# %% score-quantified-records
 # Evaluation subset only: the baseline is not refitted or chosen using this result.
 quantified_test <- test[!test$left_censored, ]
 quantified_rmse <- sqrt(mean(quantified_test$error_log10^2))
 data.frame(evaluation = c("All eligible test records", "Quantified test records only"),
            n = c(nrow(test), nrow(quantified_test)),
            RMSE_log10_CFU_ml = c(rmse, quantified_rmse))
-# %% save
+# %% save-baseline-results
 dir.create("outputs/baseline", recursive = TRUE, showWarnings = FALSE)
 score <- data.frame(model = "Training-mean baseline", training_mean_log10 = baseline_log10,
                     train_rows = nrow(train), test_rows = nrow(test),
@@ -58,7 +58,7 @@ write.csv(test[c("FarmID", "Sampling", "left_censored", "log10_msc", "prediction
           "outputs/baseline/test-predictions.csv", row.names = FALSE)
 writeLines(capture.output(sessionInfo()), "outputs/baseline/session-info.txt")
 file.exists("outputs/baseline/scores.csv")
-# %% plot
+# %% plot-training-counts
 png("outputs/baseline/training-distribution.png", width = 1200, height = 720, res = 150)
 par(mar = c(4.5, 4.5, 2.5, 1), family = "sans", col.axis = "#294943", col.lab = "#294943")
 hist(train$log10_msc, breaks = 18, col = "#8cc7b6", border = "white",

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" role="img" aria-labelledby="selection_title selection_desc">
 <title id="selection_title">Select a complete code block and click Run</title>
-<desc id="selection_desc">An illustration, not a screenshot. The two executable lines below the count comment marker are selected in the script editor. Run executes them, Console prints 40, and the object count still holds 20.</desc>
+<desc id="selection_desc">The double-a-number badge matches the script comment of the same name. Select the two lines below it, click Run, and look for 40 in the Console. The object count still holds 20.</desc>
 <rect width="1000" height="560" rx="16" fill="#f5f7f5"/>
 <g font-family="Arial,sans-serif" fill="#173a35">
 <text x="28" y="38" font-size="25">Select → Run → Check (illustration)</text>
@@ -13,10 +13,10 @@
 <text x="587" y="97" font-size="19" fill="#6c7d77">Source</text>
 <rect x="38" y="161" width="630" height="83" rx="4" fill="#d9ebfc" stroke="#87afd4"/>
 <g font-family="Menlo,Consolas,monospace" font-size="20">
-<text x="44" y="146" fill="#6a7d74"># %% count</text>
+<text x="44" y="146" fill="#6a7d74"># %% double-a-number</text>
 <text x="44" y="190">count &lt;- 20  <tspan fill="#596e65"># Store 20 under the name count.</tspan></text>
 <text x="44" y="225">count * 2</text>
-<text x="44" y="280" fill="#6a7d74"># %% folder</text>
+<text x="44" y="280" fill="#6a7d74"># %% check-project-folder</text>
 </g>
 <rect x="24" y="340" width="658" height="190" rx="10" fill="white" stroke="#b9cfc6"/>
 <text x="42" y="374" font-size="23">Console: read the result here</text>
@@ -25,6 +25,8 @@
 <text x="44" y="449">&gt; count * 2</text>
 <text x="44" y="487">[1] 40</text>
 </g>
+<rect x="715" y="72" width="255" height="33" rx="6" fill="#e8eff6" stroke="#a0b3c5"/>
+<text x="727" y="94" font-size="17" font-weight="bold" fill="#253e54">BLOCK · double-a-number</text>
 <g font-size="22">
 <text x="720" y="143">1. Select both lines.</text>
 <text x="720" y="178">Stop before the next</text>

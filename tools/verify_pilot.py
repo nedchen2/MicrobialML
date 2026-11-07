@@ -60,7 +60,7 @@ def main(cold):
         # A learner can finish the supplied main route before the additional
         # runtime-error or live-chat exercises, using only the extracted ZIP.
         chapter_3 = (project / "scripts/03-working-with-ai.R").read_text()
-        main_route, boundary, _ = chapter_3.partition("\n# %% runtime-error\n")
+        main_route, boundary, _ = chapter_3.partition("\n# %% capture-missing-object-error\n")
         assert boundary
         practice_path = project / "data/practice_counts.csv"
         practice_bytes = practice_path.read_bytes()

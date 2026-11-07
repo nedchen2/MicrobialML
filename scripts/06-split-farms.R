@@ -5,7 +5,7 @@ if (!file.exists("outputs/checkpoints/msc-prepared.rds")) stop("Run Chapter 5 fi
 prepared <- readRDS("outputs/checkpoints/msc-prepared.rds")
 usable <- prepared$data
 stopifnot(nrow(usable) == 525)
-# %% split
+# %% split-by-farm
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
 set.seed(2026)
 farm_ids <- sort(unique(usable$FarmID), method = "radix")
@@ -15,7 +15,7 @@ test <- usable[usable$FarmID %in% test_farms, ]
 c(train_rows = nrow(train), test_rows = nrow(test),
   train_farms = length(unique(train$FarmID)),
   test_farms = length(unique(test$FarmID)))
-# %% overlap
+# %% check-farm-overlap
 overlap <- intersect(unique(train$FarmID), unique(test$FarmID))
 overlap
 stopifnot(length(overlap) == 0)

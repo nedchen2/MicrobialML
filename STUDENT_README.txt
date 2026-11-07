@@ -61,6 +61,10 @@ about 0.545 and MAE about 0.426 log10 CFU/mL. It does not beat the baseline here
 Toy original-scale error values cannot be compared directly with log-scale errors.
 These microbial-quality results do not establish causality or product safety.
 
+BLOCK badges match the # %% labels in the R scripts. For example, find
+# %% double-a-number for BLOCK · double-a-number. Use the current student
+download for the labels shown in the current book.
+
 Live AI work: Chapter 3 has a separate live-workspace in Section 3.8. Keep
 the reference examples and paste your own replies in that work area. Chapter 7's
 three-row preview checks residuals; its full RMSE exercise uses all 105 rows

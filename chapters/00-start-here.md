@@ -52,14 +52,14 @@ For a live AI exercise, use an actual reply and check it in R. If no chat is acc
 In an R script, `#` starts a **comment** outside quoted text: R ignores the rest of that line. Comments explain code to people. Read this example now; Chapter 1 will run the matching block:
 
 ```r
-# %% count
+# %% double-a-number
 count <- 20  # Store 20 under the name count.
 count * 2
 ```
 
-The first line is a section label. `# %% count` is our marker for the block named **count**; the whole line is a comment. The second line stores a value, while its comment explains the action. The third line does a calculation. A `#` inside a quoted string is text, such as `"sample #1"`.
+The first line labels the block. The second line stores a value in `count`, and the third calculates twice that value. A `#` inside a quoted string is text, such as `"sample #1"`.
 
-When the book says **run count**, find `# %% count` in the script and select the code underneath, stopping before the next `# %%` label. Select complete statements, including closing parentheses. Click **Run** in RStudio. Selecting a comment alone will not calculate anything.
+When the book says to run {span .script-block}`BLOCK · double-a-number`, find `# %% double-a-number` in your working script. Select the code below it up to the next `# %%` label, then click **Run** in RStudio. Select complete statements, including closing parentheses.
 
 ## One working-file rule
 

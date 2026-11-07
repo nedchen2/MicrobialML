@@ -6,13 +6,15 @@
 
 ## 10.1 Read the tree before running predictions
 
-Run `prediction-package`, then the supplied `load-tree-fit` block to restore the selected tree and its training preparation:
+Run {span .script-block}`BLOCK · load-rpart`, then the supplied {span .script-block}`BLOCK · load-tree-fit` block to restore the selected tree and its training preparation:
 
-{{r:prediction-package}}
+{{r:load-rpart}}
+
+{span .script-block}`BLOCK · load-tree-fit`
 
 {{r:load-tree-fit}}
 
-Run the supplied `plot-tree` block. Open `outputs/tree/fitted-tree.png` in Files; the code saves the image directly.
+Run the supplied {span .script-block}`BLOCK · plot-tree` block. Open `outputs/tree/fitted-tree.png` in Files; the code saves the image directly.
 
 {{r:plot-tree}}
 
@@ -38,23 +40,23 @@ The cut separates 36 or fewer from 37 or more cows; it is not a half cow. Pastur
 
 ## 10.2 Follow one real record and check its leaf
 
-**Supplied preparation — `prepare-test`:** run this block to give missing test inputs the saved **training** medians. The medians do not change after seeing test inputs.
+**Supplied preparation — {span .script-block}`BLOCK · prepare-test`:** run this block to give missing test inputs the saved **training** medians. The medians do not change after seeing test inputs.
 
 {{r:prepare-test}}
 
-Run `predict-tree`:
+Run {span .script-block}`BLOCK · predict-tree`:
 
 {{r:predict-tree}}
 
 As in Chapter 8, `predict()` follows an existing rule; it does not fit a new one. Although this table contains known lab answers for evaluation, the fitting formula uses only pasture hours and cow count as inputs.
 
-Run the supplied `trace-one` block. First compare recorded inputs with the model's inputs; then read the rule, leaf and prediction:
+Run the supplied {span .script-block}`BLOCK · trace-one-test-prediction` block. First compare recorded inputs with the model's inputs; then read the rule, leaf and prediction:
 
-{{r:trace-one}}
+{{r:trace-one-test-prediction}}
 
 The first record has **50 cows**. On the diagram, follow “Yes” to leaf 2: it predicts about **0.6873 log10 MSC**. The observed answer is about 0.8129, so observed minus predicted is about **0.1256**. Reconstruct that subtraction before looking at an overall score.
 
-Where does 0.6873 come from? Run the supplied `check-leaves` block:
+Where does 0.6873 come from? Run the supplied {span .script-block}`BLOCK · check-leaves` block:
 
 {{r:check-leaves}}
 
@@ -64,11 +66,11 @@ One column calculates each leaf's average from its training records; the other r
 
 **Before running:** what evidence would justify the more complicated rule?
 
-Run `tree-errors`. The three lines calculate residuals, RMSE and MAE:
+Run {span .script-block}`BLOCK · tree-errors`. The three lines calculate residuals, RMSE and MAE:
 
 {{r:tree-errors}}
 
-Then run the supplied `tree-test-scores` block to place those scores beside the Chapter 7 baseline:
+Then run the supplied {span .script-block}`BLOCK · tree-test-scores` block to place those scores beside the Chapter 7 baseline:
 
 {{r:tree-test-scores}}
 
@@ -76,7 +78,7 @@ Both methods predict the **same 105 records from the same 21 held-out farms**, o
 
 That is an explainable result. Two survey variables and a shallow tree did not earn extra complexity here. It does not show that all trees fail or that the inputs lack biological relevance. Keep the result rather than repeatedly changing the analysis to improve a visible test score. The test split was already displayed in the baseline lesson, so this is a fixed teaching comparison, not a fresh blinded evaluation.
 
-**Supplied evidence export — `save-tree-results`:** run this block to save the comparisons and prediction checks.
+**Supplied evidence export — {span .script-block}`BLOCK · save-tree-results`:** run this block to save the comparisons and prediction checks.
 
 {{r:save-tree-results}}
 
@@ -98,33 +100,33 @@ flowchart TB
 
 A reusable prediction needs both the learned tree and the references for preparing missing inputs. A **list** bundles named R objects together; `$fit` later retrieves the item named `fit`.
 
-Run `save-model`. `saveRDS()` writes the bundle to a file:
+Run {span .script-block}`BLOCK · save-model`. `saveRDS()` writes the bundle to a file:
 
 {{r:save-model}}
 
-Run `reload-model`. `readRDS()` reads it back into R:
+Run {span .script-block}`BLOCK · reload-model`. `readRDS()` reads it back into R:
 
 {{r:reload-model}}
 
 These operations save and restore a rule, not train another tree.
 
-Run `new-samples` to create the two **invented** input profiles from Chapter 8. Neither has an observed MSC:
+Run {span .script-block}`BLOCK · new-samples` to create the two **invented** input profiles from Chapter 8. Neither has an observed MSC:
 
 {{r:new-samples}}
 
 **Predict first:** at 6 pasture hours, which leaf will 50 cows enter? Which will 30 cows enter?
 
-Run the supplied `prepare-new` block. It applies the saved missing-input rule; neither of these complete rows needs filling.
+Run the supplied {span .script-block}`BLOCK · prepare-new` block. It applies the saved missing-input rule; neither of these complete rows needs filling.
 
 {{r:prepare-new}}
 
-Run `new-predict`:
+Run {span .script-block}`BLOCK · new-predict`:
 
 {{r:new-predict}}
 
 The predictions are about 0.6873 and 1.0545 log10 MSC, just as the diagram suggests. The last column expresses them as `10^prediction` CFU/mL, as in Chapter 7. It is not an arithmetic-mean concentration or a safety verdict. With no observed outcomes, these two rows provide no accuracy score.
 
-**Change one thing in your my- copy:** in `new-samples`, change 50 cows to 60. Predict whether the result changes. Then rerun **new-samples → prepare-new → new-predict**. Changing the input alone does not automatically refresh an old prediction. Next try 30 cows to 37, or change only pasture hours. Explain each result using the branch, rather than asking AI to invent a biological story. Comparing invented inputs is not an intervention experiment.
+**Change one thing in your my- copy:** in {span .script-block}`BLOCK · new-samples`, change 50 cows to 60. Predict whether the result changes. Then rerun {span .script-block}`BLOCK · new-samples` → {span .script-block}`BLOCK · prepare-new` → {span .script-block}`BLOCK · new-predict`. Changing the input alone does not automatically refresh an old prediction. Next try 30 cows to 37, or change only pasture hours. Explain each result using the branch, rather than asking AI to invent a biological story. Comparing invented inputs is not an intervention experiment.
 
 ## 10.5 Ask AI for two familiar operations
 
@@ -143,9 +145,9 @@ Give AI this small, explicit task:
 | Numeric method and existing `selected_settings` are used | This is the procedure already chosen in training |
 | `predict()` uses `newdata = test_filled` | We need predictions for those new rows |
 
-Run `ai-settings` to recreate the settings name in this session:
+Run {span .script-block}`BLOCK · restore-selected-tree-settings` to recreate the settings name in this session:
 
-{{r:ai-settings}}
+{{r:restore-selected-tree-settings}}
 
 In your my- script, find the **My live AI attempt** comment at the end. Add the AI code below it, then add this check comparing its predictions with the reference `tree_prediction`. Run your added lines after completing the earlier blocks:
 
@@ -153,7 +155,7 @@ In your my- script, find the **My live AI attempt** comment at the end. Add the 
 all.equal(as.numeric(ai_prediction), as.numeric(tree_prediction))
 ```
 
-For an equivalent fit, expect TRUE. If it differs or errors, give AI the actual code and message and investigate; do not change the test answers or invent a successful check. Append the prompt, returned code, your check and any repair to your AI-use log; keep your Chapter 3 record. If you cannot access a chat, inspect the visible `fit-tree` and `predict-tree` blocks and label this as a code-inspection exercise rather than a completed AI interaction.
+For an equivalent fit, expect TRUE. If it differs or errors, give AI the actual code and message and investigate; do not change the test answers or invent a successful check. Append the prompt, returned code, your check and any repair to your AI-use log; keep your Chapter 3 record. If you cannot access a chat, inspect {span .script-block}`BLOCK · fit-tree` in Chapter 9 and {span .script-block}`BLOCK · predict-tree` in this chapter and label this as a code-inspection exercise rather than a completed AI interaction.
 
 ## 10.6 Keep the evidence and transfer the workflow
 

@@ -1,36 +1,36 @@
 # Reference: File > Save As scripts/my-02-minimum-r.R before editing.
 # Chapter 2. Every chapter can run in a fresh R session.
-# %% vector
+# %% make-count-vector
 counts <- c(10, 20, 30)
 counts
-# %% function
+# %% calculate-mean
 mean(counts)
 sum(counts) / length(counts)
-# %% import
+# %% load-practice-data
 practice <- read.csv("data/practice_counts.csv", stringsAsFactors = FALSE)
 practice
-# %% structure
+# %% inspect-practice-table
 dim(practice)
 names(practice)
 str(practice)
-# %% column
+# %% show-count-column
 practice$count_cfu_ml
 class(practice$count_cfu_ml)
-# %% missing
+# %% check-missing-counts
 is.na(practice$count_cfu_ml)
 sum(is.na(practice$count_cfu_ml))
 mean(practice$count_cfu_ml)
-# %% explicit-missing
+# %% mean-of-recorded-counts
 mean(practice$count_cfu_ml, na.rm = TRUE)
-# %% subset
+# %% keep-recorded-rows
 known_counts <- practice[!is.na(practice$count_cfu_ml), ]
 known_counts
-# %% export
+# %% export-known-counts
 dir.create("outputs/practice", recursive = TRUE, showWarnings = FALSE)
 write.csv(known_counts, "outputs/practice/known-counts.csv", row.names = FALSE)
 round_trip <- read.csv("outputs/practice/known-counts.csv")
 isTRUE(all.equal(known_counts, round_trip, check.attributes = FALSE))
-# %% assertion
+# %% check-expected-values
 stopifnot(nrow(practice) == 4)
 stopifnot(sum(is.na(practice$count_cfu_ml)) == 1)
 stopifnot(mean(known_counts$count_cfu_ml) == 20)

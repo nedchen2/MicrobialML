@@ -1,6 +1,6 @@
 # Generated from worked-example.R for Chapter 05; edit that canonical source as author.
 # Students: save a working copy as my-05-meet-real-data.R; follow the matching page.
-# %% source
+# %% load-milk-data
 source("scripts/course_setup.R")
 source_file <- fetch_course_data()
 milk <- read.csv(source_file, stringsAsFactors = FALSE, na.strings = c("", "NA"))
@@ -10,13 +10,13 @@ stopifnot(identical(names(milk), c("FarmID", "Sampling", "Test", "Conc", "Notes"
 stopifnot(nrow(milk) == 2736)
 # %% raw-preview
 head(milk, 3)
-# %% assays
+# %% list-assays
 table(milk$Test)
-# %% select
+# %% select-msc-records
 msc <- milk[milk$Test == "MSC", ]
 nrow(msc)
 table(msc$Notes, useNA = "ifany")
-# %% quality
+# %% filter-usable-msc-records
 blank_note <- is.na(msc$Notes) | trimws(msc$Notes) == ""
 positive_count <- is.finite(msc$Conc) & msc$Conc > 0
 usable <- msc[blank_note & positive_count, ]
@@ -28,7 +28,7 @@ stopifnot(length(unique(usable$FarmID)) == 102)
 stopifnot(anyDuplicated(usable[c("FarmID", "Sampling")]) == 0)
 # %% usable-preview
 head(usable[c("FarmID", "Sampling", "Conc")], 3)
-# %% target
+# %% create-log10-msc
 usable$left_censored <- usable$Conc == 0.125
 usable$log10_msc <- log10(usable$Conc)
 table(usable$left_censored)

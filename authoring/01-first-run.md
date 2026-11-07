@@ -42,43 +42,47 @@ A line starting with `#` is a comment. Our `# %%` lines label code blocks, as ex
 
 **Action 1 — Calculate.** Put the cursor on `1 + 1` and click **Run**, or press Ctrl + Enter on Windows / Cmd + Enter on macOS.
 
+{span .script-block}`BLOCK · arithmetic`
+
 {{r:arithmetic}}
 
 **Look for:** `2` in the Console. If R prints `[1] 2`, `[1]` is an output index. Do not type `[1]` or the prompt `>` yourself.
 
-**Action 2 — Give a value a name.** Run the `object` block. To run several lines, select the whole block and click Run.
+**Action 2 — Give a value a name.** Run the {span .script-block}`BLOCK · store-sample-name` block. To run several lines, select the whole block and click Run.
 
-{{r:object}}
+{{r:store-sample-name}}
 
 `<-` stores the value on the right under the name on the left. Quotes make `milk` text. The assignment normally prints nothing; the following `sample_name` line displays its stored value.
 
-**Action 3 — Use a named number.** Predict the second line's result before running:
+**Action 3 — Use a named number.** Predict the second line's result, then run {span .script-block}`BLOCK · double-a-number`.
 
-{{r:count}}
+{{r:double-a-number}}
 
-Then run `count` by itself. It remains 20: calculating `count * 2` did not store a new value in it.
+In the Console, type `count` and press Enter. It still shows 20 because `count * 2` calculates a result without assigning it to `count`.
 
-![Illustration of selecting the two code lines below the count marker, clicking Run, and checking 40 in Console while count remains 20.](../assets/block-selection.svg)
+![Illustration of selecting the two code lines below the double-a-number marker, clicking Run, and checking 40 in Console while count remains 20.](../assets/block-selection.svg)
 
-*Illustration using this lesson's code, not a screenshot. Select both executable lines between the count and folder markers; then click Run. You may include comment lines in the selection. If a call spans several lines, include its final closing parenthesis. For real interface screenshots, see [Posit's Run and Source guide](https://docs.posit.co/ide/user/ide/guide/code/execution.html).*
+*Illustration using this lesson's code. Select both executable lines between the `# %% double-a-number` and `# %% check-project-folder` markers, then click Run. You may include comment lines in the selection. If a call spans several lines, include its final closing parenthesis. See screenshots in [Posit's Run and Source guide](https://docs.posit.co/ide/user/ide/guide/code/execution.html).*
 
 **Stuck?** If the Console shows `+`, press Esc and run one complete line again. Other symptoms have a [short help route](../reference/troubleshooting.md).
 
 ## 1.4 Save a result and find it
 
-First run `folder` to check that R is working inside the project:
+First run {span .script-block}`BLOCK · check-project-folder` to check that R is working inside the project:
 
-{{r:folder}}
+{{r:check-project-folder}}
 
 R writes yes/no results as **TRUE/FALSE**. The folder's name may differ on your computer; the final result should be **TRUE**. If it is FALSE, reopen the `.Rproj` file.
 
-Run `save` to make an output folder and write a text file. Keep the supplied settings for this step:
+Run {span .script-block}`BLOCK · save-first-result` to make an output folder and write a text file. Keep the supplied settings for this step:
 
-{{r:save}}
+{{r:save-first-result}}
 
 In **Files → outputs → practice**, find `first-run.txt`. Read it back:
 
-{{r:inspect}}
+{span .script-block}`BLOCK · read-first-result`
+
+{{r:read-first-result}}
 
 **Save the script too:** use Ctrl/Cmd + S. Saving the `.R` file preserves your instructions. Running `writeLines()` creates the result file.
 
@@ -120,7 +124,7 @@ Explain what count stores, what the second line prints, and how I can check
 whether count changed. Use base R; do not add packages or an analysis pipeline.
 ```
 
-**Accept the explanation only after checking:** run `count`. It should still be 20. Send your actual code and output back if the reply disagrees.
+**Check the explanation.** Enter `count` in the Console. It should still show 20. Send your actual code and output back if the reply disagrees.
 
 ## 1.6 Restart and recreate
 

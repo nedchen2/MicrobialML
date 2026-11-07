@@ -8,11 +8,11 @@ Follow one milk-sample summary from an incomplete request to a checked result. C
 
 ## 3.1 Know your task before asking
 
-Run `context` to display the same invented data used in Chapter 2:
+Run {span .script-block}`BLOCK · load-practice-data` in your working script.
 
-{{r:context}}
+{{r:load-practice-data}}
 
-One row is one milk sample. The recorded counts are 10, 20 and 30 CFU/mL; the fourth result is missing. For this exercise, `NA` means no valid measurement was recorded. It does not mean zero or a result below a detection limit.
+Check the **Console** for the column names and the same four practice samples you saw in Chapter 2. The recorded counts are 10, 20 and 30 CFU/mL. The fourth result shows `NA`, which here means no valid measurement was recorded. A recorded zero or a result reported as below the detection limit carries different information.
 
 Your task is to report the **mean of the recorded counts**, together with the number of recorded and missing results. Leave the original missing value unchanged.
 
@@ -47,9 +47,9 @@ The next section reproduces a two-line AI reply reported by the course author du
 
 ## 3.3 Predict the output, then run
 
-Before running, predict the output of this reply. Will it be 20, 15, `NA`, or an error? Run `first-answer`:
+Before running, predict the output of this reply. Will it be 20, 15, `NA`, or an error? Run {span .script-block}`BLOCK · run-first-ai-reply`:
 
-{{r:first-answer}}
+{{r:run-first-ai-reply}}
 
 `round(value, 2)` rounds a value to two decimal places. The first line stores a result; the second displays it.
 
@@ -80,9 +80,9 @@ Use base R. Give one small code block and explain which samples enter the mean.
 ```
 ````
 
-Run `repaired-answer` for the supplied reference correction:
+Run {span .script-block}`BLOCK · summarize-recorded-counts` for the supplied reference correction:
 
-{{r:repaired-answer}}
+{{r:summarize-recorded-counts}}
 
 Read the three columns: **1 missing, 3 recorded, mean 20**. `is.na()` flags missing values; `!` means “not”, so `sum(!is.na(...))` counts the recorded values. `data.frame()` puts the three summary values into a table.
 
@@ -97,15 +97,15 @@ Consider a different response to the same task:
 “I will replace the missing count with zero and calculate the mean.”
 ```
 
-**Predict first:** what number would this produce? Run `faulty-answer`. It changes a separate `working` copy, so the original `practice` table is preserved:
+**Predict first:** what number would this produce? Run {span .script-block}`BLOCK · try-filling-with-zero`. It changes a separate `working` copy, so the original `practice` table is preserved:
 
-{{r:faulty-answer}}
+{{r:try-filling-with-zero}}
 
 The output is 15: (10 + 20 + 30 + 0) / 4. The code has introduced a fourth value that was never measured.
 
-Run `inspect-answer` to check the original missing count and compare 15 with your hand calculation:
+Run {span .script-block}`BLOCK · check-zero-fill-result` to check the original missing count and compare 15 with your hand calculation:
 
-{{r:inspect-answer}}
+{{r:check-zero-fill-result}}
 
 The original still has one missing entry. The comparison is FALSE. Getting a number is not sufficient evidence for accepting an analysis.
 
@@ -119,15 +119,15 @@ If an actual reply fills the missing value, tell the assistant what changed and 
 
 ## 3.6 Check, save and explain your decision
 
-Run the supplied `verify-repair` block. It compares the summary with your hand calculation and checks that the fourth count remains missing. You may expand its code; you do not need to reproduce it from memory:
+Run the supplied {span .script-block}`BLOCK · verify-recorded-summary` block. It compares the summary with your hand calculation and checks that the fourth count remains missing. You may expand its code; you do not need to reproduce it from memory:
 
-{{r:verify-repair}}
+{{r:verify-recorded-summary}}
 
 Accept the summary for the stated task when it reports 1 missing, 3 recorded and mean 20, while preserving the original missing value. These checks do not establish why a real sample's result went missing or whether the recorded samples represent all samples.
 
-Run `save-evidence`, then open **Files → outputs → ch03**:
+Run {span .script-block}`BLOCK · save-summary-and-log`, then open **Files → outputs → ch03**:
 
-{{r:save-evidence}}
+{{r:save-summary-and-log}}
 
 - **`summary.csv`:** the checked summary, containing 1, 3 and 20.
 - **`summary-check.txt`:** the first reply's result, the fill-zero result and the checked mean, plus whether the original fourth count is still missing.
@@ -146,7 +146,7 @@ This short exercise covers a different problem: a name in the code does not matc
 
 An incomplete request such as “I have loaded my milk-count data; calculate its mean, ignoring missing values” leaves out the object name. An assistant might guess `milk_data`, or it might ask for your actual names. The following constructed case gives a missing-name error in a fresh session; it is not another real AI transcript.
 
-**Make R show the error:** restart R and rerun **only `context`** to restore `practice`. In your my- script's `runtime-error` block, select only this line and Run:
+**Make R show the error.** Restart R, then run {span .script-block}`BLOCK · load-practice-data` to restore `practice`. Find {span .script-block}`BLOCK · capture-missing-object-error` in your working script and run only the following line.
 
 ```r
 mean(milk_data$count_cfu_ml, na.rm = TRUE)
@@ -154,9 +154,9 @@ mean(milk_data$count_cfu_ml, na.rm = TRUE)
 
 R reports `object 'milk_data' not found`. This calculation stopped before it could calculate a mean. Your session still contains `practice`.
 
-Now run the **whole supplied `runtime-error` block** to capture that actual error for the record. Its recording code allows the rest of the script to continue. Run it as supplied:
+Now run all the lines in {span .script-block}`BLOCK · capture-missing-object-error`. Its recording code captures the error and lets the rest of the script continue.
 
-{{r:runtime-error}}
+{{r:capture-missing-object-error}}
 
 Keep that block as the failing example. If you already corrected its line, it will report that no error was observed. Restore the block from the reference script to repeat the failure; place your own repair in the live-work area.
 
@@ -173,13 +173,13 @@ Preserve the original data. Use base R and suggest a hand check.
 ```
 ````
 
-Run `runtime-repair` for the reference correction:
+Run {span .script-block}`BLOCK · use-correct-object-name` for the reference correction:
 
-{{r:runtime-repair}}
+{{r:use-correct-object-name}}
 
-Check the result against 60 / 3 = 20. Run `runtime-save`, then find **outputs → ch03 → runtime-error-and-repair.txt**:
+Check the result against 60 / 3 = 20. Run {span .script-block}`BLOCK · save-object-error-record`, then find **outputs → ch03 → runtime-error-and-repair.txt**:
 
-{{r:runtime-save}}
+{{r:save-object-error-record}}
 
 This separate record states whether an R error was observed, its message, the correct object name and the repaired mean. After the restart, rerun Sections 3.1–3.6 only if you want their objects back; their files are still on disk.
 
@@ -187,7 +187,7 @@ This separate record states whether an R error was observed, its message, the co
 
 **Optional live activity:** choose a browser chat through [AI access](01-first-run.ipynb#id-1-5-ai-access). If chat is unavailable, the supplied exercises provide a full code-inspection route without TA help.
 
-Restart R, then run **only `context`** before beginning, so your table is available. Find `# %% live-workspace` at the end of your **my-** script. Use these comments as places for your own code:
+Restart R and run {span .script-block}`BLOCK · load-practice-data` to load the practice table. Find {span .script-block}`BLOCK · live-workspace` at the end of your working script. The comments below mark where to put your own code.
 
 {{r:live-workspace}}
 
@@ -197,6 +197,6 @@ Restart R, then run **only `context`** before beginning, so your table is availa
 
 For optional object-name practice, put the code returned for Section 3.7 below **My live AI attempt: object-name repair** and compare with 20. An assistant may use different code or a different summary layout; judge the task, values and data treatment.
 
-Append your actual prompt, reply, output and check to **outputs/ch03/ai-use-log.txt**. The supplied `save-evidence` block records the lesson's reference results; it cannot record your live chat. If your live code changed `practice`, restart R and rerun `context` to reload the original CSV, then ask for a summary that preserves the data. Use only the invented rows here, and ask the assistant to avoid edits to files.
+Append your actual prompt, reply, output and check to **outputs/ch03/ai-use-log.txt**. If your live code changed `practice`, restart R and run {span .script-block}`BLOCK · load-practice-data` to reload the original CSV. Ask for a summary that preserves the data, using the invented rows in this exercise.
 
 **Next:** [six farm records you can check by hand](04-small-farm-example.ipynb).

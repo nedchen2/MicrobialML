@@ -8,25 +8,29 @@
 
 `c()` combines values into a vector. These practice counts are invented:
 
-{{r:vector}}
+{span .script-block}`BLOCK · make-count-vector`
+
+{{r:make-count-vector}}
 
 `mean(counts)` passes that vector to the `mean()` function. Parentheses hold its inputs, also called arguments.
 
-{{r:function}}
+{span .script-block}`BLOCK · calculate-mean`
+
+{{r:calculate-mean}}
 
 **Check by hand:** sum 10, 20 and 30, then divide by three. Both expressions should give 20. R is case-sensitive: `counts` and `Counts` are different names.
 
 ## 2.2 Lab task: inspect four samples
 
-A CSV is a table stored as text. Run `import` to read the included practice file:
+A CSV is a table stored as text. Run {span .script-block}`BLOCK · load-practice-data` to read the included practice file:
 
-{{r:import}}
+{{r:load-practice-data}}
 
 One row is one invented sample; one column is one variable. The R object `practice` is a **data frame**, a table whose columns can hold different types of values. `count_cfu_ml` is the practice concentration in CFU/mL.
 
-Run `structure`, then decode its output:
+Run {span .script-block}`BLOCK · inspect-practice-table`, then decode its output:
 
-{{r:structure}}
+{{r:inspect-practice-table}}
 
 | Output | What to check |
 |---|---|
@@ -36,27 +40,31 @@ Run `structure`, then decode its output:
 
 Now take one column. `$` means “this named column from this table”:
 
-{{r:column}}
+{span .script-block}`BLOCK · show-count-column`
+
+{{r:show-count-column}}
 
 **Your turn:** display `practice$storage_hours`. Predict its four values before running. A sample ID labels a record; it is not automatically useful information for predicting its count.
 
 ## 2.3 Decision: what does the missing result mean?
 
-The fourth count is `NA`: no recorded result. Run `missing`:
+The fourth count is `NA`: no recorded result. Run {span .script-block}`BLOCK · check-missing-counts`:
 
-{{r:missing}}
+{{r:check-missing-counts}}
 
 `is.na()` produces TRUE/FALSE flags. `sum()` counts each TRUE as 1, giving one missing entry. The ordinary mean is NA because a count is unknown.
 
 **Question:** can we report a mean of the recorded counts while leaving that unknown measurement unchanged?
 
-{{r:explicit-missing}}
+{span .script-block}`BLOCK · mean-of-recorded-counts`
+
+{{r:mean-of-recorded-counts}}
 
 Yes: `na.rm = TRUE` omits missing entries **for this calculation**. The result is 20 for three recorded counts. It does not recover the fourth measurement. Replacing NA with zero would make a different assumption.
 
-To keep only the known rows in a new object, run `subset`:
+To keep only the known rows in a new object, run {span .script-block}`BLOCK · keep-recorded-rows`:
 
-{{r:subset}}
+{{r:keep-recorded-rows}}
 
 Unpack the condition before reading the whole expression:
 
@@ -70,15 +78,15 @@ Read `[rows, columns]` as row and column selection. `!` means “not”; leaving
 
 ## 2.4 Evidence: save, reopen and check
 
-**Supplied block — `export`.** Run it unchanged. It writes `known_counts` to a CSV, reads that file back, and checks that the values agree. You can expand the code for details.
+**Supplied block — {span .script-block}`BLOCK · export-known-counts`.** Run it unchanged. It writes `known_counts` to a CSV, reads that file back, and checks that the values agree. You can expand the code for details.
 
-{{r:export}}
+{{r:export-known-counts}}
 
 Find **Files → outputs → practice → known-counts.csv**. The read-back check should be TRUE. You need to explain this check's purpose, not reproduce its nested arguments from memory.
 
-Before continuing, run the short `assertion` block:
+Before continuing, run the short {span .script-block}`BLOCK · check-expected-values` block:
 
-{{r:assertion}}
+{{r:check-expected-values}}
 
 `stopifnot()` stops if a required condition is false. Passing conditions print nothing; the completion message shows that execution reached the end. `==` compares values, `<-` stores one, and `name = value` supplies a function setting.
 
@@ -93,21 +101,25 @@ Which three samples contribute to the mean of 20? Find the saved CSV and explain
 
 **Predict first:** replace the fourth count with 40 in a labeled practice copy. What will happen to the mean and missing count?
 
-**Supplied block — `exercise-copy`.** It creates the changed copy below; the original input stays intact. Run the block unchanged:
+**Supplied block — {span .script-block}`BLOCK · exercise-copy`.** It creates the changed copy below; the original input stays intact. Run the block unchanged:
 
 {{r:exercise-copy}}
 
 The next line explicitly reads the **new filename**. Another CSV on disk does not redirect an earlier import:
 
+{span .script-block}`BLOCK · exercise-read`
+
 {{r:exercise-read}}
 
 Now test the old statement, “one count is missing”:
+
+{span .script-block}`BLOCK · exercise-old-rule`
 
 {{r:exercise-old-rule}}
 
 **FALSE is expected.** If you pass this false condition to `stopifnot()`, it raises an error. In this exercise the input was intentionally changed, so the old expectation should fail.
 
-Run `exercise-check` to test the new expectations and verify that the original file still has its missing count:
+Run {span .script-block}`BLOCK · exercise-check` to test the new expectations and verify that the original file still has its missing count:
 
 {{r:exercise-check}}
 

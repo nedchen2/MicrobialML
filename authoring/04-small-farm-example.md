@@ -6,9 +6,9 @@ This is a worked example with **invented counts**, on the original CFU/mL scale.
 
 ## 4.1 Read the experiment
 
-Run `toy-read` to display the farm and round labels. Leave farm C's concentrations out of the calculation until you have written your prediction:
+Run {span .script-block}`BLOCK · load-toy-farm-data` to display the farm and round labels. Leave farm C's concentrations out of the calculation until you have written your prediction:
 
-{{r:toy-read}}
+{{r:load-toy-farm-data}}
 
 A row is one farm sampled at one round. A/1 and A/2 share a biological source, even though they occupy different rows. We have six records from three farms.
 
@@ -16,13 +16,15 @@ A row is one farm sampled at one round. A/1 and A/2 share a biological source, e
 
 ## 4.2 Make the split match the question
 
-`==` means equal to; `!=` means not equal to. Run `toy-split`:
+`==` means equal to; `!=` means not equal to. Run {span .script-block}`BLOCK · toy-split`:
 
 {{r:toy-split}}
 
 `intersect()` lists shared farm labels:
 
-{{r:toy-overlap}}
+{span .script-block}`BLOCK · check-toy-farm-overlap`
+
+{{r:check-toy-farm-overlap}}
 
 **Read `character(0)` as “no shared farm labels.”** Point to the two test records in the input table. Their outcomes will not contribute to the training mean.
 
@@ -32,9 +34,9 @@ Imagine a new milk sample arrives, but you have no sample-specific information t
 
 Training counts are **10, 10, 30 and 30**. Why guess 20 rather than 10 or 30? First compare these guesses using the training results. For each record, square observed minus guessed, then add the four squares.
 
-Run the supplied `toy-guess` block:
+Run the supplied {span .script-block}`BLOCK · compare-baseline-guesses` block:
 
-{{r:toy-guess}}
+{{r:compare-baseline-guesses}}
 
 The sums are **800, 400 and 800**. The guess 20 does better than the other two. When one constant is used and squared error is the criterion, the training mean minimizes that training error. This does not make it the best possible model.
 
@@ -44,7 +46,7 @@ Calculate that mean:
 2. Divide by four records: 20 CFU/mL.
 3. Give each held-out sample that prediction.
 
-Run `toy-predict`. `rep()` repeats the prediction once per test row:
+Run {span .script-block}`BLOCK · toy-predict`. `rep()` repeats the prediction once per test row:
 
 {{r:toy-predict}}
 
@@ -54,7 +56,7 @@ Run `toy-predict`. `rep()` repeats the prediction once per test row:
 
 Now reveal farm C: the observed concentrations are **30 and 50 CFU/mL**. For the first result, **observed 30 − predicted 20 = residual 10**: we predicted 10 CFU/mL too low.
 
-Run the supplied `toy-errors` block to build the two-row calculation table. Expand its code if you want to inspect how the columns are assembled:
+Run the supplied {span .script-block}`BLOCK · toy-errors` block to build the two-row calculation table. Expand its code if you want to inspect how the columns are assembled:
 
 {{r:toy-errors}}
 
@@ -70,6 +72,8 @@ The residuals are 10 and 30; their squares are 100 and 900. Match the arithmetic
 
 **RMSE** averages the squared errors and takes their square root: `sqrt((100 + 900) / 2)`, about **22.36**. The larger error contributes more strongly after squaring.
 
+{span .script-block}`BLOCK · toy-metrics`
+
 {{r:toy-metrics}}
 
 Both final metrics have units of **CFU/mL** here; neither is an accuracy percentage. The squared-error column has squared units, which the square root removes in RMSE.
@@ -83,7 +87,7 @@ In a separate invented pair, predict 20 for observations 10 and 30. The residual
 
 **Predict first:** what happens if someone averages all six concentrations, including C's answers?
 
-Run the deliberately wrong `toy-leakage` example. Its separate objects leave the correct predictions unchanged:
+Run the deliberately wrong {span .script-block}`BLOCK · toy-leakage` example. Its separate objects leave the correct predictions unchanged:
 
 {{r:toy-leakage}}
 
@@ -97,7 +101,7 @@ There is another way a procedure can answer the wrong question. Consider this al
 
 **Your prediction:** which farm labels will occur in both sets?
 
-Run the supplied `toy-wrong-split` counterexample. Its separate objects leave the correct split unchanged:
+Run the supplied {span .script-block}`BLOCK · toy-wrong-split` counterexample. Its separate objects leave the correct split unchanged:
 
 {{r:toy-wrong-split}}
 
@@ -105,7 +109,7 @@ The shared labels are A, B and C. This tests new records from already represente
 
 ## 4.6 Keep the evidence
 
-Run the supplied `toy-save` block:
+Run the supplied {span .script-block}`BLOCK · toy-save` block:
 
 {{r:toy-save}}
 

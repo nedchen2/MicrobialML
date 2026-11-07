@@ -3,19 +3,19 @@
 # Text after # is a comment for people. A # %% line labels the next block.
 # %% arithmetic
 1 + 1
-# %% object
+# %% store-sample-name
 sample_name <- "milk"
 sample_name
-# %% count
+# %% double-a-number
 count <- 20  # Store 20 under the name count.
 count * 2
-# %% folder
+# %% check-project-folder
 project_folder <- getwd()
 basename(project_folder)
 file.exists("microbial-ml.Rproj")
-# %% save
+# %% save-first-result
 dir.create("outputs/practice", recursive = TRUE, showWarnings = FALSE)
 writeLines("My first successful R run.", "outputs/practice/first-run.txt")
 file.exists("outputs/practice/first-run.txt")
-# %% inspect
+# %% read-first-result
 readLines("outputs/practice/first-run.txt")

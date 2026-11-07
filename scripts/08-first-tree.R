@@ -1,9 +1,9 @@
 # Generated from tree-workflow.R for Chapter 08; edit that canonical source as author.
 # Students: save a working copy as my-08-first-tree.R; follow the matching page.
-# %% tree-package
+# %% load-rpart-for-first-tree
 # If not installed yet, run install.packages("rpart") in the Console once.
 library(rpart)
-# %% tree-load
+# %% load-farm-split-for-tree
 source("scripts/course_setup.R")
 source("scripts/tree_helpers.R")
 if (!file.exists("outputs/checkpoints/farm-split.rds")) stop("Run Chapter 7 first, or scripts/full-analysis.R, to create the baseline inputs.")
@@ -43,7 +43,7 @@ sum(two_mean_errors^2)
 surprise_observed <- log10(100)
 surprise_observed - hand_baseline
 surprise_observed - hand_new_prediction
-# %% survey-source
+# %% join-farm-survey
 survey <- read_survey_features(fetch_course_survey())
 train_survey <- attach_survey(outer_split$train, survey)
 test_survey <- attach_survey(outer_split$test, survey)
@@ -72,17 +72,17 @@ reference_cows <- median(recorded_cows, na.rm = TRUE)
 model_cows <- recorded_cows
 model_cows[is.na(model_cows)] <- reference_cows
 data.frame(recorded = recorded_cows, used_by_model = model_cows)
-# %% first-medians
+# %% learn-training-medians
 training_medians <- c(
   pasture_hours = median(train_survey$pasture_hours, na.rm = TRUE),
   milking_cows = median(train_survey$milking_cows, na.rm = TRUE)
 )
 training_medians
-# %% first-fill
+# %% fill-missing-training-inputs
 train_ready <- train_survey
 train_ready$pasture_hours[is.na(train_ready$pasture_hours)] <- training_medians[["pasture_hours"]]
 train_ready$milking_cows[is.na(train_ready$milking_cows)] <- training_medians[["milking_cows"]]
-# %% first-fit
+# %% fit-first-tree
 first_settings <- fixed_tree_settings
 first_settings$maxdepth <- 1
 first_tree <- rpart(log10_msc ~ pasture_hours + milking_cows,

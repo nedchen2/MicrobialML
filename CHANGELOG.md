@@ -1,5 +1,10 @@
 # Changes
 
+## v0.11 — Match book instructions to script blocks
+
+- Label each scripted code block with a blue-gray BLOCK badge in Chapters 1–10.
+- Give ambiguous blocks names that describe their purpose and align the Chapter 0 example, Chapter 1 illustration and student scripts.
+
 ## v0.10 — Check an AI reply against a task
 
 - Rebuild Chapter 3 around an author-reported reply whose calculation returns NA on the practice data. Label the teaching prompt and the object-name adaptation.

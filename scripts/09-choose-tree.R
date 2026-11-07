@@ -1,6 +1,6 @@
 # Generated from tree-workflow.R for Chapter 09; edit that canonical source as author.
 # Students: save a working copy as my-09-choose-tree.R; follow the matching page.
-# %% validation-package
+# %% load-rpart-for-validation
 library(rpart)
 # %% load-tree-input
 source("scripts/tree_helpers.R")
@@ -82,7 +82,7 @@ validation_scores$selected <- validation_scores$depth == chosen_depth
 validation_scores
 baseline_validation
 chosen_depth
-# %% training-check
+# %% compare-training-and-validation-errors
 # An illustration after selection: these fits do not alter the chosen depth.
 training_medians <- learn_medians(train_survey)
 train_filled <- fill_predictors(train_survey, training_medians)

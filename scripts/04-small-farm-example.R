@@ -1,6 +1,6 @@
 # Chapter 4: six invented records, not observations from the publication.
 # Save As scripts/my-04-small-farm-example.R; run blocks in the page order.
-# %% toy-read
+# %% load-toy-farm-data
 toy <- read.csv("data/practice_farms.csv", stringsAsFactors = FALSE)
 toy[c("FarmID", "Sampling")]
 stopifnot(nrow(toy) == 6, length(unique(toy$FarmID)) == 3)
@@ -9,10 +9,10 @@ stopifnot(nrow(toy) == 6, length(unique(toy$FarmID)) == 3)
 toy_train <- toy[toy$FarmID != "C", ]
 toy_test <- toy[toy$FarmID == "C", ]
 data.frame(FarmID = c("A", "B", "C"), role = c("train", "train", "test"))
-# %% toy-overlap
+# %% check-toy-farm-overlap
 intersect(unique(toy_train$FarmID), unique(toy_test$FarmID))
 stopifnot(nrow(toy_train) == 4, nrow(toy_test) == 2)
-# %% toy-guess
+# %% compare-baseline-guesses
 # Compare fixed guesses using training outcomes only.
 toy_candidates <- data.frame(guess_CFU_ml = c(10, 20, 30),
   training_squared_error_sum = c(sum((toy_train$count_cfu_ml - 10)^2),
