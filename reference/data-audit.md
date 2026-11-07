@@ -1,54 +1,58 @@
 # The milk data at a glance
 
-Use this sheet to check the scientific choices behind Chapters 5–10.
+## Study data card
 
-## What are we using?
-
-**Source:** [Qian and colleagues' organic milk study (2025)](https://doi.org/10.1016/j.jfp.2025.100477), with data in the [authors' repository](https://github.com/FSL-MQIP/OREI_ML_Inference).
-
-A selected row is one **MSC result from one farm and sampling round**. MSC means mesophilic spore count, in CFU/mL. Farms contribute repeated records.
-
-## Which records enter this exercise?
-
-| Decision | Result |
+| Question | Answer |
 |---|---|
-| Read the original multi-assay table | 2,736 records |
-| Select MSC | 562 records |
-| Require no note and a positive, finite count | 525 records from 102 farms |
-| Keep the authors' below-detection encoding and flag it | 30 records at 0.125 CFU/mL |
-| Predict log10 MSC | Errors are on the transformed scale |
-| Hold out whole farms | 81 training farms / 21 test farms; no overlap |
+| What is one record? | One MSC result for one farm and sampling round. A farm can contribute records from several rounds. |
+| What do we predict? | Mesophilic spore count (MSC) is recorded in CFU/mL. The model predicts its base-10 logarithm, `log10_msc`. |
+| Which records are used? | **525 MSC records from 102 farms** after applying the assay and eligibility filters below. |
+| How are farms split? | **81 training farms with 420 records** and **21 test farms with 105 records**. All records from one farm stay together. |
 
-The authors stored 0.125 CFU/mL, one quarter of the 0.5 CFU/mL detection limit, for records with unknown concentrations below that limit. Our teaching subset excludes 34 records with laboratory errors, two TNTC results and one unresolved note.
+The assay and survey files come from an organic milk study. [Qian and colleagues (2025)](https://doi.org/10.1016/j.jfp.2025.100477) · [Authors' repository](https://github.com/FSL-MQIP/OREI_ML_Inference)
 
-## What does the tree add?
+## How we get to 525 records
 
-The original farm survey supplies **current pasture hours/day** and **number of milking cows that day**. We join by farm and round, preserving all 525 outcomes and the same split. There are 29 unmatched records and two additional unknown training cow counts. Missing predictor values use medians learned from the fitting records only, separately within each validation fold.
+| Step | Records |
+|---|---:|
+| Read the original table containing several milk assays | 2,736 |
+| Select the MSC assay | 562 |
+| Keep records with no recorded note and a positive, finite concentration | 525 |
 
-Five batches of training farms compare maximum tree depths 1, 2 and 3; the lowest pooled out-of-fold RMSE chooses depth. The final test farms do not choose it. The supplied depth-1 tree has test RMSE about 0.545 versus 0.529 for the baseline, so extra complexity did not improve this comparison.
+The 37 excluded records have laboratory notes: 34 laboratory errors, two TNTC results (too numerous to count), and one unresolved note.
+
+**The 525 records include 30 below-limit results.** The assay's detection limit was **0.5 CFU/mL**. The authors used **0.125 CFU/mL** to represent results below that limit, whose exact concentrations are unknown. We keep the stored value and flag those rows with `left_censored`. [Chapter 5’s data preparation](../chapters/05-meet-real-data.ipynb)
+
+## Which survey inputs does the tree use?
+
+The two candidate inputs are **pasture hours per day** and **number of milking cows that day**. We match survey and lab rows by farm and sampling round. There are **29 lab records without a matching survey row** and **two additional matched training records with missing cow counts**. The model uses medians learned from the fitting records to fill missing inputs in a separate copy. [Milk data dictionary](../data/data-dictionary.csv) · [Survey predictor dictionary](../data/predictor-dictionary.csv)
 
 ## Tree settings
 
-This is optional reference for the supplied `fixed_tree_settings` object. Copying it and changing `$maxdepth` keeps the rest of this teaching comparison fixed.
+```{admonition} View the fixed rpart settings
+:class: note dropdown
+
+We copy `fixed_tree_settings` and vary `maxdepth` for the training-farm comparison. The other settings stay fixed.
 
 | Setting | Supplied value and role |
 |---|---|
-| `maxdepth` | Initially 1; compare 1, 2 and 3 within training farms |
-| `minsplit`, `minbucket` | 20 records needed to consider splitting; at least 10 records in a leaf |
-| `cp` | 0; no additional complexity penalty threshold in this comparison |
-| `xval` | 0; turn off rpart's internal validation because our lesson explicitly validates whole farms |
-| `maxcompete`, `maxsurrogate`, `usesurrogate` | 0; use the primary learned rules and our explicit missing-input preparation |
+| `maxdepth` | Compare 1, 2 and 3 within the training farms |
+| `minsplit`, `minbucket` | At least 20 records to consider a split and at least 10 in each leaf |
+| `cp` | 0, so this comparison uses no additional complexity penalty threshold |
+| `xval` | 0 because the lesson handles validation in whole-farm groups |
+| `maxcompete`, `maxsurrogate`, `usesurrogate` | 0, with inputs prepared using the lesson's median rule |
 
-We hold these settings fixed while comparing depths. The four invented records in Chapter 8 are for practising the arithmetic. The fitted tree uses at least 20 records to consider a split. In rpart, `method = "anova"` tells the software to fit a regression tree for a numeric outcome.
-
-## What can the result support?
-
-The scores compare predictions on 105 records from 21 held-out farms in this study. Some farms contributed repeated samples. Chapter 7 scores the baseline on these same test records before the tree lessons. The comparison uses the authors' below-limit values and assumes the survey inputs are available before the MSC result. The tree uses training medians to fill missing survey values.
-
-To assess performance in another region, we would need test records from that region. Estimating the effect of changing a farm practice would require a study designed around that question. Product safety requires evidence about the specific hazards of concern.
+In rpart, `method = "anova"` selects a regression tree for a numeric outcome.
+```
 
 ## How do I get the data?
 
-Run the supplied download blocks in Chapters 5 and 8. They retrieve fixed author-file versions and check them; complete raw datasets are not inside the student ZIP. First access needs internet. If it fails, follow the [download recovery steps](troubleshooting.md#download-the-source-files-yourself).
+Chapters 5 and 8 download the two study CSVs from fixed versions of the authors' files. You can also save those same CSVs with your browser. [Source-file recovery](troubleshooting.md#download-the-source-files-yourself)
 
-For citation, version identifiers, checksums and detailed reuse notes, maintainers can consult the [full provenance record](https://github.com/nedchen2/MicrobialML/blob/main/DATA_NOTES.md).
+File versions, checksums and reuse details are in the [full provenance record](https://github.com/nedchen2/MicrobialML/blob/main/DATA_NOTES.md).
+
+## How to interpret the results
+
+The comparison uses one split from this study. Some farms contributed repeated samples. Chapters 7 and 10 score predictions on the same 105 test records. The scores include the authors' stored values for below-limit results.
+
+The exercise assumes the survey inputs are available before the lab result. The tree uses training medians where survey inputs are missing. Test records from another region would be needed to assess prediction there. A study of a farm practice's effect or a product's safety would need evidence suited to that question. [Final comparison in Chapter 10](../chapters/10-test-tree.ipynb)

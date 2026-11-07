@@ -1,73 +1,71 @@
 # When something goes wrong
 
-First save your script. Identify the smallest line that fails. Keep the full error message and the task you expected that line to perform.
+Save your working script and find what you see below. Copy the full message from the **Console** so you can check which line or file caused it.
 
-| What you see | First check | A useful next step |
+## R shows a message or stops
+
+| What you see | What to try first |
+|---|---|
+| `object 'x' not found` | Run the earlier block that creates `x` in this R session. Check that the name and capital letters match. |
+| `cannot open file` | Open the extracted project's `microbial-ml.Rproj`. Run `getwd()` to see the current folder, then check the filename and path from the error. |
+| Console shows `+` | Press **Esc**. Select the complete statement, including its closing quote or parenthesis, and run it again. |
+| `there is no package called 'rpart'` | Run `install.packages("rpart")` once in the Console. Run `library(rpart)` in each new R session. |
+| A column returns `NULL` | Run `names(your_table)`, using your table's name. Copy the column name exactly. |
+| A calculation says the data are not numeric | Run `str(your_table)` and inspect the column before converting its values. |
+| A chapter's BLOCK label is missing from your script | Check the chapter number and script name. Open the reference script from the current [student ZIP](downloads.md) and compare its labels with your working copy. |
+
+## A checkpoint file is missing
+
+Check the filename in the message. Open the chapter listed below and run its blocks in order through the named save block. The file will appear in **Files → outputs → checkpoints**. Then restart R and return to the chapter you were working on.
+
+| Missing file | Chapter that creates it | Save block |
 |---|---|---|
-| `object 'x' not found` | Was `x` created in this R session? Is the spelling identical? | Run the preceding assignment; check capitalization |
-| `cannot open file` | Are you in the extracted project? Does the path exist? | Open `microbial-ml.Rproj`; run `getwd()` and `file.exists("data/practice_counts.csv")` |
-| Console shows `+` | Is a quote or parenthesis unfinished? | Press Esc, then run one complete line |
-| A mean returns `NA` | Are any entries missing? | Use `is.na()` and explain a missing-data treatment before changing it |
-| A column returns `NULL` | Is the column name present? | Run `names(your_table)` and select the actual name |
-| A calculation says data are not numeric | What type is the column? | Run `str(your_table)`; inspect values before conversion |
-| Download or connection fails | Can your computer reach the pinned source URL? | Check your connection and try the [manual source download](#download-the-source-files-yourself) below |
-| Checksum mismatch | Is the file partial, edited or from another version? | Remove only the cached source file and retry; keep your scripts |
-| A checkpoint file is missing | Did the preceding chapter finish? | Run Chapter 5 to create msc-prepared.rds, or Chapter 6 to create farm-split.rds |
-| A tree checkpoint is missing | Did Chapters 8 and 9 finish? | Chapter 8 creates tree-input.rds; Chapter 9 creates tree-fit.rds. Keep the original order |
-| `there is no package called` rpart | Is the package installed for this R? | Run `install.packages("rpart")` once in the Console, then retry `library(rpart)`; repeat the load after each R restart |
-| The changed-copy exercise shows FALSE | Is this the labeled old-rule check? | FALSE is expected for the old one-missing rule after changing the fourth practice count to 40 |
-| Source shows fewer results than the website | Was the file sourced rather than run block by block? | Run the object name or use print(); the main lesson route selects a block and clicks Run |
-| An AI login or quota blocks the exercise | Can another listed chat open? | Use [AI access](../chapters/01-first-run.ipynb#id-1-5-ai-access), or complete the supplied code-inspection route and log it honestly |
-| The AI cannot find my data | Did you provide the column names and relevant approved rows or output? | Opening a file in RStudio alone does not send it to chat |
-| An assertion fails | Which condition failed? | Compare the value in your session with the lesson's expected result |
-| Correct code gives a different score | Same input checksum, eligibility rules, R sampling algorithm and seed? | Compare saved fold assignments and full-precision outputs |
+| `msc-prepared.rds` | [5. Meet the real milk data](../chapters/05-meet-real-data.ipynb) | {span .script-block}`BLOCK · save-prepared` |
+| `farm-split.rds` | [6. Split the data by farm](../chapters/06-split-farms.ipynb) | {span .script-block}`BLOCK · save-split` |
+| `tree-input.rds` | [8. Can two averages beat one?](../chapters/08-first-tree.ipynb) | {span .script-block}`BLOCK · save-tree-input` |
+| `tree-fit.rds` | [9. How deep should the tree grow?](../chapters/09-choose-tree.ipynb) | {span .script-block}`BLOCK · save-tree-fit` |
+
+## The output looks different
+
+| What you see | What to check |
+|---|---|
+| A mean returns `NA` | Use `is.na()` to find missing values. Check what the task says to do with them. Chapter 3 shows how to report the mean of the recorded values. |
+| The changed-copy exercise shows `FALSE` | This is expected for Chapter 2's old one-missing-value check after you fill the fourth count. |
+| RStudio shows fewer results after **Source** | Select the named block and click **Run** to inspect that step's output. |
+| A check stops or the score differs | Compare the first different result with the chapter. Check record counts and farm assignments before comparing full-precision scores. If the assignments differ, check that you used the supplied scripts and their sampling settings. |
 
 ## Download the source files yourself
 
-If R's download fails, first check your internet connection. You can also save the **same fixed author files** with your browser:
+If a download fails in Chapters 5 or 8, check your internet connection. You can save the same source CSV with your browser.
 
-| Original file | Save inside the extracted project as |
+| Source file | Save inside the extracted project as |
 |---|---|
 | [Milk assay CSV](https://raw.githubusercontent.com/FSL-MQIP/OREI_ML_Inference/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Raw%20Milk%20Micro%20Data.csv) | `data/raw/Raw_Milk_Micro_Data.csv` |
 | [Farm survey CSV](https://raw.githubusercontent.com/FSL-MQIP/OREI_ML_Inference/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Farm%20Survey%20Data.csv) | `data/raw/Farm_Survey_Data.csv` |
 
-1. In the project's `data` folder, create a folder called `raw` if it does not exist.
-2. Open a link above. Use the browser's save/download option, keeping the original CSV bytes. Rename the downloaded file to the exact filename in the table; avoid a second `.csv` or an `.html` extension. Do not open and resave it in a spreadsheet editor.
-3. Place it in `data/raw`, restart R, and rerun the chapter from the top. The supplied helper checks the existing file and uses it without downloading again.
+1. Inside the project's `data/` folder, create a `raw/` folder if needed.
+2. Use your browser's download or save option. Keep the downloaded CSV as it is and give it the exact filename in the table, with a single `.csv` extension.
+3. Restart R and rerun the chapter. The helper checks the saved CSV and uses it for the analysis.
 
-If you see **checksum mismatch**, remove only that cached file and download it again from the fixed link. Keep your my- scripts and results; do not change the expected checksum. If the source website is also unreachable in your browser, restore network access before continuing the real-data route. The invented-data lessons in Chapters 1–4 can still run.
+If R says **Source checksum mismatch**, the saved CSV differs from the expected source file. Delete only the file named in the error and download it again. If you are offline, you can still run Chapters 1–4 with the files in the ZIP.
 
-## Recover without changing the analysis
+## AI chat is unavailable or gives unusable code
 
-1. Save your my- script and read the full error text. Match it to the table above.
-2. Restart R, reopen the project, and run the supplied reference script for that chapter from the top. If a checkpoint is missing, finish the named preceding chapter; an empty replacement will not work.
-3. If the reference works but your changed copy does not, compare the smallest differing block. Use the error report below when asking AI for a local repair. Run and check the returned code yourself.
-4. Compare the relevant output with the chapter's displayed values and reference explanation. Small display-rounding differences are expected; a different result needs investigation, not deletion of the check.
+- **Login or quota problem.** Try another browser chat or take the chapter's code-inspection route. [AI access](../chapters/01-first-run.ipynb#id-1-5-ai-access)
+- **AI uses the wrong table or column.** Give it the exact names from R and the relevant error or output. Share only data you are allowed to share.
 
-## A small error report
+## Start again from the reference script
 
-Use this as a note to yourself or paste it into your chosen AI chat. For a small repair, include the invented practice rows or the relevant output rather than unrelated files.
+1. Save your `my-` script. Choose **Session → Restart R**. Your files stay on disk while R clears the objects from the session.
+2. Open the project and run the supplied reference script for the chapter from the top, using its named blocks. Follow the checkpoint table above if a file is missing.
+3. If the reference works, compare the first block where your copy behaves differently. Use the report below to ask about that step and check the repair in R.
+
+## Copy a short error report
 
 ```text
-Goal:
-Exact code that fails:
-Full error text:
-Expected result:
-Actual result:
-Relevant object/column names:
-What I already checked:
-R version:
+What I was trying to do:
+The exact R code I ran:
+The full message or unexpected output:
 ```
 
-Only include data approved for sharing. A text copy of the code and error lets someone reproduce the problem more reliably than a cropped screenshot alone.
-
-## Restore a known starting point
-
-Use **Session → Restart R**, then open the correct project and run the lesson from the top. Do not rely on objects left in memory from an earlier experiment. Installation is persistent; ordinary in-memory objects are not.
-
-If a repair requires a new assumption, record it. For example, converting text counts to numbers can create missing values; replacing an absent result with zero changes the scientific data.
-
-```{admonition} Only when asking for setup help: report your R version
-:class: note dropdown
-Run `R.version.string` in the Console and copy the output with your error report. You do not need to match the exact version text printed in the book.
-```
+If it helps, add the chapter and block name, the result you expected, and what you already checked. For an installation or setup issue, run `R.version.string` in the Console and add its output.

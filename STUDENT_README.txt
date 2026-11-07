@@ -20,12 +20,17 @@ Textbook: https://nedchen2.github.io/MicrobialML/
    author CSV and checks the checksum. It saves outputs/checkpoints/msc-prepared.rds.
 7. Restart R, run 06-split-farms.R, then find outputs/checkpoints/farm-split.rds.
 8. Restart R, run 07-baseline.R, then inspect outputs/baseline for scores and a plot.
+   First check one real test record by hand. Then score all 105 test records.
 9. To rebuild the real-data BASELINE, restart R and run a my- copy of
    scripts/worked-example.R from top to bottom. No previous checkpoint is needed.
 10. Continue with 08-first-tree.R, 09-choose-tree.R, then 10-test-tree.R.
     Restart R before each chapter. Chapter 8 shows install.packages("rpart") once
     if needed, and library(rpart) in each session; it also downloads the original
-    survey. First fit and inspect a tree, then choose depth in Chapter 9.
+    survey. Fit and inspect a tree in Chapter 8. In Chapter 9, follow R4/A
+    through one validation round and the combined predictions, then choose
+    depth and save the final tree. In Chapter 10, revisit the Chapter 7
+    record (R15/A), compare the tree and baseline on all 105 test records,
+    and save the results in outputs/tree.
 11. After the tree route, scripts/full-analysis.R recreates BOTH real workflows
     from the beginning. Keep optional changed-input results under another filename;
     this script recreates the supplied reference results.
@@ -41,10 +46,10 @@ then follow the supplied blocks to save its separate record.
 AI access: start at https://genai.hku.hk/ with your HKU Portal account, or use
 Gemini, Microsoft Copilot or Poe as linked in Chapter 1, section 1.5.
 No TA link, API setup or paid subscription is needed for these exercises.
-If live chat is unavailable, use the supplied code-inspection route
-and record it honestly. Follow the website's recovery steps for errors or source
-downloads; the optional completion card now covers Chapters 1-10. Chapters 1-7 need only base R; Chapters 8-10
-use rpart. Students do not need API keys, Python, Node.js or Jupyter Book.
+If live chat is unavailable, use the supplied code-inspection route and
+record it in your log. The website's troubleshooting page lists common errors,
+checkpoint save blocks and manual source downloads. The optional completion
+card covers Chapters 1-10. Chapters 1-7 use base R. Chapters 8-10 use rpart.
 
 The changed-copy exercise creates outputs/practice/practice_counts_changed.csv.
 Its mean is 25 and it has zero missing counts. The old one-missing rule is FALSE
@@ -65,10 +70,10 @@ BLOCK badges match the # %% labels in the R scripts. For example, find
 # %% double-a-number for BLOCK · double-a-number. Use the current student
 download for the labels shown in the current book.
 
-Live AI work: Chapter 3 has a separate live-workspace in Section 3.8. Keep
-the reference examples and paste your own replies in that work area. Chapter 7's
-three-row preview checks residuals; its full RMSE exercise uses all 105 rows
-of the local test object. The optional AI RMSE work area is after the exports.
+Live AI work: Chapter 3 has a separate live-workspace in Section 3.8.
+Chapter 7's optional AI check comes after the exports and uses all 105 rows of
+the local test object. Chapter 10 ends with an optional AI fit-and-predict check.
+Use your my- scripts for these activities.
 Files: .R is code, .csv is a table, .png is a figure, .rds is read by R, and
 .txt is a plain-text note. Restarting R clears objects but keeps these files.
 The full-analysis runner sources the supplied reference workflows; a my-
