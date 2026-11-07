@@ -57,6 +57,24 @@ def main(cold):
             (project / "data/raw").mkdir(parents=True)
             for filename in ["Raw_Milk_Micro_Data.csv", "Farm_Survey_Data.csv"]:
                 shutil.copyfile(ROOT / "data/raw" / filename, project / "data/raw" / filename)
+        # A learner can finish the supplied main route before the additional
+        # runtime-error or live-chat exercises, using only the extracted ZIP.
+        chapter_3 = (project / "scripts/03-working-with-ai.R").read_text()
+        main_route, boundary, _ = chapter_3.partition("\n# %% runtime-error\n")
+        assert boundary
+        practice_path = project / "data/practice_counts.csv"
+        practice_bytes = practice_path.read_bytes()
+        main_run = subprocess.run(["Rscript", "--vanilla", "-e", main_route], cwd=project,
+                                  text=True, capture_output=True, timeout=30)
+        assert main_run.returncode == 0, main_run.stdout + main_run.stderr
+        main_output = project / "outputs/ch03"
+        assert not (main_output / "runtime-error-and-repair.txt").exists()
+        assert (main_output / "ai-use-log.txt").is_file()
+        main_record = (main_output / "summary-check.txt").read_text().splitlines()
+        assert {"First reply result: NA", "Fill-zero example result: 15",
+                "Checked recorded-count mean: 20", "Original fourth count still missing: TRUE"} <= set(main_record)
+        assert read(main_output / "summary.csv") == [{"missing_n": "1", "recorded_n": "3", "mean_recorded": "20"}]
+        assert practice_path.read_bytes() == practice_bytes
         for name in LESSONS:
             result = subprocess.run(["Rscript", "--vanilla", "scripts/"+name+".R"], cwd=project,
                                     text=True, capture_output=True, timeout=180)
@@ -223,6 +241,7 @@ saveRDS(original_fit, "outputs/checkpoints/tree-fit.rds")
             "missing_prerequisite_has_actionable_error": True,
             "changed_copy_exercise_25_and_original_preserved": True,
             "AI_summary_1_3_20_and_completed_log_preserved": True,
+            "chapter_3_main_route_saves_NA_15_and_20_without_optional_exercises": True,
             "unguarded_student_line_produces_real_R_error": True,
             "guarded_error_record_and_repaired_mean_20_checked": True,
             "edited_intentional_error_has_guidance_without_secondary_failure": True,

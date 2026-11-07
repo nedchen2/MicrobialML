@@ -121,7 +121,7 @@ tools/verify_tree.py independently reconstructs all 15 fold/candidate trees' nod
 
 The extracted-student-project check also verifies the changed-copy exercise, the repaired AI summary, preservation of a completed AI-use log, toy error calculations, actionable missing-checkpoint errors, and agreement with the v0.1 baseline results. The actual CI environment is saved as an Actions artifact.
 
-Chapter 3 includes an intentional object-name failure. Students first run its one failing line; the supplied runtime-error block then captures the real R condition so the complete script and notebook can continue. This guard is operational reference, not a prerequisite concept. The verifier separately runs the unguarded line in a fresh Rscript process and requires a nonzero exit and the missing object name; it also checks the saved error record and repaired mean. Expected failure is not treated as an unhandled notebook error.
+Chapter 3 saves its checked summary before the additional object-name exercise. The verifier runs this main route on its own from the extracted ZIP and checks the observed NA, the fill-zero result 15, the recorded-count mean 20, and preservation of the original data. In the additional exercise, students run one failing line; the supplied runtime-error block captures the real R condition so the full script and notebook can continue. The verifier separately checks the unguarded nonzero exit, the saved error record and the repaired mean. The guard is operational reference; the expected failure is not an unhandled notebook error.
 
 For subpath checks use `python tools/verify_html.py --base-url /MicrobialML` after a build with the same BASE_URL. The local link checker derives its page count from the table of contents.
 

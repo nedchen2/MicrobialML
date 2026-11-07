@@ -106,7 +106,7 @@ You can use one of these alternatives if you do not have an HKU account or prefe
 | Microsoft Copilot | [copilot.com](https://copilot.com/) | Microsoft's [availability page](https://support.microsoft.com/en-au/microsoft-365-copilot/supported-languages-for-microsoft-365-copilot) includes Hong Kong. Sign-in and feature limits depend on the account. This is browser chat, not GitHub Copilot. |
 | Poe | [poe.com](https://poe.com/) | Poe's [official FAQ](https://help.poe.com/hc/en-us/articles/19945140063636-Poe-Purchases-FAQs) lists Hong Kong. Free users have limited access; points and model availability vary. |
 
-Availability was checked on **7 November 2026**; use the linked provider pages for current conditions. Pick one service that opens for you. If an account or quota blocks access, try another listed option or use Chapter 3's supplied dialogue for code inspection. You can continue the R lessons without waiting for live chat. Record the route you actually used.
+Availability was checked on **7 November 2026**; use the linked provider pages for current conditions. Pick one service that opens for you. If an account or quota blocks access, try another listed option or use Chapter 3's supplied code-inspection exercises. You can continue the R lessons without waiting for live chat. Record the route you actually used.
 
 ### Try one small exchange
 

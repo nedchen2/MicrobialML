@@ -30,7 +30,7 @@ Opening a file in RStudio does not automatically share it with a chat assistant.
 
 **Make something run — Chapters 1–2.** Open the project, save your own script and inspect a four-row table.
 
-**Work with AI — Chapter 3.** Ask, run, repair a real R error, then spot an unsuitable assumption in code that runs. Keep evidence for both repairs.
+**Work with AI — Chapter 3.** Run a reply to an incomplete request, explain its missing result, and check a repaired summary against your data. Then try a separate object-name error exercise.
 
 **Understand the analysis — Chapters 4–7.** Hand-check six invented farm records, then prepare real data, hold out whole farms and evaluate a baseline.
 

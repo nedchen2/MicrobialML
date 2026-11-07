@@ -1,5 +1,11 @@
 # Changes
 
+## v0.10 — Check an AI reply against a task
+
+- Rebuild Chapter 3 around an author-reported reply whose calculation returns NA on the practice data. Label the teaching prompt and the object-name adaptation.
+- Compare a checked recorded-count mean of 20 with a fill-zero result of 15. Save the evidence and a student-edited log before the additional object-name exercise.
+- Keep optional live replies in their own work area. Verify the main code-inspection route independently of both extra exercises.
+
 ## v0.9 — Explain the first operations and make checks unambiguous
 
 - Teach comments, block boundaries, complete selections, Source meanings and file types at first use.

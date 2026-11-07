@@ -31,14 +31,17 @@ Textbook: https://nedchen2.github.io/MicrobialML/
     this script recreates the supplied reference results.
 
 The optional templates/completion-card.txt helps you record a script, output,
-explanation and check. Chapter 3 creates outputs/ch03/ai-use-log.txt; edit and save your actual
-route. Its illustrative dialogue is a teaching example, not a real model log.
-Chapter 3 also produces a real R object-name error; follow the page's one-line
-Run step, then its supplied block to record the error and continue.
+explanation and check. In Chapter 3, follow Sections 3.1-3.6 to compare a first
+reply's NA, an unsuitable fill-zero result of 15, and the checked mean of 20.
+Find outputs/ch03/summary.csv and summary-check.txt. Edit ai-use-log.txt in
+the same folder to describe your actual route and checks. The author-reported
+reply is labelled separately from the constructed teaching examples.
+Section 3.7 is additional practice: run one line to see an object-name error,
+then follow the supplied blocks to save its separate record.
 AI access: start at https://genai.hku.hk/ with your HKU Portal account, or use
 Gemini, Microsoft Copilot or Poe as linked in Chapter 1, section 1.5.
 No TA link, API setup or paid subscription is needed for these exercises.
-If live chat is unavailable, use the supplied dialogue/code-inspection route
+If live chat is unavailable, use the supplied code-inspection route
 and record it honestly. Follow the website's recovery steps for errors or source
 downloads; the optional completion card now covers Chapters 1-10. Chapters 1-7 need only base R; Chapters 8-10
 use rpart. Students do not need API keys, Python, Node.js or Jupyter Book.
@@ -58,8 +61,8 @@ about 0.545 and MAE about 0.426 log10 CFU/mL. It does not beat the baseline here
 Toy original-scale error values cannot be compared directly with log-scale errors.
 These microbial-quality results do not establish causality or product safety.
 
-Live AI work: Chapter 3 has a separate live-workspace at the end. Keep the
-intentional error examples and paste repairs in that work area. Chapter 7's
+Live AI work: Chapter 3 has a separate live-workspace in Section 3.8. Keep
+the reference examples and paste your own replies in that work area. Chapter 7's
 three-row preview checks residuals; its full RMSE exercise uses all 105 rows
 of the local test object. The optional AI RMSE work area is after the exports.
 Files: .R is code, .csv is a table, .png is a figure, .rds is read by R, and

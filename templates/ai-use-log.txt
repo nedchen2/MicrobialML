@@ -1,7 +1,8 @@
 AI USE / TEACHING EXERCISE LOG
-Route: [live chat / supplied illustrative dialogue / both]
+Route: [live chat / supplied code-inspection exercises / both]
 Task: [what summary or analysis was requested?]
-Context sent: [column names / invented rows / error text]
+Context supplied or discussed: [column names / invented rows / error text]
+Initial output: [what did R show, or what clarification did the assistant ask for?]
 Accepted change: [what code or assumption changed?]
 Evidence: [actual output and an independent check]
 Remaining question: [what this check does not establish]

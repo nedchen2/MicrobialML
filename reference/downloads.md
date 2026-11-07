@@ -6,7 +6,7 @@
 2. Open `microbial-ml.Rproj` in RStudio.
 3. Start with Chapter 1. Save your edits in my- copies of the reference scripts.
 
-The supplied analysis uses R and RStudio. Chapters 1–7 use base R; Chapter 8 shows how to install rpart once and load it with `library(rpart)` in each new session. Use the direct HKU and alternative platform links in [AI access](../chapters/01-first-run.ipynb#id-1-5-ai-access); Chapter 3 also includes a labeled inspection dialogue.
+The supplied analysis uses R and RStudio. Chapters 1–7 use base R; Chapter 8 shows how to install rpart once and load it with `library(rpart)` in each new session. Use the direct HKU and alternative platform links in [AI access](../chapters/01-first-run.ipynb#id-1-5-ai-access); Chapter 3 also provides a complete route using supplied code, without live chat.
 
 ## What is in the folder?
 

@@ -87,7 +87,7 @@ Before continuing, run the short `assertion` block:
 Which three samples contribute to the mean of 20? Find the saved CSV and explain why the fourth count is not automatically zero.
 ```
 
-**Ask AI:** provide the table and ask for a missing-count summary without imputation. Check its answer against the three recorded values. Chapter 3 takes this exchange through a full repair cycle.
+**Get ready for Chapter 3:** keep your hand check of the three recorded values. You will use it to judge an AI reply and improve a request that leaves out the missing-value information.
 
 ## 2.5 Extension worksheet: change a copy
 
