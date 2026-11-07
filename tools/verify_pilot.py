@@ -64,7 +64,17 @@ def main(cold):
                 raise AssertionError(result.stdout + result.stderr)
         # Check the new learning bridges against the actual fitted workflow.
         # This is a reference-code check, not a claimed live AI interaction.
-        learning_checks = r'''
+        baseline_cells = read_cells(project / "scripts/07-baseline.R")
+        before_export = []
+        for key, value in baseline_cells.items():
+            if key == "sensitivity":
+                break
+            before_export.append(value)
+        learning_checks = "\n".join(before_export) + r'''
+# The student's local-data AI check works before any export block is run.
+ai_rmse <- sqrt(mean((test$log10_msc - test$prediction_log10)^2))
+stopifnot(nrow(test) == 105, isTRUE(all.equal(ai_rmse, rmse)))
+stopifnot(abs(sqrt(mean(preview_errors^2)) - ai_rmse) > 0.08)
 source("scripts/08-first-tree.R")
 stopifnot(hand_baseline == 1, left_mean == 0, right_mean == 2)
 stopifnot(hand_new_prediction == 0, sum(one_mean_errors^2) == 4, sum(two_mean_errors^2) == 0)
@@ -108,6 +118,22 @@ stopifnot(isTRUE(all.equal(as.numeric(ai_prediction), as.numeric(tree_prediction
         assert "milk_data" in runtime_record and "Correct object: practice" in runtime_record
         assert "Repaired recorded-count mean: 20" in runtime_record
         assert read(project / "data/practice_counts.csv")[-1]["count_cfu_ml"] in ["", "NA"]
+        assert "R error observed: TRUE" in runtime_record
+        # A learner may repair the intentional line in place. It must finish
+        # with truthful guidance, rather than failing a second error assertion.
+        edited_script = project / "scripts/my-03-edited-error.R"
+        edited_script.write_text((project / "scripts/03-working-with-ai.R").read_text().replace(
+            "mean(milk_data$count_cfu_ml, na.rm = TRUE)",
+            "mean(practice$count_cfu_ml, na.rm = TRUE)"))
+        edited_run = subprocess.run(["Rscript", "--vanilla", str(edited_script)], cwd=project,
+                                    text=True, capture_output=True, timeout=30)
+        assert edited_run.returncode == 0, edited_run.stdout + edited_run.stderr
+        assert "No R error" in edited_run.stdout and "live-work area" in edited_run.stdout
+        edited_record = (project / "outputs/ch03/runtime-error-and-repair.txt").read_text()
+        assert "R error observed: FALSE" in edited_record
+        assert "Repaired recorded-count mean: 20" in edited_record
+        subprocess.run(["Rscript", "--vanilla", "scripts/03-working-with-ai.R"], cwd=project,
+                       check=True, capture_output=True, text=True, timeout=30)
         log_path = project / "outputs/ch03/ai-use-log.txt"
         log_path.write_text("My completed student log: preserve this on rerun.\n")
         subprocess.run(["Rscript", "--vanilla", "scripts/03-working-with-ai.R"], cwd=project,
@@ -199,6 +225,8 @@ saveRDS(original_fit, "outputs/checkpoints/tree-fit.rds")
             "AI_summary_1_3_20_and_completed_log_preserved": True,
             "unguarded_student_line_produces_real_R_error": True,
             "guarded_error_record_and_repaired_mean_20_checked": True,
+            "edited_intentional_error_has_guidance_without_secondary_failure": True,
+            "local_full_105_row_RMSE_check_distinguished_from_three_row_preview": True,
             "toy_residuals_and_metrics_independently_checked": True,
             "toy_training_guesses_and_separate_leakage_example_checked": True,
             "baseline_numerically_matches_v01": True,

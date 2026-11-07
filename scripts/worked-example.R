@@ -111,6 +111,11 @@ stopifnot(isTRUE(all.equal(mae, mae_check)))
 round(data.frame(observed = head(test$log10_msc, 3),
                  predicted = head(test$prediction_log10, 3),
                  residual = head(test$error_log10, 3)), 4)
+# %% rmse-scope
+# Three displayed records are a preview; the complete score uses all test records.
+preview_errors <- head(test$error_log10, 3)
+data.frame(records_used = c(length(preview_errors), nrow(test)),
+           RMSE_log10 = c(sqrt(mean(preview_errors^2)), rmse))
 # %% sensitivity
 # Evaluation subset only: the baseline is not refitted or chosen using this result.
 quantified_test <- test[!test$left_censored, ]
@@ -146,3 +151,6 @@ cat("Saved outputs/baseline/training-distribution.png\n")
 # %% audit-save
 write.csv(split_checkpoint$audit, "outputs/baseline/data-audit.csv", row.names = FALSE)
 cat("All data and baseline checks passed.\n")
+# %% baseline-live-workspace
+# My AI RMSE check: add your returned R code below in your my- copy.
+# Use all rows of test, not just the three-row preview.

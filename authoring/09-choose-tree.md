@@ -44,14 +44,22 @@ Start with batch 1. **Validation** means checking predictions for records that d
 
 Read the table: **336 records from 64 farms** fit this tree; **84 records from 17 other training farms** check it. These 17 are temporarily hidden training farms, not any of the 21 final test farms.
 
+Use this whole-course map for **round 1**. First split the 102 farms; only the 81 training farms enter the five-batch rotation. Counts describe farms and records separately.
+
 ```mermaid
-flowchart LR
-    accTitle: One Training Validation Round
-    accDescr: In round one, four batches with 64 training farms fit a tree and learn missing-input references. The tree predicts a hidden batch of 17 training farms, whose outcomes are used only to calculate prediction errors.
-    fitting_farms["64 farms: learn medians and tree"] --> hidden_inputs["17 hidden farms: supply inputs"]
-    hidden_inputs --> predictions["Make predictions"]
-    predictions --> compare_answers["Then compare with their MSC answers"]
+flowchart TB
+    accTitle: Whole Farms And One Validation Round
+    accDescr: The 102 farms are split into 81 training and 21 final test farms. In validation round one, 64 training farms fit the medians and tree; 17 other training farms supply hidden inputs. Their predictions are checked, while the 21 final test farms stay outside selection.
+    all_farms["102 farms / 525 records"] --> training_farms["81 training farms / 420 records"]
+    all_farms --> final_test["21 final test farms / 105 records<br/>Reserved for Chapter 10"]
+    training_farms --> fitting_farms["Round 1 fit: 64 farms / 336 records"]
+    training_farms --> validation_farms["Round 1 hide: 17 farms / 84 records"]
+    fitting_farms -->|learn| round_model["Round-specific medians and tree"]
+    round_model -->|apply saved rule| round_predictions["84 hidden-record predictions"]
+    validation_farms -->|supply inputs| round_predictions
 ```
+
+In later rounds a different training batch is hidden; the 21 final test farms never move into the rotation.
 
 **Missing inputs:** learn the medians from the 336 fitting records, then use those same references in both tables. For example, if known fitting counts were 30, 40 and 200, the reference would be 40 even if a hidden farm reported 1,200. Its value cannot redefine the reference.
 

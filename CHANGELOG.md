@@ -1,5 +1,14 @@
 # Changes
 
+## v0.9 — Explain the first operations and make checks unambiguous
+
+- Teach comments, block boundaries, complete selections, Source meanings and file types at first use.
+- Add an explicitly labelled selection illustration using the actual first-run code.
+- Separate live repairs from intentional Chapter 3 errors; an edited error case records what happened without a secondary assertion failure.
+- Distinguish the three-row preview from the full 105-record RMSE and provide an explicit local-data AI check.
+- Add disk/session handoffs, survey-to-model and saved-model object maps, and the full farm/validation grouping map.
+- Add a model-transfer worksheet and explain which reference scripts the full-analysis runner actually executes.
+
 ## v0.8 — Independent self-study and AI access in Hong Kong
 
 - Give HKU GenAI's direct Portal-login route, dated student allowance and official quota/balance references.

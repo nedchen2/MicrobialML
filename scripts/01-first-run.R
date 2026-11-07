@@ -1,12 +1,13 @@
 # Reference: File > Save As scripts/my-01-first-run.R before editing.
 # Chapter 1. Open microbial-ml.Rproj before running this script.
+# Text after # is a comment for people. A # %% line labels the next block.
 # %% arithmetic
 1 + 1
 # %% object
 sample_name <- "milk"
 sample_name
 # %% count
-count <- 20
+count <- 20  # Store 20 under the name count.
 count * 2
 # %% folder
 project_folder <- getwd()

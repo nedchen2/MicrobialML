@@ -9,8 +9,8 @@ REAL_STAGES = {
     "05-meet-real-data": ["source", "raw-preview", "assays", "select", "quality",
                           "usable-preview", "target", "log-intuition", "prepare-audit", "save-prepared"],
     "06-split-farms": ["load-prepared", "split", "overlap", "save-split"],
-    "07-baseline": ["load-split", "baseline", "baseline-scale", "metrics", "independent", "sensitivity",
-                    "save", "plot", "audit-save"],
+    "07-baseline": ["load-split", "baseline", "baseline-scale", "metrics", "independent", "rmse-scope", "sensitivity",
+                    "save", "plot", "audit-save", "baseline-live-workspace"],
 }
 TREE_STAGES = {
     "08-first-tree": ["tree-package", "tree-load", "hand-data", "hand-mean", "hand-left", "hand-right",
@@ -115,9 +115,14 @@ def assemble():
         if set(used) != set(code) or len(used) != len(code):
             raise ValueError(f"Code/prose cell mapping is not one-to-one for {name}")
         assert set(CELL_DISPLAY.get(name, {})) <= set(code), "Unknown cell visibility setting"
+        # A prose-only assembly should retain the executed kernel's language
+        # metadata, just as unchanged code retains its outputs. Execution refreshes it.
+        language_info = {"name": "R", "file_extension": ".r", "mimetype": "text/x-r-source"}
+        if previous and previous.metadata.get("language_info", {}).get("name") == "R":
+            language_info.update(previous.metadata["language_info"])
         notebook = nbformat.v4.new_notebook(cells=cells, metadata={
             "kernelspec": {"name": "ir", "display_name": "R", "language": "R"},
-            "language_info": {"name": "R", "file_extension": ".r", "mimetype": "text/x-r-source"},
+            "language_info": language_info,
         })
         nbformat.write(notebook, target)
         print(f"Assembled {target.name}: {len(code)} executable R cells")

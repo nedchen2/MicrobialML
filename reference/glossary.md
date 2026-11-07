@@ -4,6 +4,8 @@
 |---|---|---|
 | R | The language/runtime executing the calculations | 计算语言与运行环境 |
 | RStudio | The interface used to write, run and inspect R code | 编写和运行 R 的界面 |
+| Comment / `#` | Outside quoted text, `#` makes the rest of the line a note ignored by R | 注释，供人阅读 |
+| Block marker / `# %%` | A comment labelling a section of this book's script | 本教程的代码分段标签 |
 | Script | A saved file of instructions, usually `.R` | 脚本 |
 | Console | Where R accepts commands and prints results | 控制台 |
 | Object | A named value in the current R session | 内存中的对象 |

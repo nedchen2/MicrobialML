@@ -11,8 +11,14 @@ practice
 runtime_failure <- tryCatch({
   mean(milk_data$count_cfu_ml, na.rm = TRUE)
 }, error = function(e) e)
-stopifnot(inherits(runtime_failure, "error"))
-cat("Expected R error: ", conditionMessage(runtime_failure), "\n", sep = "")
+runtime_error_observed <- inherits(runtime_failure, "error")
+if (runtime_error_observed) {
+  runtime_message <- conditionMessage(runtime_failure)
+  cat("Recorded R error: ", runtime_message, "\n", sep = "")
+} else {
+  runtime_message <- "No R error: the teaching line was edited, or milk_data already exists."
+  cat(runtime_message, "\nKeep the original error example for comparison; put your repair in the live-work area.\n", sep = "")
+}
 # %% runtime-repair
 runtime_mean <- mean(practice$count_cfu_ml, na.rm = TRUE)
 runtime_mean
@@ -40,7 +46,8 @@ cat("The requested summary passes; the source observation is still missing.\n")
 # %% save-evidence
 dir.create("outputs/ch03", recursive = TRUE, showWarnings = FALSE)
 write.csv(summary_table, "outputs/ch03/summary.csv", row.names = FALSE)
-writeLines(c(paste("Expected R error:", conditionMessage(runtime_failure)),
+writeLines(c(paste("R error observed:", runtime_error_observed),
+             paste("Recorded condition:", runtime_message),
              "Correct object: practice",
              paste("Repaired recorded-count mean:", runtime_mean)),
            "outputs/ch03/runtime-error-and-repair.txt")
@@ -48,3 +55,10 @@ if (!file.exists("outputs/ch03/ai-use-log.txt")) {
   file.copy("templates/ai-use-log.txt", "outputs/ch03/ai-use-log.txt")
 }
 file.exists("outputs/ch03/summary.csv")
+# %% live-workspace
+# My live AI attempt: summary
+# Add only your AI summary code here in your my- copy.
+# My live AI attempt: object-name repair
+# Add only your AI object-name repair here in your my- copy.
+# My live AI attempt: missing-value repair
+# Add only your AI missing-value repair here in your my- copy.

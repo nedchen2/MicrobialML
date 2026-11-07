@@ -62,13 +62,17 @@ Run the supplied `independent` check. It also displays three observed values, pr
 
 Choose the first row. Subtract predicted from observed by hand and compare with its residual. Display rounding can cause a small difference; the automated check uses full precision.
 
-**Ask AI:** give it the actual columns and your hand calculation. Ask it to reconstruct RMSE without refitting the model or changing the split. Compare its answer with your saved observations and predictions.
+**Check the scope:** the three printed rows are a preview, not all 105 test records. Run `rmse-scope`:
+
+{{r:rmse-scope}}
+
+The three-row RMSE is about **0.616**, while the full 105-row RMSE is about **0.529**. These are different calculations. The one-row subtraction above checks a residual; it cannot verify the full test score.
 
 ## 7.4 Save and inspect the evidence
 
-Select **all remaining supplied blocks**, from `sensitivity` through `audit-save`, and Run. They perform an additional target-limit check and save the outputs. The blocks still run even if you leave their technical details collapsed.
+Select **all remaining supplied blocks**, from `sensitivity` through `audit-save`, and Run. These are **required supplied blocks**. The target-limit calculation creates objects used by the export, so run it even if you leave the details folded. They then save the outputs. The blocks still run even if you leave their technical details collapsed.
 
-**Additional check — `sensitivity`:** the same fixed predictions are evaluated on the quantified test subset. This describes another subset; it does not recover true below-detection concentrations or fix that limitation.
+**Required supplied calculation — `sensitivity`:** the same fixed predictions are evaluated on the quantified test subset. This describes another subset; it does not recover true below-detection concentrations or fix that limitation.
 
 {{r:sensitivity}}
 
@@ -113,6 +117,31 @@ Different questions require different evidence:
 | Is a particular bottle of milk safe? | No safety decision; an MSC prediction is not a complete safety assessment. |
 
 **Explain:** why would even a lower predictive RMSE leave the last two questions unanswered?
+
+## 7.6 Check the full score with AI
+
+**Optional live activity:** keep the reference blocks intact. At the end of your my- script, the supplied work area contains comments only until you add code:
+
+{{r:baseline-live-workspace}}
+
+**Ask AI for code to run locally**, rather than asking it to infer the full score from three pasted rows:
+
+```text
+I am using base R. My object test already has 105 held-out records.
+Observed log10 values are in test$log10_msc, and fixed predictions are in
+test$prediction_log10. Write a small R block to print the row count and
+calculate RMSE over ALL 105 rows. Do not refit a model, sample rows,
+change the split or modify test. I will run the code locally.
+```
+
+In your my- script, find **My AI RMSE check** at the end and add the returned R code below that comment. After completing the earlier required blocks, run only your added lines. The object `test` already exists in this session; this check uses that full table directly. Check that the row count is 105 and RMSE is about 0.529. If you cannot use live chat, inspect this reference calculation and label your route as code inspection:
+
+```r
+nrow(test)
+sqrt(mean((test$log10_msc - test$prediction_log10)^2))
+```
+
+The reference uses every row because neither column is shortened with `head()`. Keep your hand check and actual AI-use record separately from the supplied results.
 
 **Finish:** locate your score, plot and AI-use record, explain one residual, then restart R and run a my- copy of `scripts/worked-example.R` from the beginning. It should recreate the real-data outputs.
 

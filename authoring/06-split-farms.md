@@ -18,7 +18,7 @@ A row-wise split can put records from the same farm on both sides. It then answe
 
 ## 6.2 Load and make the real split
 
-Run the supplied `load-prepared` block to reload the saved table. If the file is missing, complete Chapter 5 first:
+Run the supplied `load-prepared` block to reload the saved table. After a restart, an empty Environment is expected. This block reads the disk checkpoint with `readRDS()`, then takes its `data` item as `usable`. If the file is missing, complete Chapter 5 first:
 
 {{r:load-prepared}}
 

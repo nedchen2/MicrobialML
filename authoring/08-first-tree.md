@@ -103,6 +103,8 @@ Run `hand-surprise` to check the last row:
 
 **The baseline uses one training mean; a regression tree divides records into groups and uses each group's training mean.** Its software searches candidate cuts, then can repeat within groups. It does not search every possible complete tree.
 
+**Pause point:** you have completed the hand-built rule and its counterexample. The rest of this chapter uses real data. If you stop here, save your my- script; next time restart R and run from the top to recreate its objects.
+
 ## 8.4 Meet the real model's two inputs
 
 We offer the real tree two survey answers from the sampling visit:
@@ -159,6 +161,22 @@ The references are 9 hours and 72 cows. `[["milking_cows"]]` selects that named 
 No test record helped calculate these references. Chapter 9 will apply the same rule separately inside each validation round.
 
 ## 8.6 Fit your first real tree and look at it
+
+Use this object map to keep track of the names. These are objects in this R session; the diagram is a reading guide, not another block to run.
+
+```mermaid
+flowchart TB
+    accTitle: From Survey Table To Predictions
+    accDescr: Training survey inputs supply their own medians, which fill a separate training copy. Fitting that copy creates first_tree; applying it to invented first_inputs creates first_predictions.
+    raw_table["train_survey: original training inputs"] -->|learn references| medians["training_medians: 9 hours and 72 cows"]
+    raw_table -->|copy| ready_table["train_ready: filled training copy"]
+    medians -->|fill missing inputs| ready_table
+    ready_table -->|rpart| tree_object["first_tree: learned rule"]
+    tree_object -->|predict| prediction_values["first_predictions: predicted numbers"]
+    invented_inputs["first_inputs: two invented rows"] -->|newdata| prediction_values
+```
+
+`tree-load` also provides `fixed_tree_settings`, the preset settings used below. `library(rpart)` loads functions; it does not create our tables or settings. The fitting and prediction steps create the last two objects as you proceed.
 
 **Fit** means use training records to learn a rule. Run `first-fit`:
 

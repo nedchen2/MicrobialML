@@ -47,13 +47,47 @@ This route provides the files, prompts, example results and checks you need to w
 
 For a live AI exercise, use an actual reply and check it in R. If no chat is accessible, complete the supplied inspection exercise and label it that way in your log. At the end, the full-analysis script checks that the supplied workflow can run again from the beginning.
 
+## Read comments and find a code block
+
+In an R script, `#` starts a **comment** outside quoted text: R ignores the rest of that line. Comments explain code to people. Read this example now; Chapter 1 will run the matching block:
+
+```r
+# %% count
+count <- 20  # Store 20 under the name count.
+count * 2
+```
+
+The first line is a section label. `# %% count` is our marker for the block named **count**; the whole line is a comment. The second line stores a value, while its comment explains the action. The third line does a calculation. A `#` inside a quoted string is text, such as `"sample #1"`.
+
+When the book says **run count**, find `# %% count` in the script and select the code underneath, stopping before the next `# %%` label. Select complete statements, including closing parentheses. Click **Run** in RStudio. Selecting a comment alone will not calculate anything.
+
 ## One working-file rule
 
 1. Open the chapter's supplied script, for example `scripts/02-minimum-r.R`.
-2. Use **File → Save As** to create `scripts/my-02-minimum-r.R`.
+2. Use **File → Save As**. Choose the project's `scripts` folder, and enter **my-02-minimum-r.R** as the filename. The resulting path is `scripts/my-02-minimum-r.R`; do not create a second scripts folder.
 3. Work in your **my-** copy. Its supplied code already matches the page; run the matching block instead of pasting another copy.
 
-A marker such as `# %% import` labels a block. On a page, closed **Source** and **Output** panels reveal code or results for reading; run the code in RStudio when instructed. Save your edits before restarting R. Each chapter tells you which input to open and which output to find.
+On a page, closed **Source** and **Output** panels reveal code or results for reading. Run that code in RStudio even when its web panel stays closed. Labels tell you how to use each block:
+
+| Label | Your action |
+|---|---|
+| Run / required supplied block | Run it in order. Supplied implementation can stay unread, but later steps may need its objects. |
+| Optional exercise / optional display | You may skip this explicitly marked activity. |
+| Reference answer | Try the question first, then open it to check your reasoning. |
+
+Save your edits before restarting R. Each chapter names its input and output.
+
+## Know which kind of file you have
+
+| File | What to do with it |
+|---|---|
+| `.R` script | Open in RStudio's editor, edit your my- copy, save and run code. |
+| `.csv` table | Inspect the result table; `read.csv()` reads it into R. |
+| `.png` image | Open to view a saved figure. |
+| `.rds` checkpoint or model | Let the lesson's `readRDS()` code restore it; opening it as text is not useful. |
+| `.txt` note | Read or edit it as plain text, for example your AI-use log. |
+
+Files are saved on disk. Objects in **Environment** exist in the current R session. Restarting R clears those objects, while the files remain. The next lesson must read a saved input or recreate an object before using it.
 
 ## Four words to keep nearby
 

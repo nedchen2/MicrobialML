@@ -6,9 +6,12 @@ Textbook: https://nedchen2.github.io/MicrobialML/
 2. Open microbial-ml.Rproj in RStudio. Keep the folders together.
 3. For each chapter open its supplied scripts/NN-name.R, then File > Save As
    scripts/my-NN-name.R. Edit your my- copy; keep the reference.
-4. The supplied file already contains the page's code. Select a short block in
+4. In R, # starts a comment outside quoted text. Our # %% labels mark blocks.
+   Run a block by selecting complete code below its label, stopping before the
+   next # %% label, then clicking Run. Comments do not calculate anything.
+   The supplied file already contains the page's code. Select a short block in
    Source and click Run (Ctrl+Enter Windows; Cmd+Enter macOS). Inspect the Console
-   before continuing. Source executes a full script but may print fewer values.
+   before continuing. The RStudio Source button executes the whole script; the website Source panel only reveals code.
    Supplied blocks still need to run when instructed, even if their code is
    collapsed on the web page. Expand details only when you need them.
 5. Follow 01-first-run, 02-minimum-r, 03-working-with-ai, then
@@ -54,3 +57,12 @@ Expected tree: training-only five-fold farm validation selects depth 1; test RMS
 about 0.545 and MAE about 0.426 log10 CFU/mL. It does not beat the baseline here.
 Toy original-scale error values cannot be compared directly with log-scale errors.
 These microbial-quality results do not establish causality or product safety.
+
+Live AI work: Chapter 3 has a separate live-workspace at the end. Keep the
+intentional error examples and paste repairs in that work area. Chapter 7's
+three-row preview checks residuals; its full RMSE exercise uses all 105 rows
+of the local test object. The optional AI RMSE work area is after the exports.
+Files: .R is code, .csv is a table, .png is a figure, .rds is read by R, and
+.txt is a plain-text note. Restarting R clears objects but keeps these files.
+The full-analysis runner sources the supplied reference workflows; a my-
+runner does not automatically use your changed my- chapter scripts.

@@ -19,13 +19,24 @@ This first run needs only base R. The later tree lessons check their additional 
 
 1. [Download the student ZIP](../downloads/microbial-ml-student.zip) and **extract it** into a folder you can find. On Windows use Extract All; do not work inside the ZIP preview.
 2. Open `microbial-ml.Rproj` in RStudio. In **Files**, find `scripts` and `data`.
-3. Choose **File → Open File**, open `scripts/01-first-run.R`, then **Save As** `scripts/my-01-first-run.R`.
+3. Choose **File → Open File**, open `scripts/01-first-run.R`, then choose **File → Save As**. In the project's **scripts folder**, use **my-01-first-run.R** as the filename. Confirm the editor tab now shows that name.
 
 ![An illustrated map of the editor, Run control, Console and file panes.](../assets/rstudio-map.svg)
 
 *Illustration; pane positions can vary. [Official pane guide](https://docs.posit.co/ide/user/ide/guide/ui/ui-panes.html).*
 
-Your script appears in **Source**. R's responses appear in **Console**. **Files** shows saved files; **Environment** lists objects currently in memory.
+Your script appears in the **Source editor**. R's responses appear in **Console**. **Files** shows saved files; **Environment** lists objects currently in memory.
+
+The word Source appears in several places:
+
+| Where you see Source | What it means |
+|---|---|
+| Source editor in RStudio | The pane holding your script |
+| Source button in RStudio | Execute the whole script; for this first lesson use **Run** on selected code |
+| Source panel on the website | Expand code for reading; it does not execute R |
+| `source("scripts/…")` in later code | Execute another saved R script as part of the workflow |
+
+A line starting with `#` is a comment. Our `# %%` lines label code blocks, as explained in [Chapter 0](00-start-here.md#read-comments-and-find-a-code-block).
 
 ## 1.3 Run, then look
 
@@ -47,6 +58,10 @@ Your script appears in **Source**. R's responses appear in **Console**. **Files*
 
 Then run `count` by itself. It remains 20: calculating `count * 2` did not store a new value in it.
 
+![Illustration of selecting the two code lines below the count marker, clicking Run, and checking 40 in Console while count remains 20.](../assets/block-selection.svg)
+
+*Illustration using this lesson's code, not a screenshot. Select both executable lines between the count and folder markers; then click Run. You may include comment lines in the selection. If a call spans several lines, include its final closing parenthesis. For real interface screenshots, see [Posit's Run and Source guide](https://docs.posit.co/ide/user/ide/guide/code/execution.html).*
+
 **Stuck?** If the Console shows `+`, press Esc and run one complete line again. Other symptoms have a [short help route](../reference/troubleshooting.md).
 
 ## 1.4 Save a result and find it
@@ -55,7 +70,7 @@ First run `folder` to check that R is working inside the project:
 
 {{r:folder}}
 
-The folder's name may differ on your computer; the final result should be **TRUE**. If it is FALSE, reopen the `.Rproj` file.
+R writes yes/no results as **TRUE/FALSE**. The folder's name may differ on your computer; the final result should be **TRUE**. If it is FALSE, reopen the `.Rproj` file.
 
 Run `save` to make an output folder and write a text file. Keep the supplied settings for this step:
 
@@ -110,6 +125,14 @@ whether count changed. Use base R; do not add packages or an analysis pipeline.
 ## 1.6 Restart and recreate
 
 Save your my- script. Choose **Session → Restart R**, then run its blocks from the beginning. The earlier objects disappear from Environment; your script and text file remain on disk. Rerunning recreates the objects and output.
+
+| What you do | What changes |
+|---|---|
+| Edit and save the `.R` file | The instructions on disk change; old results do not automatically update. |
+| Run the code | Objects and requested output files are created or updated. Save your edited script too. |
+| Restart R | In-memory objects disappear. Saved scripts and output files remain. |
+
+After the restart, run the script blocks again to recreate `count`; do not expect opening a script alone to execute it.
 
 ```{admonition} Ready to continue?
 :class: tip

@@ -58,6 +58,14 @@ To keep only the known rows in a new object, run `subset`:
 
 {{r:subset}}
 
+Unpack the condition before reading the whole expression:
+
+| Piece | For the four practice rows |
+|---|---|
+| `is.na(practice$count_cfu_ml)` | FALSE, FALSE, FALSE, TRUE: which counts are missing? |
+| `!is.na(practice$count_cfu_ml)` | TRUE, TRUE, TRUE, FALSE: which counts are known? |
+| `practice[!is.na(practice$count_cfu_ml), ]` | Keep rows where that condition is TRUE, and keep every column. |
+
 Read `[rows, columns]` as row and column selection. `!` means “not”; leaving the column position empty keeps all columns. The original `practice` remains available.
 
 ## 2.4 Evidence: save, reopen and check

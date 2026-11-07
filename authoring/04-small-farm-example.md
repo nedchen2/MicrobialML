@@ -58,7 +58,13 @@ Run the supplied `toy-errors` block to build the two-row calculation table. Expa
 
 {{r:toy-errors}}
 
-The residuals are 10 and 30; their squares are 100 and 900.
+The residuals are 10 and 30; their squares are 100 and 900. Match the arithmetic to R's notation:
+
+| R expression | Meaning | Result |
+|---|---|---:|
+| `abs(-10)` | Absolute value: distance from zero | 10 |
+| `10^2` | Square 10 | 100 |
+| `sqrt(100)` | Square root of 100 | 10 |
 
 **MAE** averages the absolute errors: `(10 + 30) / 2 = 20`.
 

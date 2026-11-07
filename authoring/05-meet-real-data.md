@@ -22,7 +22,7 @@ Run `source`, then `raw-preview`:
 | `Conc` | What concentration was recorded for that assay? |
 | `Notes` | Was the result qualified by a laboratory note? |
 
-One farm can appear in several assays and rounds. Check `Test` before assigning meaning to `Conc`; different assays must not be pooled into one outcome.
+`head(milk, 3)` displays only the first three rows; it does not shrink `milk`. One farm can appear in several assays and rounds. Check `Test` before assigning meaning to `Conc`; different assays must not be pooled into one outcome.
 
 **Optional inventory — `assays`.** Expand to see all assay record counts. This display does not create an input needed later:
 
@@ -39,6 +39,8 @@ We choose **MSC: mesophilic spore count**, measured here in **CFU/mL**.
 | Start with MSC | 562 |
 | Exclude records carrying a note | 37 |
 | Retain no-note records with a positive, finite concentration | 525 |
+
+**Read the column name:** NA in `Notes` means no note was recorded; it does not mean `Conc` is missing. A missing concentration and a missing note are different fields.
 
 The notes comprise 34 laboratory errors, two TNTC results (too numerous to count), and one unresolved note. This is an explicit teaching eligibility rule; exclusion can affect which samples are represented.
 
@@ -104,6 +106,16 @@ Select the supplied blocks from `prepare-audit` through `save-prepared`, then Ru
 {{r:prepare-audit}}
 
 {{r:save-prepared}}
+
+```mermaid
+flowchart TB
+    accTitle: Carry A Table Across Sessions
+    accDescr: The prepared table is saved as an RDS checkpoint on disk. Restarting R clears the in-memory table but does not delete the checkpoint, which Chapter 6 reads to restore the table.
+    prepared_table["usable: table in this R session"] -->|saveRDS| checkpoint_file["msc-prepared.rds: file on disk"]
+    checkpoint_file -->|readRDS after restart| restored_table["Chapter 6: usable restored in a new session"]
+```
+
+The file carries the prepared data and audit together. Restarting R clears the in-memory objects, while this file remains. You do not need to double-click the RDS file; Chapter 6's load block reads it.
 
 **Find:** `outputs/checkpoints/msc-prepared.rds`. The existence check should be TRUE. Chapter 6 will read this file after a restart.
 

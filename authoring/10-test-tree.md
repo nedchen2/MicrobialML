@@ -82,6 +82,20 @@ That is an explainable result. Two survey variables and a shallow tree did not e
 
 ## 10.4 Save, reload and predict new inputs
 
+This map connects the saved file to the objects you use for a new prediction:
+
+```mermaid
+flowchart TB
+    accTitle: Save Reload And Apply The Rule
+    accDescr: The fitted tree, training medians and input names are saved together in model.rds. Reading that file creates saved_model; its medians prepare new_samples as new_ready, and its fitted rule makes new_prediction without training again.
+    fitted_parts["final_tree + training medians + input names"] -->|saveRDS| model_file["model.rds: bundle on disk"]
+    model_file -->|readRDS| loaded_bundle["saved_model: restored bundle"]
+    new_inputs["new_samples: input table"] -->|copy and prepare| ready_inputs["new_ready: model inputs"]
+    loaded_bundle -->|saved medians| ready_inputs
+    ready_inputs -->|newdata| new_predictions["new_prediction: predicted numbers"]
+    loaded_bundle -->|predict with saved_model$fit| new_predictions
+```
+
 A reusable prediction needs both the learned tree and the references for preparing missing inputs. A **list** bundles named R objects together; `$fit` later retrieves the item named `fit`.
 
 Run `save-model`. `saveRDS()` writes the bundle to a file:
@@ -166,4 +180,22 @@ A regression tree used pasture hours and milking-cow count, with depth 1 selecte
 | Predict and compare | Predict appropriate held-out records, without using their answers to choose the procedure |
 | Explain and verify | Keep predictions and checks; a different model needs an explanation suited to its own rules |
 
-**Finish:** save optional changed-input results under another filename if you want to keep them. Restart R and run a my- copy of `scripts/full-analysis.R`; it recreates the supplied reference baseline and tree from the original downloads. Explain which steps you can reuse when requesting another model from AI.
+**Your transfer worksheet:** before asking AI to help with another model, fill this table in your own notes. Use the current tree to practise filling the decisions; a future dataset may need different preparation or a different grouping unit.
+
+| Decision | Write your answer |
+|---|---|
+| What is one record, and what numeric target should be predicted? | … |
+| Which input columns exist before the target is known? | … |
+| What related records must stay together? | … |
+| Which data learn preparation and choose settings? | … |
+| Which table fits the model, and which supplies new inputs? | … |
+| What held-out comparison and evidence will you save? | … |
+
+```{admonition} Check the worksheet for this tree
+:class: tip dropdown
+One record is one farm-round MSC result; the target is log10_msc. Inputs are pasture_hours and milking_cows, with availability before the lab result assumed. Keep each farm's records together. Learn preparation inside each fitting partition and choose depth within the 81 training farms. Fit the final rule on train_filled; predict the prepared held-out table test_filled. Compare its 105 predictions with the baseline using RMSE and MAE, and retain the split, preparation, predictions and checks.
+```
+
+**Finish:** save optional changed-input results under another filename if you want to keep them. Restart R and run a my- copy of `scripts/full-analysis.R`; it recreates the supplied reference baseline and tree from the original downloads.
+
+`my-full-analysis.R` still contains `source("scripts/worked-example.R")` and `source("scripts/tree-workflow.R")`: those calls execute the supplied **reference workflows**. Renaming the runner does not redirect them to your my- chapter files or test your added AI code. Run your own changed chapter blocks separately and keep their results under different filenames. Explain which steps you can reuse when requesting another model from AI.
