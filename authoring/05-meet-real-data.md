@@ -6,7 +6,7 @@
 
 ## 5.1 Look at the measurements
 
-The data come from an organic milk study by [Qian and colleagues (2025)](https://doi.org/10.1016/j.jfp.2025.100477).
+**Study data.** We start with the study's **milk assay table**, which records laboratory tests on milk from organic farms. Each row records one test for one farm at one sampling round. A farm can have several rows from the same round because the lab ran different tests. For this project, we’ll select the rows for **mesophilic spore count (MSC)**. [Qian and colleagues (2025)](https://doi.org/10.1016/j.jfp.2025.100477)
 
 In the block below, `source_file <- fetch_course_data()` downloads the CSV from a fixed version of the authors' GitHub repository and saves it in your project as `data/raw/Raw_Milk_Micro_Data.csv`. The function returns that local path as `source_file`, and `read.csv(source_file, ...)` reads the file into the table `milk`. On later runs, the function checks and reuses the saved copy. [View the authors' CSV](https://github.com/FSL-MQIP/OREI_ML_Inference/blob/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Raw%20Milk%20Micro%20Data.csv).
 
@@ -26,7 +26,7 @@ Run {span .script-block}`BLOCK · raw-preview` to display the first three rows.
 | `Conc` | What concentration was recorded for that assay? |
 | `Notes` | Was the result qualified by a laboratory note? |
 
-`head(milk, 3)` displays only the first three rows; it does not shrink `milk`. One farm can appear in several assays and rounds. Check `Test` before assigning meaning to `Conc`; different assays must not be pooled into one outcome.
+Read the first row across. Farm **R83** was sampled in round **G**, the test was **BAB**, and the lab marked the result as a **lab error**. Read `Test` and `Notes` alongside `Conc` to understand what a concentration means. The call to `head(milk, 3)` previews three rows from the full table.
 
 **Optional inventory — {span .script-block}`BLOCK · list-assays`.** Expand to see all assay record counts. This display does not create an input needed later:
 
