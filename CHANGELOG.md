@@ -6,6 +6,7 @@
 - List Gemini, Microsoft Copilot and Poe with provider evidence for Hong Kong availability.
 - Replace TA-dependent setup, chat and download instructions with direct steps, a source-download fallback and error recovery.
 - Add self-study guidance, end-of-model reference explanations and progress tracking through Chapter 10.
+- Add a first-edition notice and the author’s verified email for optional feedback on errors or unclear steps.
 - Keep actual live-chat records distinct from the supplied inspection route; retain the original analysis protocol and scores.
 
 ## Homepage update — Author and purpose
