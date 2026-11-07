@@ -132,7 +132,7 @@ Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 
 ## 8.4 Meet the real model's two inputs
 
-**Study data.** We offer the tree two survey answers from the sampling visit:
+**Study data.** So far, we have used the study's milk assay table. It tells us what the lab measured for each milk sample, including its MSC result. This chapter brings in a second file from the same study: the **farm survey**. It records answers about the farm at each sampling visit. We use two of those answers to see whether they help predict MSC.
 
 | R column | Meaning | Role |
 |---|---|---|
@@ -140,7 +140,7 @@ Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 | `milking_cows` | Number of milking cows that day | Possible input |
 | `log10_msc` | Lab MSC result on the log10 scale | Answer to learn from in training |
 
-For this exercise, assume the farm can report pasture hours and cow count before the lab returns the MSC result. We use those two answers to predict MSC and the farm ID to match records and keep each farm together.
+For this exercise, assume the farm can report pasture hours and cow count before the lab returns the MSC result. Both files have a farm ID and a sampling round. Together, those labels tell us which survey answers go with each lab result.
 
 In the block below, `fetch_course_survey()` downloads the survey CSV from the authors' fixed GitHub version and saves it as `data/raw/Farm_Survey_Data.csv`. It returns the local path so `read_survey_features()` can read the file and select the two survey inputs. On later runs, the fetch function checks and reuses the saved CSV. [View the authors' survey CSV](https://github.com/FSL-MQIP/OREI_ML_Inference/blob/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Farm%20Survey%20Data.csv).
 
@@ -148,7 +148,7 @@ Run the supplied {span .script-block}`BLOCK · join-farm-survey`. It selects the
 
 {{r:join-farm-survey}}
 
-Run {span .script-block}`BLOCK · predictor-preview` to inspect three training records. Read across a row: these two inputs accompany this known training answer.
+Run {span .script-block}`BLOCK · predictor-preview` to inspect three training records. The first row is farm **R1, sampling round A**. The **7 pasture hours per day** and **33 milking cows** come from that visit's survey. The **0.1761 log10 MSC** comes from the milk assay for the same farm and round.
 
 {{r:predictor-preview}}
 
