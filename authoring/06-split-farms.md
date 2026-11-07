@@ -8,13 +8,9 @@
 
 Our question is prediction for a **farm not used to learn the rule**. All records from a selected farm must therefore stay together.
 
-```{admonition} Invented data — split three farms
-:class: note
+![Both rounds from farms A and B go into training. Both rounds from farm C go into testing.](../assets/farm-groups.svg)
 
-Here are the six practice records from Chapter 4.
-
-![Training keeps both rounds from farms A and B; testing keeps both rounds from farm C.](../assets/farm-groups.svg)
-```
+*The three example farms from Chapter 4, with both sampling rounds kept together for each farm.*
 
 A row-wise split can put records from the same farm on both sides. It then answers a different prediction question.
 
