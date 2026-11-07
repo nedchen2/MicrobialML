@@ -11,11 +11,14 @@ train_survey <- tree_input$train
 candidate_depths <- 1:3
 candidate_depths
 # %% training-folds
+# Fix the algorithms as in Chapter 6, then set the starting point for this shuffle.
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
 set.seed(2027)
 training_farms <- sort(unique(train_survey$FarmID), method = "radix")
+# Repeat the labels 1 to 5 until there is one per farm, then shuffle them.
 fold_labels <- sample(rep(1:5, length.out = length(training_farms)))
 fold_table <- data.frame(FarmID = training_farms, fold = fold_labels)
+# match() finds each record's farm in fold_table so we can look up its fold number.
 row_fold <- fold_table$fold[match(train_survey$FarmID, fold_table$FarmID)]
 stopifnot(!any(fold_table$FarmID %in% tree_input$test$FarmID))
 data.frame(fold = 1:5, validation_farms = as.integer(table(fold_labels)),
@@ -77,6 +80,7 @@ validation_scores <- data.frame(depth = candidate_depths,
 baseline_validation <- data.frame(model = "Training-fold mean", depth = 0,
   OOF_RMSE_log10 = sqrt(mean((observed - oof_baseline)^2)), OOF_MAE_log10 = mean(abs(observed - oof_baseline)))
 # %% choose-depth
+# Treat RMSEs within 1e-12 of the lowest score as tied. Pick the shallowest tied tree.
 chosen_depth <- min(validation_scores$depth[validation_scores$OOF_RMSE_log10 <= min(validation_scores$OOF_RMSE_log10) + 1e-12])
 validation_scores$selected <- validation_scores$depth == chosen_depth
 validation_scores

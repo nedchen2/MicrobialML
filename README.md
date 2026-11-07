@@ -21,7 +21,7 @@ Students need R and RStudio. Chapters 1–7 use base R; Chapters 8–10 use the 
 | [2. Minimum R](https://nedchen2.github.io/MicrobialML/minimum-r/) | Inspect a small table, handle missingness and change a copy |
 | [3. Ask, run, inspect and repair](https://nedchen2.github.io/MicrobialML/working-with-ai/) | Check an AI answer against the task and repair an unsuitable assumption |
 | [4. Six invented farm records](https://nedchen2.github.io/MicrobialML/small-farm-example/) | Hold out one farm and calculate baseline errors by hand |
-| [5–7. Real-data analysis](https://nedchen2.github.io/MicrobialML/worked-example/) | Inspect MSC data, keep farms together, then fit and evaluate a baseline |
+| [5–7. Real-data analysis](https://nedchen2.github.io/MicrobialML/worked-example/) | Inspect MSC data, split the data by farm, then fit and evaluate a baseline |
 | [8–10. A first regression tree](https://nedchen2.github.io/MicrobialML/first-tree/) | Fit and read a first tree, validate depth within training farms, then compare and reuse it |
 
 The route supports independent self-study: direct setup and AI links, download recovery, displayed results and reference explanations let students check their work without a TA handoff. Each chapter names a working file, a stopping point, an expected output and a check. Save your edits in a `my-` copy of the supplied reference script. The complete real-data script is included for a final run from the beginning.

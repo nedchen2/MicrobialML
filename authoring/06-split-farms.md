@@ -1,4 +1,4 @@
-# 6. Keep farms together
+# 6. Split the data by farm
 
 **Open:** restart R and save the supplied script as `scripts/my-06-split-farms.R`.
 
@@ -6,11 +6,15 @@
 
 ## 6.1 Choose the unit to hold out
 
-Our question is prediction for a **farm not used to learn the rule**. All records from a selected farm must therefore stay together. The six-row example shows the idea:
+Our question is prediction for a **farm not used to learn the rule**. All records from a selected farm must therefore stay together.
+
+```{admonition} Invented data — split three farms
+:class: note
+
+Here are the six practice records from Chapter 4.
 
 ![Training keeps both rounds from farms A and B; testing keeps both rounds from farm C.](../assets/farm-groups.svg)
-
-*Illustration from the invented example. The real split below contains 102 farms.*
+```
 
 A row-wise split can put records from the same farm on both sides. It then answers a different prediction question.
 
@@ -18,13 +22,13 @@ A row-wise split can put records from the same farm on both sides. It then answe
 
 ## 6.2 Load and make the real split
 
-Run the supplied {span .script-block}`BLOCK · load-prepared` block to reload the saved table. After a restart, an empty Environment is expected. This block reads the disk checkpoint with `readRDS()`, then takes its `data` item as `usable`. If the file is missing, complete Chapter 5 first:
+**Study data.** Run the supplied {span .script-block}`BLOCK · load-prepared` block to reload the saved table. After a restart, an empty Environment is expected. This block reads the disk checkpoint with `readRDS()`, then takes its `data` item as `usable`. If the file is missing, complete Chapter 5 first:
 
 {{r:load-prepared}}
 
 **The decision:** hold out 20% of the 102 farms, rounding up to 21. Use the supplied seed, 2026, to repeat this selection. Keep these choices fixed while learning the procedure.
 
-The seed lets us reproduce this random choice; the number 2026 does not make the split scientifically better than another seed.
+The code draws farm IDs first. Every record whose farm is on that list goes into the test set, and the remaining records go into training.
 
 Run the supplied {span .script-block}`BLOCK · split-by-farm` block unchanged. Expand its code if you want to inspect the random selection and row assignment:
 

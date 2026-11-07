@@ -35,7 +35,7 @@ This is the first edition of the guide, and some explanations or code may still 
 | Understand a small table and its missing value | [2. The R you need today](chapters/02-minimum-r.ipynb) |
 | Ask AI, inspect its code and repair an assumption | [3. Ask, run, inspect and repair](chapters/03-working-with-ai.ipynb) |
 | Understand a farm split and calculate errors by hand | [4. Six records](chapters/04-small-farm-example.ipynb) |
-| Complete the real-data analysis | [The Chapters 5–7 route](chapters/worked-example.md) |
+| Work through a baseline from practice to real data | [Baseline roadmap · Chapters 4–7](chapters/worked-example.md) |
 | Add predictors and check a first model | [8. From one mean to a tree](chapters/08-first-tree.ipynb) |
 
 ## Get ready to work

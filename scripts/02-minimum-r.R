@@ -29,6 +29,8 @@ known_counts
 dir.create("outputs/practice", recursive = TRUE, showWarnings = FALSE)
 write.csv(known_counts, "outputs/practice/known-counts.csv", row.names = FALSE)
 round_trip <- read.csv("outputs/practice/known-counts.csv")
+# Compare the saved values, ignoring details such as R's row labels.
+# isTRUE() gives FALSE if all.equal() reports a difference.
 isTRUE(all.equal(known_counts, round_trip, check.attributes = FALSE))
 # %% check-expected-values
 stopifnot(nrow(practice) == 4)
@@ -38,7 +40,7 @@ cat("Chapter 2 checks passed.\n")
 # %% exercise-copy
 # Extension exercise: write and read a NEW file; preserve the original input.
 changed <- practice
-changed$count_cfu_ml[4] <- 40
+changed$count_cfu_ml[4] <- 40  # Replace the fourth count in the copy.
 write.csv(changed, "outputs/practice/practice_counts_changed.csv", row.names = FALSE)
 # %% exercise-read
 changed <- read.csv("outputs/practice/practice_counts_changed.csv")

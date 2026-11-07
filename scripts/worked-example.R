@@ -15,9 +15,11 @@ table(milk$Test)
 # %% select-msc-records
 msc <- milk[milk$Test == "MSC", ]
 nrow(msc)
-table(msc$Notes, useNA = "ifany")
+table(msc$Notes, useNA = "ifany")  # Count NA as a category when present.
 # %% filter-usable-msc-records
+# A note counts as blank if it is missing or empty after trimming spaces.
 blank_note <- is.na(msc$Notes) | trimws(msc$Notes) == ""
+# is.finite() rules out missing and infinite values. Also require a count above zero.
 positive_count <- is.finite(msc$Conc) & msc$Conc > 0
 usable <- msc[blank_note & positive_count, ]
 rownames(usable) <- NULL
@@ -60,10 +62,13 @@ prepared <- readRDS("outputs/checkpoints/msc-prepared.rds")
 usable <- prepared$data
 stopifnot(nrow(usable) == 525)
 # %% split-by-farm
+# kind sets how R generates random numbers. sample.kind sets how sample() draws.
+# normal.kind applies to draws from a normal distribution.
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
-set.seed(2026)
-farm_ids <- sort(unique(usable$FarmID), method = "radix")
+set.seed(2026)  # Set the starting point so sample() can repeat the draw.
+farm_ids <- sort(unique(usable$FarmID), method = "radix")  # Sort one ID per farm.
 test_farms <- sample(farm_ids, size = ceiling(0.20 * length(farm_ids)))
+# %in% checks if a farm is on the test list. ! reverses that check for training.
 train <- usable[!usable$FarmID %in% test_farms, ]
 test <- usable[usable$FarmID %in% test_farms, ]
 c(train_rows = nrow(train), test_rows = nrow(test),
@@ -104,6 +109,8 @@ mae <- mean(abs(test$error_log10))
 data.frame(model = "Training-mean baseline", n_test = nrow(test),
            RMSE_log10_CFU_ml = rmse, MAE_log10_CFU_ml = mae)
 # %% cross-check-error-metrics
+# Check the averages by adding the squared or absolute errors and dividing by the row count.
+# RMSE takes the square root of that average.
 rmse_check <- sqrt(sum((test$log10_msc - baseline_log10)^2) / nrow(test))
 mae_check <- sum(abs(test$log10_msc - baseline_log10)) / nrow(test)
 stopifnot(isTRUE(all.equal(rmse, rmse_check)))

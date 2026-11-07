@@ -30,37 +30,55 @@ A row is one farm sampled at one round. A/1 and A/2 share a biological source, e
 
 ## 4.3 Work one prediction by hand
 
-Imagine a new milk sample arrives, but you have no sample-specific information to use yet. You can still make a prediction: give every new sample the same number, learned from earlier samples. This is a **constant baseline**. It is a comparison point, not a safe concentration or a pass/fail threshold.
+A **baseline** is a simple prediction rule that gives later models something to beat. Compare their errors on the same held-out samples using the same error measure. If a later model has a smaller error, it predicts better on that test.
 
-Training counts are **10, 10, 30 and 30**. Why guess 20 rather than 10 or 30? First compare these guesses using the training results. For each record, square observed minus guessed, then add the four squares.
+**Our rule.** Take the mean of the four training measurements from farms A and B. Give that same prediction to both samples from farm C. We call this a **constant baseline** because it gives every test sample the same value.
+
+**Why use the mean?** The training measurements are **10, 10, 30 and 30 CFU/mL**. Let $g$ be one possible prediction for all four. Subtract $g$ from each measured value, square each difference, and add the results to get the total squared error $S(g)$.
+
+$$
+S(g) = (10-g)^2 + (10-g)^2 + (30-g)^2 + (30-g)^2.
+$$
+
+For a guess of 20, the differences are $-10$, $-10$, $10$ and $10$. Each contributes 100 after squaring, so $S(20) = 400$.
 
 Run the supplied {span .script-block}`BLOCK · compare-baseline-guesses` block:
 
 {{r:compare-baseline-guesses}}
 
-The sums are **800, 400 and 800**. The guess 20 does better than the other two. When one constant is used and squared error is the criterion, the training mean minimizes that training error. This does not make it the best possible model.
+The guesses **10, 20 and 30** give totals of **800, 400 and 800**, respectively. To see why 20 also works best among all constant guesses for these training records, rewrite the same sum.
 
-Calculate that mean:
+$$
+S(g) = 2(10-g)^2 + 2(30-g)^2 = 400 + 4(g-20)^2.
+$$
 
-1. Sum them: 80.
-2. Divide by four records: 20 CFU/mL.
-3. Give each held-out sample that prediction.
+The smallest possible value of the squared term is zero, which occurs at $g=20$. This is the training mean.
+
+$$
+\text{Training mean} = \frac{10 + 10 + 30 + 30}{4} = 20\ \text{CFU/mL}.
+$$
 
 Run {span .script-block}`BLOCK · toy-predict`. `rep()` repeats the prediction once per test row:
 
 {{r:toy-predict}}
 
-**Write down 20 before opening the test results.** This is a fitted rule with one learned value; a sample's unknown answer does not help choose its prediction.
+**Write down 20 for both samples from farm C before opening their test results.** In the next section, you will use those results to measure the baseline's test error.
 
 ## 4.4 Turn predictions into errors
 
-Now reveal farm C: the observed concentrations are **30 and 50 CFU/mL**. For the first result, **observed 30 − predicted 20 = residual 10**: we predicted 10 CFU/mL too low.
+Farm C's observed concentrations are **30 and 50 CFU/mL**. For test record $i$, let $y_i$ be its observed value and $\hat y_i$ be its predicted value. The **residual** $e_i$ is the observed value minus the prediction.
+
+$$
+e_i = y_i-\hat y_i, \qquad e_1=30-20=10, \qquad e_2=50-20=30.
+$$
+
+Both residuals are positive. The predictions were too low by 10 and 30 CFU/mL.
 
 Run the supplied {span .script-block}`BLOCK · toy-errors` block to build the two-row calculation table. Expand its code if you want to inspect how the columns are assembled:
 
 {{r:toy-errors}}
 
-The residuals are 10 and 30; their squares are 100 and 900. Match the arithmetic to R's notation:
+The residuals are 10 and 30, and their squares are 100 and 900. Match the arithmetic to R's notation:
 
 | R expression | Meaning | Result |
 |---|---|---:|
@@ -68,9 +86,17 @@ The residuals are 10 and 30; their squares are 100 and 900. Match the arithmetic
 | `10^2` | Square 10 | 100 |
 | `sqrt(100)` | Square root of 100 | 10 |
 
-**MAE** averages the absolute errors: `(10 + 30) / 2 = 20`.
+**Mean absolute error (MAE)** averages the distances between observations and predictions.
 
-**RMSE** averages the squared errors and takes their square root: `sqrt((100 + 900) / 2)`, about **22.36**. The larger error contributes more strongly after squaring.
+$$
+\mathrm{MAE} = \frac{|10|+|30|}{2}=20\ \mathrm{CFU/mL}.
+$$
+
+**Root mean squared error (RMSE)** averages the squared residuals, then takes the square root. Squaring gives larger errors more influence.
+
+$$
+\mathrm{RMSE} = \sqrt{\frac{10^2+30^2}{2}}\approx22.36\ \mathrm{CFU/mL}.
+$$
 
 {span .script-block}`BLOCK · toy-metrics`
 

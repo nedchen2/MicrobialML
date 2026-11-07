@@ -6,10 +6,13 @@ prepared <- readRDS("outputs/checkpoints/msc-prepared.rds")
 usable <- prepared$data
 stopifnot(nrow(usable) == 525)
 # %% split-by-farm
+# kind sets how R generates random numbers. sample.kind sets how sample() draws.
+# normal.kind applies to draws from a normal distribution.
 RNGkind(kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
-set.seed(2026)
-farm_ids <- sort(unique(usable$FarmID), method = "radix")
+set.seed(2026)  # Set the starting point so sample() can repeat the draw.
+farm_ids <- sort(unique(usable$FarmID), method = "radix")  # Sort one ID per farm.
 test_farms <- sample(farm_ids, size = ceiling(0.20 * length(farm_ids)))
+# %in% checks if a farm is on the test list. ! reverses that check for training.
 train <- usable[!usable$FarmID %in% test_farms, ]
 test <- usable[usable$FarmID %in% test_farms, ]
 c(train_rows = nrow(train), test_rows = nrow(test),

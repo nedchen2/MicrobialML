@@ -26,7 +26,10 @@ Installing puts the package on your computer. `library(rpart)` makes its functio
 
 ## 8.2 Make two group averages yourself
 
-These four records are **invented**. Their values make the arithmetic easy; they do not show a real effect of pasture time.
+```{admonition} Invented data — build a tree by hand
+:class: note
+
+Use these four made-up records throughout Sections 8.2 and 8.3 to work out the group averages by hand.
 
 | Pasture hours/day | MSC CFU/mL | log10 MSC |
 |---:|---:|---:|
@@ -34,6 +37,7 @@ These four records are **invented**. Their values make the arithmetic easy; they
 | 4 | 1 | 0 |
 | 12 | 100 | 2 |
 | 16 | 100 | 2 |
+```
 
 Run {span .script-block}`BLOCK · hand-data` to create this table:
 
@@ -80,13 +84,33 @@ It goes left: predict 0 log10 MSC, equivalent to `10^0 = 1` CFU/mL. We do not ne
 
 ## 8.3 A perfect training fit can still surprise us
 
-Run {span .script-block}`BLOCK · hand-errors`. The four group predictions are 0, 0, 2 and 2; `^2` squares each error:
+Compare the predictions on the same four invented training records. Every value in the last three columns is on the log10 scale.
+
+| Pasture hours/day | Observed log10 MSC | One mean | Two group means |
+|---:|---:|---:|---:|
+| 0 | 0 | 1 | 0 |
+| 4 | 0 | 1 | 0 |
+| 12 | 2 | 1 | 2 |
+| 16 | 2 | 1 | 2 |
+
+As in Chapter 4, subtract the prediction from each observation, square the difference and add the four results.
+
+$$
+S_{\mathrm{one\ mean}}=(0-1)^2+(0-1)^2+(2-1)^2+(2-1)^2=4.
+$$
+
+$$
+S_{\mathrm{two\ means}}=(0-0)^2+(0-0)^2+(2-2)^2+(2-2)^2=0.
+$$
+
+Run {span .script-block}`BLOCK · hand-errors` to check both totals.
 
 {{r:hand-errors}}
 
-The two printed squared-error sums are **4** for one mean and **0** for the two means.
+```{admonition} Invented data — a new record challenges the rule
+:class: note
 
-Now invent one more record, specifically to challenge the rule: it has **6 pasture hours**, but its lab result turns out to be **100 CFU/mL**. This is a constructed counterexample, not a real survey observation.
+Suppose a new record has **6 pasture hours** and its lab result comes back as **100 CFU/mL**.
 
 | For this new record | Baseline | Hand-built tree |
 |---|---:|---:|
@@ -94,6 +118,7 @@ Now invent one more record, specifically to challenge the rule: it has **6 pastu
 | Prediction, log10 MSC | 1 | 0 |
 | Observed log10 MSC | 2 | 2 |
 | Observed minus predicted | 1 | 2 |
+```
 
 Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 
@@ -103,11 +128,11 @@ Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 
 **The baseline uses one training mean; a regression tree divides records into groups and uses each group's training mean.** Its software searches candidate cuts, then can repeat within groups. It does not search every possible complete tree.
 
-**Pause point:** you have completed the hand-built rule and its counterexample. The rest of this chapter uses real data. If you stop here, save your my- script; next time restart R and run from the top to recreate its objects.
+**Pause point:** you have completed the hand-built rule and its counterexample. If you stop here, save your my- script. Next time, restart R and run from the top to recreate its objects.
 
 ## 8.4 Meet the real model's two inputs
 
-We offer the real tree two survey answers from the sampling visit:
+**Study data.** We offer the tree two survey answers from the sampling visit:
 
 | R column | Meaning | Role |
 |---|---|---|
@@ -117,7 +142,9 @@ We offer the real tree two survey answers from the sampling visit:
 
 We assume the survey answers can be obtained before the lab result; an actual application must check that timing. Farm labels help match records and separate farms; they are not prediction inputs. Another assay result or a summary of microbial outcomes would not be an appropriate replacement for these survey inputs.
 
-**Supplied data preparation — {span .script-block}`BLOCK · join-farm-survey`:** run this block. It downloads the fixed original survey and matches each record by **farm and sampling round**, preserving the original training/test roles.
+In the block below, `fetch_course_survey()` downloads the survey CSV from the authors' fixed GitHub version and saves it as `data/raw/Farm_Survey_Data.csv`. It returns the local path so `read_survey_features()` can read the file and select the two survey inputs. On later runs, the fetch function checks and reuses the saved CSV. [View the authors' survey CSV](https://github.com/FSL-MQIP/OREI_ML_Inference/blob/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Farm%20Survey%20Data.csv).
+
+Run the supplied {span .script-block}`BLOCK · join-farm-survey`. It selects the two survey inputs and matches each record by **farm and sampling round**, preserving its training or test role.
 
 {{r:join-farm-survey}}
 
@@ -142,15 +169,21 @@ This is different from making up a missing lab answer:
 
 Chapter 3 rejected silently treating an unknown count as zero. Here we deliberately state a different assumption for **prediction inputs**, preserve the recorded values and later evaluate the complete procedure. Filling an input does not recover its true measurement.
 
-Our reference is the training **median**: sort the known values and take the middle one. The median of 30, 40 and 200 is 40. With an even count, average the two middle values.
+Our reference is the training **median**. Sort the known values and take the middle one. With an even count, average the two middle values.
 
-Run {span .script-block}`BLOCK · median-example` on these invented cow counts. `[is.na(model_cows)]` selects only the missing positions:
+```{admonition} Invented data — fill a missing cow count
+:class: note
+
+The middle value of 30, 40 and 200 is 40. Use 40 to fill the missing cow count in the model-input copy.
+```
+
+Run {span .script-block}`BLOCK · median-example` on those same invented cow counts. `[is.na(model_cows)]` selects only the missing positions:
 
 {{r:median-example}}
 
 **Check:** the recorded column still contains NA. Only the model copy uses 40.
 
-Now run {span .script-block}`BLOCK · learn-training-medians` on the real **training** records:
+**Back to the study data.** Run {span .script-block}`BLOCK · learn-training-medians` on the **training** records:
 
 {{r:learn-training-medians}}
 
@@ -206,7 +239,13 @@ The software chose a question about **milking cows**, not pasture hours. Its cut
 
 ## 8.7 Predict by eye, then use predict()
 
-The next two inputs are **invented** and have no known MSC results. Run {span .script-block}`BLOCK · first-inputs`:
+```{admonition} Invented data — try two inputs on the fitted tree
+:class: note
+
+The tree learned its rule from the study records. Here we apply that rule to two made-up farm profiles with no measured MSC.
+```
+
+Run {span .script-block}`BLOCK · first-inputs`:
 
 {{r:first-inputs}}
 
@@ -218,7 +257,7 @@ Before running the next block, point to the leaf for 50 cows, then for 30 cows. 
 
 **Explain:** which operation learned the branches, and which just followed them? Does changing pasture hours alone change this particular tree's prediction?
 
-**Supplied save — {span .script-block}`BLOCK · save-tree-input`:** run this last block. It saves the original survey inputs, including their missing values, for Chapter 9 to prepare within each fitting round.
+**Back to the study data.** Run the supplied {span .script-block}`BLOCK · save-tree-input` block. It saves the original survey inputs, including their missing values, for Chapter 9 to prepare within each fitting round.
 
 {{r:save-tree-input}}
 

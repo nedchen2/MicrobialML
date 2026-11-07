@@ -43,9 +43,9 @@ Give me R code that I can run.
 
 **Pause:** what do you know about the data that this message does not tell the assistant? Does it say how to handle a missing measurement?
 
-The next section reproduces a two-line AI reply reported by the course author during a test. Its original object name was `milk`; we changed only that name to `practice` so it runs with this lesson's data. The request above and the follow-up below were written for this lesson; they are not a verbatim transcript of that test. The later fill-zero reply is a deliberately constructed teaching example.
-
 ## 3.3 Predict the output, then run
+
+The code below comes from a real AI reply (from DeepSeek Web, accessed 7 November 2026).
 
 Before running, predict the output of this reply. Will it be 20, 15, `NA`, or an error? Run {span .script-block}`BLOCK · run-first-ai-reply`:
 

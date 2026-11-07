@@ -35,6 +35,7 @@ train_routes <- lapply(seq_len(nrow(train_filled)), function(i) trace_tree(train
 train_leaf <- vapply(train_routes, function(route) route$leaf, integer(1))
 train_prediction <- as.numeric(predict(final_tree, newdata = train_filled))
 stopifnot(isTRUE(all.equal(vapply(train_routes, function(route) route$prediction, numeric(1)), train_prediction)))
+# Group the training outcomes by leaf and calculate one mean per leaf.
 leaf_means <- aggregate(train_filled$log10_msc, list(leaf = train_leaf), mean)
 names(leaf_means)[2] <- "mean_from_training_records"
 leaf_means$tree_prediction <- nodes$mean_log10[match(leaf_means$leaf, nodes$node)]

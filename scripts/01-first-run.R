@@ -10,9 +10,9 @@ sample_name
 count <- 20  # Store 20 under the name count.
 count * 2
 # %% check-project-folder
-project_folder <- getwd()
-basename(project_folder)
-file.exists("microbial-ml.Rproj")
+project_folder <- getwd()  # Store the path of R's current working folder.
+basename(project_folder)  # Show only the last folder name in the path.
+file.exists("microbial-ml.Rproj")  # TRUE if this file is in that folder.
 # %% save-first-result
 dir.create("outputs/practice", recursive = TRUE, showWarnings = FALSE)
 writeLines("My first successful R run.", "outputs/practice/first-run.txt")

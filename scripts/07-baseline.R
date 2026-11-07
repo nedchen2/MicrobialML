@@ -24,6 +24,8 @@ mae <- mean(abs(test$error_log10))
 data.frame(model = "Training-mean baseline", n_test = nrow(test),
            RMSE_log10_CFU_ml = rmse, MAE_log10_CFU_ml = mae)
 # %% cross-check-error-metrics
+# Check the averages by adding the squared or absolute errors and dividing by the row count.
+# RMSE takes the square root of that average.
 rmse_check <- sqrt(sum((test$log10_msc - baseline_log10)^2) / nrow(test))
 mae_check <- sum(abs(test$log10_msc - baseline_log10)) / nrow(test)
 stopifnot(isTRUE(all.equal(rmse, rmse_check)))

@@ -27,7 +27,7 @@ Certain spore-forming bacteria, such as *Bacillus cereus*, also cause foodborne 
 
 Reliable predictions could eventually help prioritize monitoring. First, we need to check whether they work: make a prediction, put it beside the lab result, and find out how far it missed. Practise with invented numbers, then real study data; keep new farms' answers out of learning the rule.
 
-Start with a guess you can make on paper: the average from the farms we already know. This **baseline** gives us something to test before asking a more complicated model to do better.
+Start with a guess you can make on paper. Average the measurements across the training records and use that value as the prediction for each new sample. This **baseline** gives us a score to compare with later models.
 
 ## Where each part happens
 

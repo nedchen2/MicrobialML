@@ -54,7 +54,7 @@ Run the supplied {span .script-block}`BLOCK · trace-one-test-prediction` block.
 
 {{r:trace-one-test-prediction}}
 
-The first record has **50 cows**. On the diagram, follow “Yes” to leaf 2: it predicts about **0.6873 log10 MSC**. The observed answer is about 0.8129, so observed minus predicted is about **0.1256**. Reconstruct that subtraction before looking at an overall score.
+The first record has **50 cows**. Follow “Yes” on the diagram to leaf 2 and read its prediction of about **0.6873 log10 MSC**. Subtract it from the observed value of about 0.8129 and check the result against the printed residual of **0.1256**. Use the [residual calculation from Chapter 4](04-small-farm-example.ipynb#id-4-4-turn-predictions-into-errors).
 
 Where does 0.6873 come from? Run the supplied {span .script-block}`BLOCK · check-leaves` block:
 
@@ -89,10 +89,10 @@ This map connects the saved file to the objects you use for a new prediction:
 ```mermaid
 flowchart TB
     accTitle: Save Reload And Apply The Rule
-    accDescr: The fitted tree, training medians and input names are saved together in model.rds. Reading that file creates saved_model; its medians prepare new_samples as new_ready, and its fitted rule makes new_prediction without training again.
+    accDescr: The fitted tree, training medians and input names are saved together in model.rds. Reading that file creates saved_model. Its medians prepare two invented profiles as new_ready, and its fitted rule makes new_prediction.
     fitted_parts["final_tree + training medians + input names"] -->|saveRDS| model_file["model.rds: bundle on disk"]
     model_file -->|readRDS| loaded_bundle["saved_model: restored bundle"]
-    new_inputs["new_samples: input table"] -->|copy and prepare| ready_inputs["new_ready: model inputs"]
+    new_inputs["new_samples: two invented profiles"] -->|copy and prepare| ready_inputs["new_ready: model inputs"]
     loaded_bundle -->|saved medians| ready_inputs
     ready_inputs -->|newdata| new_predictions["new_prediction: predicted numbers"]
     loaded_bundle -->|predict with saved_model$fit| new_predictions
@@ -110,7 +110,13 @@ Run {span .script-block}`BLOCK · reload-model`. `readRDS()` reads it back into 
 
 These operations save and restore a rule, not train another tree.
 
-Run {span .script-block}`BLOCK · new-samples` to create the two **invented** input profiles from Chapter 8. Neither has an observed MSC:
+```{admonition} Invented data — try the saved tree on two farm profiles
+:class: note
+
+Use the same two made-up inputs from Chapter 8 to check that the saved model makes predictions after you reload it. Neither profile has a measured MSC.
+```
+
+Run {span .script-block}`BLOCK · new-samples` to create those two profiles:
 
 {{r:new-samples}}
 
@@ -132,7 +138,7 @@ The predictions are about 0.6873 and 1.0545 log10 MSC, just as the diagram sugge
 
 Choose a chat from [AI access](01-first-run.ipynb#id-1-5-ai-access) and use your **my- copy**, keeping the supplied reference script intact. The chat cannot inspect your R session unless you provide its contents.
 
-Give AI this small, explicit task:
+**Back to the study data.** Ask AI to fit the tree on the training records and apply it to the held-out test records:
 
 > I am using R and rpart. My prepared training data frame is train_filled. The numeric target is log10_msc; the only predictors are pasture_hours and milking_cows. selected_settings already contains my training-validation choice. My prepared held-out data frame is test_filled. Write only the code to fit a numeric regression tree called ai_tree on train_filled, then predict test_filled into ai_prediction. Do not change the settings, split or preparation. Do not use held-out outcomes for fitting or choosing settings. Explain which line learns and which line only predicts.
 

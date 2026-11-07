@@ -18,19 +18,23 @@ Compute a mean using **training outcomes only**, then repeat it for each test re
 
 The learned value is about **0.7450 log10 CFU/mL**. Every held-out sample receives it. No weather or management predictors enter this rule.
 
-**Connect it to Chapter 5:** the invented example's mean log10 prediction was 1, equivalent to `10^1 = 10` CFU/mL. Here it is 0.7450, equivalent to `10^0.7450`, about **5.56 CFU/mL**.
-
-Run the supplied {span .script-block}`BLOCK · baseline-scale` block. It compares three calculations from the same training records:
+As in Chapter 5, we take each training concentration's log10 value before averaging. Let $x_i$ be training record $i$'s stored concentration in CFU/mL and let $b$ be the baseline prediction on the log10 scale. Run {span .script-block}`BLOCK · baseline-scale` and match the three output columns to their calculations.
 
 {{r:baseline-scale}}
 
-The original-scale arithmetic mean is about **16.78 CFU/mL**. The inverse log10 mean, 5.56, is the geometric mean of the stored training concentrations, including the below-limit substitutions. It expresses our fixed log10 prediction on another scale. If a future task asks for the average concentration on the original scale, this conversion alone does not answer it.
+| R output | Calculation | Result |
+|---|---|---:|
+| `mean_log10` | Average the log10 values, $b=\frac{1}{420}\sum_{i=1}^{420}\log_{10}(x_i)$. | 0.7450 on the log10 scale |
+| `same_prediction_CFU_ml` | Convert the prediction back to a concentration, $10^b$. | 5.56 CFU/mL |
+| `arithmetic_mean_CFU_ml` | Average the original concentrations directly, $\frac{1}{420}\sum_{i=1}^{420}x_i$. | 16.78 CFU/mL |
+
+The symbol $\sum$ tells you to add across the training records. The back-transformed prediction, 5.56 CFU/mL, is the geometric mean of the stored concentrations, including the below-limit substitutions.
 
 **Check:** can we replace the log10 prediction 0.7450 with 5.56 when scoring log10 observations? No: observations and predictions must use the same scale.
 
 ## 7.2 Read the result table
 
-A residual is observed minus predicted. As in the hand example, MAE averages absolute residuals; RMSE averages their squares and takes a square root.
+**Study data.** For each test record, subtract its predicted log10 value from its observed log10 value. Use those residuals in the MAE and RMSE calculations from the [hand example in Chapter 4](04-small-farm-example.ipynb#id-4-4-turn-predictions-into-errors).
 
 {span .script-block}`BLOCK · metrics`
 
@@ -42,7 +46,16 @@ A residual is observed minus predicted. As in the hand example, MAE averages abs
 - **RMSE about 0.529; MAE about 0.409:** prediction errors on the **log10** target scale.
 - **Their role:** a starting point for evaluating later procedures on an appropriate validation design.
 
-To give a log10 residual some meaning, compare two invented predictions:
+For an observed concentration $a$ and a predicted concentration $p$, both expressed in CFU/mL, the log10 residual measures their ratio on the log10 scale.
+
+$$
+\log_{10}(a)-\log_{10}(p)=\log_{10}\!\left(\frac{a}{p}\right).
+$$
+
+```{admonition} Invented data — what a log10 residual means
+:class: note
+
+For each pair of made-up values, compare the difference in CFU/mL with the ratio.
 
 | Predicted CFU/mL | Observed CFU/mL | Original-scale difference | Observed / predicted | log10 residual |
 |---:|---:|---:|---:|---:|
@@ -50,13 +63,17 @@ To give a log10 residual some meaning, compare two invented predictions:
 | 100 | 200 | 100 | 2 | about 0.301 |
 
 Both observations are twice their predictions, so their log10 residuals match even though their concentration differences do not. A log10 residual of 1 corresponds to an observed concentration ten times its prediction; −1 corresponds to one tenth.
-
-RMSE 0.529 summarizes many residuals; it is **not a 52.9% error rate**. Nor does it say every sample has a concentration ratio of `10^0.529`. A single baseline score cannot tell us whether the error is acceptable for an application; that needs a suitable comparison and a defined error requirement.
-
-```{admonition} Why a record and a farm can have different weights
-:class: tip dropdown
-Invented example: farm A has one record of 10, and farm B has three records of 30 CFU/mL. Averaging all records gives 25. Averaging the two farm means, 10 and 30, gives 20. These use different weights. Here each record contributes equally to the training mean and the test metrics; farms with more records therefore contribute more. Holding out whole farms does not itself give every farm equal weight.
 ```
+
+**Back to the study data.** RMSE 0.529 summarizes the residuals of all 105 test records. It is **not a 52.9% error rate**. Nor does it say every sample has a concentration ratio of `10^0.529`. A single baseline score cannot tell us whether the error is acceptable for an application; that needs a suitable comparison and a defined error requirement.
+
+```{admonition} Invented data — why counting records and counting farms differ
+:class: note dropdown
+
+Suppose farm A has one record of 10 CFU/mL and farm B has three records of 30 CFU/mL. Averaging the four records gives 25 CFU/mL. Averaging the two farm means, 10 and 30, gives 20 CFU/mL.
+```
+
+In the study results, each record contributes equally to the training mean and the test metrics. Farms with more records therefore contribute more.
 
 ## 7.3 Reconstruct one error yourself
 
@@ -64,13 +81,23 @@ Run the supplied {span .script-block}`BLOCK · cross-check-error-metrics` check.
 
 {{r:cross-check-error-metrics}}
 
-Choose the first row. Subtract predicted from observed by hand and compare with its residual. Display rounding can cause a small difference; the automated check uses full precision.
+The first row shows an observed log10 value of 0.8129 and a prediction of 0.7450. Subtract them by hand and compare the result with the printed residual.
+
+$$
+e_1\approx 0.8129-0.7450=0.0679.
+$$
+
+The printed values are rounded. The code calculates the residuals and scores using full precision.
 
 **Check the scope:** the three printed rows are a preview, not all 105 test records. Run {span .script-block}`BLOCK · rmse-scope`:
 
 {{r:rmse-scope}}
 
-The three-row RMSE is about **0.616**, while the full 105-row RMSE is about **0.529**. These are different calculations. The one-row subtraction above checks a residual; it cannot verify the full test score.
+The **preview RMSE of 0.616** uses the three displayed residuals. The **test RMSE of 0.529** uses all 105 residuals. For the test score, $e_i$ denotes the log10 residual for test record $i$.
+
+$$
+\mathrm{RMSE}_{\mathrm{test}}=\sqrt{\frac{e_1^2+\cdots+e_{105}^2}{105}}.
+$$
 
 ## 7.4 Save and inspect the evidence
 

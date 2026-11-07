@@ -15,9 +15,11 @@ table(milk$Test)
 # %% select-msc-records
 msc <- milk[milk$Test == "MSC", ]
 nrow(msc)
-table(msc$Notes, useNA = "ifany")
+table(msc$Notes, useNA = "ifany")  # Count NA as a category when present.
 # %% filter-usable-msc-records
+# A note counts as blank if it is missing or empty after trimming spaces.
 blank_note <- is.na(msc$Notes) | trimws(msc$Notes) == ""
+# is.finite() rules out missing and infinite values. Also require a count above zero.
 positive_count <- is.finite(msc$Conc) & msc$Conc > 0
 usable <- msc[blank_note & positive_count, ]
 rownames(usable) <- NULL

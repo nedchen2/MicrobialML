@@ -34,7 +34,7 @@ The software can stop earlier; a depth limit is permission, not a requirement. I
 
 ## 9.2 Try one validation round first
 
-We have **81 training farms** and **21 final test farms**. To choose depth, split only the 81 training farms into five batches, called **folds**. All sampling rounds from a farm stay together.
+We have **81 training farms** and **21 final test farms**. To choose depth, split only the 81 training farms into five batches, called **folds**. The code gives each farm a fold number, then copies that number to every record from that farm.
 
 **Supplied assignment — {span .script-block}`BLOCK · training-folds`:** run this block to assign those batches reproducibly. The displayed counts describe each batch when it is hidden:
 
@@ -63,13 +63,19 @@ flowchart TB
 
 In later rounds a different training batch is hidden; the 21 final test farms never move into the rotation.
 
-**Missing inputs:** learn the medians from the 336 fitting records, then use those same references in both tables. For example, if known fitting counts were 30, 40 and 200, the reference would be 40 even if a hidden farm reported 1,200. Its value cannot redefine the reference.
+**Missing inputs.** Learn the medians from the 336 fitting records, then use those same references in both tables.
 
-Run the supplied {span .script-block}`BLOCK · one-round-prepare` block. It repeats Chapter 8's median-and-copy operations and displays the references learned for this round:
+```{admonition} Invented data — learn the median from fitting farms
+:class: note
+
+Suppose the fitting farms have 30, 40 and 200 cows. Their median is 40, even if a hidden farm reports 1,200 cows. The hidden farm receives the reference when needed. Its data do not help calculate it.
+```
+
+**Back to the study data.** Run the supplied {span .script-block}`BLOCK · one-round-prepare` block. It repeats Chapter 8's median-and-copy operations and displays the references learned for this round:
 
 {{r:one-round-prepare}}
 
-The cow reference is now **77.5**, rather than Chapter 8's 72, because this round has fewer fitting farms. It is the average of the two middle counts, a computed fill value rather than a measured half cow.
+The cow median is **77.5** for this round and **72** for the full training set in Chapter 8. This round uses a different set of fitting records, so the middle counts can change. The 77.5 is the average of this round's two middle observed cow counts.
 
 Now the familiar fitting step. Run {span .script-block}`BLOCK · one-round-fit`:
 
@@ -109,7 +115,13 @@ Run the supplied {span .script-block}`BLOCK · validate-depth` block. It automat
 
 {{r:validate-depth}}
 
-The final OOF RMSE is calculated from all 420 hidden-record errors together, giving each record equal weight. Batch sizes differ, so it is not an unweighted average of the five RMSEs.
+For one candidate depth, let $S_k$ be the sum of squared errors for the records in fold $k$ when it was hidden. Add the five sums, divide by the total number of records, then take the square root.
+
+$$
+\mathrm{RMSE}_{\mathrm{OOF}}=\sqrt{\frac{S_1+S_2+S_3+S_4+S_5}{420}}.
+$$
+
+Each of the 420 training records contributes one squared error. A fold with more records therefore contributes more terms to the sum.
 
 ## 9.4 Let the validation table choose depth
 

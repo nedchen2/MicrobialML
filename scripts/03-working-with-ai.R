@@ -17,6 +17,7 @@ summary_table
 # %% try-filling-with-zero
 # Deliberate error: zero imputation changes this task.
 working <- practice
+# Find the missing counts in the copy and replace just those positions with zero.
 working$count_cfu_ml[is.na(working$count_cfu_ml)] <- 0
 bad_mean <- mean(working$count_cfu_ml)
 bad_mean
@@ -42,7 +43,7 @@ if (!file.exists("outputs/ch03/ai-use-log.txt")) {
 }
 file.exists("outputs/ch03/summary.csv")
 # %% capture-missing-object-error
-# Additional practice: restart R and run context before this exercise.
+# Additional practice: restart R and run the load-practice-data block first.
 # Select ONLY the mean(...) line to see R stop; then run this supplied block.
 runtime_failure <- tryCatch({
   mean(milk_data$count_cfu_ml, na.rm = TRUE)
