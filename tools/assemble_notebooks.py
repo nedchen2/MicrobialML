@@ -19,10 +19,11 @@ TREE_STAGES = {
                       "first-plot", "first-inputs", "first-predict", "save-tree-input"],
     "09-choose-tree": ["load-rpart-for-validation", "load-tree-input", "depth-candidates", "training-folds",
                         "one-round-data", "one-round-prepare", "one-round-fit", "one-round-predict",
-                        "one-round-error", "validate-depth", "choose-depth", "compare-training-and-validation-errors",
+                        "one-round-error", "validate-depth", "trace-validation-record", "choose-depth", "compare-training-and-validation-errors",
                         "fit-tree", "save-tree-fit"],
     "10-test-tree": ["load-rpart", "load-tree-fit", "plot-tree", "prepare-test", "predict-tree",
-                      "trace-one-test-prediction", "check-leaves", "tree-errors", "tree-test-scores", "save-tree-results",
+                      "trace-one-test-prediction", "check-one-test-residual", "check-leaves",
+                      "tree-errors", "tree-test-scores", "save-tree-results",
                       "save-model", "reload-model", "new-samples", "prepare-new", "new-predict", "restore-selected-tree-settings"],
 }
 WORKFLOWS = {"worked-example.R": REAL_STAGES, "tree-workflow.R": TREE_STAGES}
@@ -50,7 +51,8 @@ CELL_DISPLAY = {
                        "save-tree-input": ["hide-input"]},
     "09-choose-tree": {"load-tree-input": ["hide-input"], "training-folds": ["hide-input"],
                         "one-round-prepare": ["hide-input"],
-                        "validate-depth": ["hide-input", "hide-output"], "choose-depth": ["hide-input"],
+                        "validate-depth": ["hide-input", "hide-output"], "trace-validation-record": ["hide-input"],
+                        "choose-depth": ["hide-input"],
                         "compare-training-and-validation-errors": ["hide-input"], "save-tree-fit": ["hide-input"]},
     "10-test-tree": {"load-tree-fit": ["hide-input"], "plot-tree": ["hide-input"],
                       "prepare-test": ["hide-input"], "check-leaves": ["hide-input"],

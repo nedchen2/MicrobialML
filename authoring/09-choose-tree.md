@@ -1,16 +1,38 @@
 # 9. How deep should the tree grow?
 
-**Open:** restart R; save the supplied script as `scripts/my-09-choose-tree.R`.
+**Would asking more questions help the tree predict MSC for a new farm?** Try one validation round, then repeat it to choose how deep the tree can grow. The 21 final test farms are reserved for Chapter 10.
 
-**Input:** Chapter 8's `tree-input.rds`. **Today:** repeat the fit/predict operations you know, using temporarily hidden training farms to choose depth. Keep the final test farms aside.
+**Open.** Restart R and save the supplied script as `scripts/my-09-choose-tree.R`. This chapter uses `outputs/checkpoints/tree-input.rds` from Chapter 8. Run the named blocks in order.
 
-## 9.1 Make a guess before choosing
+## 9.1 How many questions can a tree ask?
 
-Chapter 8 fitted a tree with one question. A deeper tree can ask another question inside each group, creating smaller groups and more group averages.
+Follow one path from the first question to a prediction. Count the questions along the longest path in each diagram. This count is the tree’s **depth**.
 
-**Write your guess:** would more questions improve the fit to known training records? Would they necessarily improve predictions for a new farm? Remember the invented 6-hour sample that broke our perfect hand-built rule.
+```mermaid
+flowchart TB
+    accTitle: Count Questions Along A Path
+    accDescr: In the depth-one tree, each path asks one question. In the depth-two tree, the longest path asks two questions, while one path reaches a prediction after just one.
 
-Run {span .script-block}`BLOCK · load-rpart-for-validation`, then the supplied {span .script-block}`BLOCK · load-tree-input` block:
+    subgraph depth_one ["Depth 1"]
+        first_shallow{"Question 1"}
+        first_shallow -->|Yes| shallow_yes(["Prediction"])
+        first_shallow -->|No| shallow_no(["Prediction"])
+    end
+
+    subgraph depth_two ["Depth 2"]
+        first_deeper{"Question 1"}
+        first_deeper -->|Yes| second_deeper{"Question 2"}
+        first_deeper -->|No| deeper_no(["Prediction"])
+        second_deeper -->|Yes| second_yes(["Prediction"])
+        second_deeper -->|No| second_no(["Prediction"])
+    end
+```
+
+When fitting a tree, **maximum depth** sets the number of questions it can ask along a path. A path can end sooner, as the first “No” branch of the depth-2 tree shows.
+
+**Write your guess.** If we allow up to three questions along a path, will the tree’s error go up or down on the records it learned from? What about on farms it has yet to see? Save both guesses for Section 9.4.
+
+Run {span .script-block}`BLOCK · load-rpart-for-validation` and {span .script-block}`BLOCK · load-tree-input` to load the package and study data.
 
 {{r:load-rpart-for-validation}}
 
@@ -18,150 +40,149 @@ Run {span .script-block}`BLOCK · load-rpart-for-validation`, then the supplied 
 
 {{r:load-tree-input}}
 
-We will compare maximum depths **1, 2 and 3**. Run {span .script-block}`BLOCK · depth-candidates`; `1:3` lists those three integers:
+Run {span .script-block}`BLOCK · depth-candidates`. We will try maximum depths 1, 2 and 3.
 
 {{r:depth-candidates}}
 
-Depth counts questions along one root-to-leaf path. It does not count all the questions in the whole tree.
+## 9.2 Follow group 1 through one validation round
 
-| Allowed depth | What it permits |
-|---|---|
-| 1 | One question, at most two final groups |
-| 2 | A second question inside those groups, at most four final groups |
-| 3 | A third question along a path, at most eight final groups |
-
-The depth sets the maximum number of questions along a path. The software can stop earlier. We choose that maximum by checking predictions on hidden farms.
-
-## 9.2 Try one validation round first
-
-We have **81 training farms** and **21 final test farms**. To choose depth, split only the 81 training farms into five batches, called **folds**. The code gives each farm a fold number, then copies that number to every record from that farm.
-
-**Supplied assignment — {span .script-block}`BLOCK · training-folds`:** run this block to assign those batches reproducibly. The displayed counts describe each batch when it is hidden:
-
-{{r:training-folds}}
-
-Start with batch 1. **Validation** means checking predictions for records that did not fit this particular tree. Run {span .script-block}`BLOCK · one-round-data`:
-
-{{r:one-round-data}}
-
-Read the table: **336 records from 64 farms** fit this tree; **84 records from 17 other training farms** check it. These 17 are temporarily hidden training farms, not any of the 21 final test farms.
-
-Use this whole-course map for **round 1**. First split the 102 farms; only the 81 training farms enter the five-batch rotation. Counts describe farms and records separately.
+**Study data.** For this round, use a maximum depth of **1** and set aside **group 1**. The other four groups fit the tree. Group 1 gives us farms the tree has yet to see, so we can check how well it predicts their lab results. This check is called **validation**.
 
 ```mermaid
 flowchart TB
     accTitle: Whole Farms And One Validation Round
-    accDescr: The 102 farms are split into 81 training and 21 final test farms. In validation round one, 64 training farms fit the medians and tree; 17 other training farms supply hidden inputs. Their predictions are checked, while the 21 final test farms stay outside selection.
+    accDescr: The 102 farms are split into 81 training and 21 final test farms. In round one, groups 2 through 5 fit the medians and tree. Group 1 checks the resulting predictions. The 21 final test farms are reserved for Chapter 10.
+
     all_farms["102 farms / 525 records"] --> training_farms["81 training farms / 420 records"]
-    all_farms --> final_test["21 final test farms / 105 records<br/>Reserved for Chapter 10"]
-    training_farms --> fitting_farms["Round 1 fit: 64 farms / 336 records"]
-    training_farms --> validation_farms["Round 1 hide: 17 farms / 84 records"]
-    fitting_farms -->|learn| round_model["Round-specific medians and tree"]
-    round_model -->|apply saved rule| round_predictions["84 hidden-record predictions"]
-    validation_farms -->|supply inputs| round_predictions
+    all_farms --> final_test["21 final test farms / 105 records<br/>Chapter 10"]
+    training_farms --> fitting_farms["Groups 2–5<br/>64 farms / 336 records"]
+    training_farms --> validation_farms["Group 1<br/>17 farms / 84 records"]
+    fitting_farms -->|Learn| round_model["Round 1 medians and tree"]
+    round_model -->|Predict| group_predictions["84 predictions to check"]
+    validation_farms -->|Supply inputs| group_predictions
 ```
 
-In later rounds a different training batch is hidden; the 21 final test farms never move into the rotation.
+### 1. Fit with groups 2–5
 
-**Missing inputs.** Learn the medians from the 336 fitting records, then use those same references in both tables.
+Run {span .script-block}`BLOCK · training-folds` to assign the **81 training farms** to five groups, called **folds**. Every record from a farm receives that farm’s fold number.
+
+{{r:training-folds}}
+
+Run {span .script-block}`BLOCK · one-round-data`. Find the **336 records from 64 farms** for fitting and the **84 records from 17 farms** for validation.
+
+{{r:one-round-data}}
+
+Learn the medians from the fitting records. Use those medians for missing survey inputs in both groups.
 
 ```{admonition} Invented data — learn the median from fitting farms
-:class: note
+:class: note dropdown
 
-Suppose the fitting farms have 30, 40 and 200 cows. Their median is 40, even if a hidden farm reports 1,200 cows. The hidden farm receives the reference when needed. Its data do not help calculate it.
+If the fitting farms have 30, 40 and 200 cows, their median is 40. A hidden farm with a missing cow count receives 40 in the model-input copy.
 ```
 
-**Back to the study data.** Run the supplied {span .script-block}`BLOCK · one-round-prepare` block. It repeats Chapter 8's median-and-copy operations and displays the references learned for this round:
+**Back to the study data.** Run {span .script-block}`BLOCK · one-round-prepare`. The cow median is **77.5**. It comes from this round’s fitting records. The median of **72** in Chapter 8 came from all 420 training records.
 
 {{r:one-round-prepare}}
 
-The cow median is **77.5** for this round and **72** for the full training set in Chapter 8. This round uses a different set of fitting records, so the middle counts can change. The 77.5 is the average of this round's two middle observed cow counts.
-
-Now the familiar fitting step. Run {span .script-block}`BLOCK · one-round-fit`:
+Run {span .script-block}`BLOCK · one-round-fit`. Find `data = fitting_ready` and `maxdepth <- 1` in the code. These show which records fit this tree and how many questions it can ask along a path.
 
 {{r:one-round-fit}}
 
-**Find:** which table appears after `data =`? It must be `fitting_ready`, not the hidden validation table.
+### 2. Predict group 1
 
-Run {span .script-block}`BLOCK · one-round-predict` to apply that tree to the hidden inputs:
+Run {span .script-block}`BLOCK · one-round-predict` to predict all 84 records in group 1. The output shows the first record so you can follow it into the next section.
 
 {{r:one-round-predict}}
 
-The observed values appear only to check the predictions. The fitting call did not use them. In `predict()`, the formula's right-hand inputs determine the prediction; an available answer column is not automatically another predictor.
+Write down the two labels **R4** and **A**. Together they identify farm R4’s record from sampling round A. Its prediction is about **0.6842** on the log10 scale.
 
-Finally, run {span .script-block}`BLOCK · one-round-error` to summarize this round's errors with Chapter 7's RMSE calculation:
+### 3. Check group 1’s predictions
+
+Compare R4’s lab result, about **0.5441**, with its prediction. Use [Chapter 7’s subtraction](07-baseline.ipynb#id-7-2-check-one-prediction-by-hand). The prediction was about **0.1401** above the observed value on the log10 scale.
+
+Now run {span .script-block}`BLOCK · one-round-error`. **RMSE ≈ 0.693** summarizes all **84** errors from group 1 for depth 1.
 
 {{r:one-round-error}}
 
-The RMSE of about **0.693** describes only this hidden batch and this depth. The depth choice below uses all five batches.
+## 9.3 Combine the predictions from five rounds
 
-**Say the sequence:** learn from four batches → predict the fifth → compare with its answers. No final test score has entered this process.
+Move the validation role from one group to the next. Each group takes one turn supplying records to check.
 
-## 9.3 Rotate the hidden batch
-
-We do not want the choice to depend only on batch 1. Repeat the same steps until each training batch has been hidden once:
-
-| Round | Batch 1 | Batch 2 | Batch 3 | Batch 4 | Batch 5 |
+| Round | Group 1 | Group 2 | Group 3 | Group 4 | Group 5 |
 |---|---|---|---|---|---|
-| 1 | Hide | Fit | Fit | Fit | Fit |
-| 2 | Fit | Hide | Fit | Fit | Fit |
-| 3 | Fit | Fit | Hide | Fit | Fit |
-| 4 | Fit | Fit | Fit | Hide | Fit |
-| 5 | Fit | Fit | Fit | Fit | Hide |
+| 1 | Check | Fit | Fit | Fit | Fit |
+| 2 | Fit | Check | Fit | Fit | Fit |
+| 3 | Fit | Fit | Check | Fit | Fit |
+| 4 | Fit | Fit | Fit | Check | Fit |
+| 5 | Fit | Fit | Fit | Fit | Check |
 
-For each depth, every training record now has **one prediction made while its farm was hidden**. We call these **out-of-fold (OOF) predictions**. The 21 final test farms do not appear anywhere in this table.
-
-Run the supplied {span .script-block}`BLOCK · validate-depth` block. It automates the one-round procedure for all five batches and all three depths. You do not need to write nested loops to understand what is being repeated.
+Run the supplied {span .script-block}`BLOCK · validate-depth`. It repeats the same fitting, predicting and checking steps for all five groups at each of the three depths.
 
 {{r:validate-depth}}
 
-For one candidate depth, let $S_k$ be the sum of squared errors for the records in fold $k$ when it was hidden. Add the five sums, divide by the total number of records, then take the square root.
+**Find the same record.** Run {span .script-block}`BLOCK · trace-validation-record` to look up the farm ID and sampling round you wrote down.
+
+{{r:trace-validation-record}}
+
+Find **R4**, **A** and **fold 1** in the output. The `depth_1` value is about **0.6842**, the prediction you saw in Section 9.2. It came from the round in which group 1 was held out.
+
+A prediction made while its group is held out is called an **out-of-fold prediction**, or **OOF prediction**. For each depth, the five rounds supply one such prediction for every training record. We combine all **420** errors into one RMSE per depth. Chapter 7 used the same calculation on the final test records. Here the errors come from the five groups inside the training set.
+
+```{admonition} How the five groups make one RMSE
+:class: note dropdown
+
+For one depth, let $S_k$ be the sum of squared errors for the records held out in round $k$. Add the five sums, divide by the 420 records, and take the square root.
 
 $$
 \mathrm{RMSE}_{\mathrm{OOF}}=\sqrt{\frac{S_1+S_2+S_3+S_4+S_5}{420}}.
 $$
 
-Each of the 420 training records contributes one squared error. A fold with more records therefore contributes more terms to the sum.
+Every record contributes one squared error, so a group with more records contributes more terms.
+```
 
-## 9.4 Let the validation table choose depth
+## 9.4 Choose a depth and check your guess
 
-Our rule is to choose the **smallest OOF RMSE**, with a shallower tree winning a tie. Use MAE as a second description of the errors.
+Choose the depth with the **smallest OOF RMSE**. If depths tie, choose the shallower one.
 
-Run the supplied {span .script-block}`BLOCK · choose-depth` block:
+Run {span .script-block}`BLOCK · choose-depth`. The OOF RMSEs for depths 1, 2 and 3 are about **0.722**, **0.727** and **0.742**. Find the row with `selected = TRUE`. It marks **depth 1**.
 
 {{r:choose-depth}}
 
-**Read it yourself.** Depth 1 has OOF RMSE about 0.722, depth 2 about 0.727 and depth 3 about 0.742. Which is smallest? `selected = TRUE` marks that row.
-
-The baseline uses each round's fitting mean to predict that round's hidden records. On those **same validation records**, the baseline RMSE is about **0.721** and the selected tree's is about **0.722**. Chapter 10 compares both methods on the final test farms.
-
-## 9.5 Revisit your guess, then fit on all training farms
-
-Run the supplied {span .script-block}`BLOCK · compare-training-and-validation-errors` block. It calculates the full-training medians and input copy again, then compares fit-to-training errors with OOF errors:
+**Return to your guess.** Run {span .script-block}`BLOCK · compare-training-and-validation-errors`. For each depth, read the error on the records used to fit the tree and the error on farms held out in validation.
 
 {{r:compare-training-and-validation-errors}}
 
-**Return to your guess:** as allowed depth increases, training RMSE falls from about 0.701 to 0.677, but hidden-farm RMSE rises from about 0.722 to 0.742. More detailed groups fitted the known answers better without improving the hidden predictions here.
+| Where we checked the predictions | What changed from depth 1 to depth 3? |
+|---|---|
+| The records used to fit the tree | Training RMSE fell from **0.701 to 0.677**. |
+| Farms held out in each round | OOF RMSE rose from **0.722 to 0.742**. |
 
-The extra training fits illustrate this difference; they do not alter the OOF choice. Depth is already selected. Now use **all 420 records from the 81 training farms** to learn the final tree. The medians again come from those training records only. Run {span .script-block}`BLOCK · fit-tree`:
+Which part matched your guess? Here, the deeper tree fit the known answers more closely, while the shallower tree predicted the held-out farms better.
+
+**Compare with the baseline.** On those same validation records, the baseline’s OOF RMSE was **0.721**, slightly lower than the selected tree’s **0.722**. The baseline predicted each held-out group using the mean from that round’s fitting records.
+
+## 9.5 Fit the final tree at the chosen depth
+
+Each validation tree learned from four groups. We now know the depth and can fit the final tree using **all 420 records from the 81 training farms**. The comparison block in Section 9.4 already calculated the medians and prepared the inputs for this full training set. The final fit uses that prepared table to learn the branches and leaf means at depth 1.
+
+**Check before running.** Which setting have we already chosen? What will the tree learn from the training data now?
+
+Run {span .script-block}`BLOCK · fit-tree`. The result is stored as `final_tree`.
 
 {{r:fit-tree}}
 
-There is no single validation-round tree to keep: each round had fewer fitting farms. This final fit uses all available training farms and the chosen setting. `final_tree` stores its learned branches and leaf means. We will use it on the 21 test farms in Chapter 10.
+## 9.6 Save the tree for Chapter 10
 
-## 9.6 Save the choice
-
-Run the supplied {span .script-block}`BLOCK · save-tree-fit` block:
+Run {span .script-block}`BLOCK · save-tree-fit`. In **Files → outputs → checkpoints**, find **`tree-fit.rds`**. It contains the final tree and the training medians used to prepare inputs.
 
 {{r:save-tree-fit}}
 
-**Find:** `outputs/checkpoints/tree-fit.rds`, `outputs/tree/validation-scores.csv` and `outputs/tree/training-farm-folds.csv`.
+The tables in **outputs → tree** let you check your work later.
 
-**Explain before moving on:** why are validation farms still part of the training set overall? Why do we fit once more after choosing depth? Which farms must stay out of both choices?
+| File | What you can check |
+|---|---|
+| `validation-scores.csv` | Which depth had the smallest validation RMSE |
+| `training-farm-folds.csv` | Which group each farm belonged to |
+| `out-of-fold-predictions.csv` | The predictions for each record when its group was held out |
 
-```{admonition} Check your explanation
-:class: tip dropdown
-Validation farms belong to the original 81 training farms: each batch is temporarily hidden while the others fit a candidate. After choosing depth, fit again on all 81 training farms because each round used fewer farms. The 21 final test farms help neither choose depth nor learn the tree or missing-input references.
-```
-
-**Next:** [read the tree, predict and compare](10-test-tree.ipynb).
+**Next.** Chapter 10 reads the saved tree and applies it to the **21 final test farms**. [Read the tree, predict and compare](10-test-tree.ipynb).

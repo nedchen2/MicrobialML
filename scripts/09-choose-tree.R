@@ -41,8 +41,13 @@ round_tree <- rpart(log10_msc ~ pasture_hours + milking_cows,
                     data = fitting_ready, method = "anova", control = round_settings)
 # %% one-round-predict
 round_predictions <- predict(round_tree, newdata = validation_ready)
-head(data.frame(observed_log10 = validation_ready$log10_msc,
-                predicted_log10 = as.numeric(round_predictions)), 3)
+# Show the first record with the two labels that identify it.
+round_one_record <- data.frame(
+  FarmID = validation_ready$FarmID[1],
+  Sampling = validation_ready$Sampling[1],
+  observed_log10 = validation_ready$log10_msc[1],
+  predicted_log10 = as.numeric(round_predictions[1]))
+round_one_record
 # %% one-round-error
 round_errors <- validation_ready$log10_msc - round_predictions
 sqrt(mean(round_errors^2))
@@ -79,12 +84,21 @@ validation_scores <- data.frame(depth = candidate_depths,
   OOF_MAE_log10 = vapply(seq_along(candidate_depths), function(j) mean(abs(observed - oof[, j])), numeric(1)))
 baseline_validation <- data.frame(model = "Training-fold mean", depth = 0,
   OOF_RMSE_log10 = sqrt(mean((observed - oof_baseline)^2)), OOF_MAE_log10 = mean(abs(observed - oof_baseline)))
+# %% trace-validation-record
+oof_table <- data.frame(FarmID = train_survey$FarmID, Sampling = train_survey$Sampling,
+  fold = row_fold, observed_log10 = observed, baseline_prediction = oof_baseline,
+  depth_1 = oof[, 1], depth_2 = oof[, 2], depth_3 = oof[, 3])
+# Find the row with both the same farm ID and the same sampling round.
+same_farm <- oof_table$FarmID == round_one_record$FarmID
+same_round <- oof_table$Sampling == round_one_record$Sampling
+traced_record <- oof_table[same_farm & same_round,
+                           c("FarmID", "Sampling", "fold", "observed_log10", "depth_1")]
+traced_record
 # %% choose-depth
 # Treat RMSEs within 1e-12 of the lowest score as tied. Pick the shallowest tied tree.
 chosen_depth <- min(validation_scores$depth[validation_scores$OOF_RMSE_log10 <= min(validation_scores$OOF_RMSE_log10) + 1e-12])
 validation_scores$selected <- validation_scores$depth == chosen_depth
 validation_scores
-baseline_validation
 chosen_depth
 # %% compare-training-and-validation-errors
 # An illustration after selection: these fits do not alter the chosen depth.
@@ -95,6 +109,7 @@ validation_scores$training_RMSE_log10 <- vapply(candidate_depths, function(depth
   sqrt(mean((train_filled$log10_msc - predict(fitted, newdata = train_filled))^2))
 }, numeric(1))
 validation_scores[c("depth", "training_RMSE_log10", "OOF_RMSE_log10", "selected")]
+baseline_validation
 # %% fit-tree
 selected_settings <- fixed_tree_settings
 selected_settings$maxdepth <- chosen_depth
@@ -106,9 +121,6 @@ write.csv(do.call(rbind, fold_medians), "outputs/tree/fold-medians.csv", row.nam
 write.csv(do.call(rbind, validation_nodes), "outputs/tree/validation-nodes.csv", row.names = FALSE)
 write.csv(validation_scores, "outputs/tree/validation-scores.csv", row.names = FALSE)
 write.csv(baseline_validation, "outputs/tree/baseline-validation.csv", row.names = FALSE)
-oof_table <- data.frame(FarmID = train_survey$FarmID, Sampling = train_survey$Sampling,
-  fold = row_fold, observed_log10 = observed, baseline_prediction = oof_baseline,
-  depth_1 = oof[, 1], depth_2 = oof[, 2], depth_3 = oof[, 3])
 write.csv(oof_table, "outputs/tree/out-of-fold-predictions.csv", row.names = FALSE)
 saveRDS(list(fit = final_tree, medians = training_medians, chosen_depth = chosen_depth,
              train = train_survey, test = tree_input$test, audit = tree_input$audit,

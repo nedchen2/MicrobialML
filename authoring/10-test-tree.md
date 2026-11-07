@@ -1,12 +1,12 @@
 # 10. Predict, check and explain
 
-**Open:** restart R; save the supplied script as `scripts/my-10-test-tree.R`.
+**Did the tree improve predictions for the same farms?** Use the final tree from Chapter 9 on the 21 held-out farms. Start with the same milk sample you checked by hand in Chapter 7, then compare both methods on all 105 records.
 
-**Input:** Chapter 9's saved tree. **Today:** read the learned rule, check its predictions, compare it with the baseline and reuse it on new inputs.
+**Open.** Restart R and save the supplied script as `scripts/my-10-test-tree.R`. This chapter uses `outputs/checkpoints/tree-fit.rds` from Chapter 9. Run the named blocks in order.
 
-## 10.1 Read the tree before running predictions
+## 10.1 Load and read the final tree
 
-Run {span .script-block}`BLOCK · load-rpart`, then the supplied {span .script-block}`BLOCK · load-tree-fit` block to restore the selected tree and its training preparation:
+Run {span .script-block}`BLOCK · load-rpart` and {span .script-block}`BLOCK · load-tree-fit` to restore the final tree and its training medians. If the checkpoint is missing, complete the save step in Chapter 9.
 
 {{r:load-rpart}}
 
@@ -14,192 +14,157 @@ Run {span .script-block}`BLOCK · load-rpart`, then the supplied {span .script-b
 
 {{r:load-tree-fit}}
 
-Run the supplied {span .script-block}`BLOCK · plot-tree` block. Open `outputs/tree/fitted-tree.png` in Files; the code saves the image directly.
+Run {span .script-block}`BLOCK · plot-tree`. The diagram is also saved at `outputs/tree/fitted-tree.png`.
 
 {{r:plot-tree}}
 
-![Selected shallow regression tree. Each leaf shows its mean log10 MSC and its number of training records.](../outputs/tree/fitted-tree.png)
+![The final tree asks whether the farm has at least 36.5 milking cows. The leaves show the mean log10 MSC and number of training records in each group.](../outputs/tree/fitted-tree.png)
 
-Chapter 9 selected depth 1 after comparing it with two deeper candidates. The resulting tree matches the one fitted to the study records in Chapter 8.
+Chapter 9 selected a maximum depth of 1. Look at the fitted tree. **Which input determines the branch? Where does the number in each leaf come from?**
 
-**Point before you run:**
-
-| Input change | What do you expect from this tree? |
-|---|---|
-| 50 cows versus 30 cows | Which branch and leaf for each? |
-| 50 cows becomes 60 | Does it cross the cut? |
-| Only pasture hours changes | Is that variable used anywhere in this tree? |
-| 36 cows becomes 37 | Does it cross the cut? |
-
-```{admonition} Open after tracing the branches
+```{admonition} Check your reading of the tree
 :class: tip dropdown
-50 and 60 cows both satisfy “at least 36.5”, enter leaf 2 and receive about 0.6873 log10 MSC. 30 and 36 enter leaf 3 and receive about 1.0545; 37 enters leaf 2. Changing pasture hours alone does not change this selected tree's prediction. All records in a leaf receive the same value.
+
+The tree splits on milking-cow count. The cutoff of 36.5 separates herds of 36 cows or fewer from herds of 37 or more. The prediction in each leaf is the mean log10 MSC of the training records that reached it.
 ```
 
-## 10.2 Follow one real record and check its leaf
+## 10.2 Compare two predictions for one real record
 
-Run {span .script-block}`BLOCK · prepare-test` to fill missing test inputs with the saved **training** medians.
+**Study data.** Find **farm R15, sampling round A**. This is the first test record you checked by hand with the baseline in [Section 7.2](07-baseline.ipynb#id-7-2-check-one-prediction-by-hand). The farm had **50 milking cows** that day. Follow the tree diagram to find its leaf and prediction before running the blocks.
+
+Run {span .script-block}`BLOCK · prepare-test` to fill missing test inputs with the saved training medians.
 
 {{r:prepare-test}}
 
-Run {span .script-block}`BLOCK · predict-tree`:
+Run {span .script-block}`BLOCK · predict-tree` to make the test predictions.
 
 {{r:predict-tree}}
 
-Here `predict()` applies the fitted tree to the prepared survey inputs. We use the test lab results to score those predictions.
-
-Run the supplied {span .script-block}`BLOCK · trace-one-test-prediction` block. First compare recorded inputs with the model's inputs; then read the rule, leaf and prediction:
+Run {span .script-block}`BLOCK · trace-one-test-prediction`. Check the farm ID, sampling round and leaf. For R15/A, the recorded cow count and the count used by the model are both **50**. The tree sends the record to **leaf 2**.
 
 {{r:trace-one-test-prediction}}
 
-The first record has **50 cows**. Follow “Yes” on the diagram to leaf 2 and read its prediction of about **0.6873 log10 MSC**. Subtract it from the observed value of about 0.8129 and check the result against the printed residual of **0.1256**. Use the [residual calculation from Chapter 4](04-small-farm-example.ipynb#id-4-4-turn-predictions-into-errors).
+**Work it out.** The lab result is about **0.8129** on the log10 scale. The baseline predicts **0.7450**, and the tree predicts **0.6873**. For each method, subtract the prediction from the same lab result. Which prediction is closer?
 
-Where does 0.6873 come from? Run the supplied {span .script-block}`BLOCK · check-leaves` block:
+Run {span .script-block}`BLOCK · check-one-test-residual` after you try. Its last column shows both residuals.
+
+{{r:check-one-test-residual}}
+
+The baseline missed by about **+0.0679** and the tree by about **+0.1256**. Both predictions were lower than the measured value. The baseline was closer on this record.
+
+Run {span .script-block}`BLOCK · check-leaves` to see where the tree’s prediction comes from. The **354 training records** that reached leaf 2 have a mean of about **0.6873** on the log10 scale.
 
 {{r:check-leaves}}
 
-One column calculates each leaf's average from its training records. The other reads the model's prediction. They agree: the first test record receives the mean of the 354 training records in leaf 2.
+## 10.3 Compare all 105 predictions and write a conclusion
 
-## 10.3 Compare predictions on the same test records
-
-**Before running:** what evidence would justify the more complicated rule?
-
-Run {span .script-block}`BLOCK · tree-errors`. The three lines calculate residuals, RMSE and MAE:
+**Does the baseline also come closer across the whole test set?** Run {span .script-block}`BLOCK · tree-errors` to repeat your subtraction for every test record.
 
 {{r:tree-errors}}
 
-Then run the supplied {span .script-block}`BLOCK · tree-test-scores` block to place those scores beside the Chapter 7 baseline:
+Run {span .script-block}`BLOCK · tree-test-scores`. Compare the two rows. Both methods use the same **105 records from 21 test farms**, and both scores use the log10 CFU/mL scale.
 
 {{r:tree-test-scores}}
 
-Both methods predict the **same 105 records from 21 held-out farms**, on the same log10 scale. The baseline has the lower RMSE (**0.529** versus **0.545** for the tree) and the lower MAE. The baseline also had a slightly lower RMSE in Chapter 9's training-only validation.
+The baseline has the lower **RMSE** (about **0.529** versus **0.545**) and **MAE** (about **0.409** versus **0.426**). On these held-out records, the training-mean prediction performed better than the tree.
 
-**Supplied evidence export — {span .script-block}`BLOCK · save-tree-results`:** run this block to save the comparisons and prediction checks.
+Run {span .script-block}`BLOCK · save-tree-results`. In **Files → outputs → tree**, open `test-scores.csv` and `test-predictions.csv`. The first file gives the comparison. The second lets you find R15/A and check both predictions against its lab result.
 
 {{r:save-tree-results}}
 
-## 10.4 Save, reload and predict new inputs
+**Write three sentences in English.** Name the candidate inputs and the depth chosen in Chapter 9. Compare the two methods on the test records. Then explain one limitation that matters to the result.
 
-This map connects the saved file to the objects you use for a new prediction:
+```{admonition} Reference conclusion — open after you try
+:class: tip dropdown
 
-```mermaid
-flowchart TB
-    accTitle: Save Reload And Apply The Rule
-    accDescr: The fitted tree, training medians and input names are saved together in model.rds. Reading that file creates saved_model. Its medians prepare two invented profiles as new_ready, and its fitted rule makes new_prediction.
-    fitted_parts["final_tree + training medians + input names"] -->|saveRDS| model_file["model.rds: bundle on disk"]
-    model_file -->|readRDS| loaded_bundle["saved_model: restored bundle"]
-    new_inputs["new_samples: two invented profiles"] -->|copy and prepare| ready_inputs["new_ready: model inputs"]
-    loaded_bundle -->|saved medians| ready_inputs
-    ready_inputs -->|newdata| new_predictions["new_prediction: predicted numbers"]
-    loaded_bundle -->|predict with saved_model$fit| new_predictions
+We offered pasture hours and milking-cow count as inputs, and five-fold validation within the training farms selected depth 1. On 105 records from 21 held-out farms, the baseline had the lower RMSE, about 0.529 versus 0.545 for the tree on the log10 CFU/mL scale. The tree’s score includes predictions for records whose missing survey inputs were filled with training medians.
 ```
 
-A reusable prediction needs both the learned tree and the references for preparing missing inputs. A **list** bundles named R objects together; `$fit` later retrieves the item named `fit`.
+You have completed the test comparison when you can show the score table and explain your conclusion. Next, save the tree for another prediction and plan how to repeat the workflow with a different model.
 
-Run {span .script-block}`BLOCK · save-model`. `saveRDS()` writes the bundle to a file:
+## 10.4 Save the model and try a new input
+
+Chapter 9 saved `tree-fit.rds` to carry the fitted tree and the study tables into this chapter. For future predictions, `model.rds` bundles the **fitted tree, training medians and input names**. The medians are part of the prediction process because a new profile can have missing inputs.
+
+Run {span .script-block}`BLOCK · save-model` to write `outputs/tree/model.rds`. Then run {span .script-block}`BLOCK · reload-model` to read it back as `saved_model`.
 
 {{r:save-model}}
 
-Run {span .script-block}`BLOCK · reload-model`. `readRDS()` reads it back into R:
+{span .script-block}`BLOCK · reload-model`
 
 {{r:reload-model}}
 
-```{admonition} Invented data — try the saved tree on two farm profiles
+```{admonition} Invented data — try the saved tree on farm profiles
 :class: note
 
-Use the same two made-up inputs from Chapter 8 to check that the saved model makes predictions after you reload it. Neither profile has a measured MSC.
+The two practice profiles have six hours of pasture time and cow counts of 50 and 30. They have no measured MSC. Use them to see how the saved rule makes predictions.
 ```
 
-Run {span .script-block}`BLOCK · new-samples` to create those two profiles:
+Run {span .script-block}`BLOCK · new-samples`, {span .script-block}`BLOCK · prepare-new` and {span .script-block}`BLOCK · new-predict`. The preparation uses `saved_model$medians`. Prediction uses `saved_model$fit`.
 
 {{r:new-samples}}
 
-**Predict first:** at 6 pasture hours, which leaf will 50 cows enter? Which will 30 cows enter?
-
-Run {span .script-block}`BLOCK · prepare-new` to apply the saved input preparation. Both rows already have complete inputs.
+{span .script-block}`BLOCK · prepare-new`
 
 {{r:prepare-new}}
 
-Run {span .script-block}`BLOCK · new-predict`:
+{span .script-block}`BLOCK · new-predict`
 
 {{r:new-predict}}
 
-The predictions are about 0.6873 and 1.0545 log10 MSC. The last column uses `10^prediction` to express them in CFU/mL. These two invented profiles have no measured MSC, so the exercise ends at prediction.
+**Change one input.** In your my- copy, change **30 cows to 37** in {span .script-block}`BLOCK · new-samples`. Which side of the cutoff will that profile reach? Rerun **new-samples → prepare-new → new-predict** and check your guess. The last column gives the same prediction in CFU/mL using `10^prediction`.
 
-**Change one thing in your my- copy.** In {span .script-block}`BLOCK · new-samples`, change 50 cows to 60 and predict which leaf the profile will reach. To update the prediction, rerun {span .script-block}`BLOCK · new-samples` → {span .script-block}`BLOCK · prepare-new` → {span .script-block}`BLOCK · new-predict`. Next try 30 cows to 37, or change only pasture hours. Trace the branch to explain each result.
+```{admonition} Check the changed profile
+:class: tip dropdown
 
-## 10.5 Ask AI for two familiar operations
+At 30 cows, the profile reaches leaf 3 and receives about 1.0545 on the log10 scale. At 37 cows it reaches leaf 2, so the prediction becomes about 0.6873.
+```
 
-Choose a chat from [AI access](01-first-run.ipynb#id-1-5-ai-access) and work in your **my- copy**.
+## 10.5 Take this workflow to the next model
 
-**Back to the study data.** Ask AI to fit the tree on the training records and apply it to the held-out test records:
+Imagine you want to try another model on the milk study. Fill in these four lines before asking AI for code. Use your tree workflow as the example.
 
-> I am using R and rpart. My prepared training data frame is train_filled. The numeric target is log10_msc; the only predictors are pasture_hours and milking_cows. selected_settings already contains my training-validation choice. My prepared held-out data frame is test_filled. Write only the code to fit a numeric regression tree called ai_tree on train_filled, then predict test_filled into ai_prediction. Do not change the settings, split or preparation. Do not use held-out outcomes for fitting or choosing settings. Explain which line learns and which line only predicts.
-
-**Inspect before running:**
-
-| Check in the returned code | Why it matters |
+| Decision | What to write down |
 |---|---|
-| Fitting `data` is `train_filled` | The model learns from the prepared training records |
-| Left of `~` is `log10_msc`, and the right side lists only the two survey inputs | The formula separates the answer from the inputs |
-| Numeric method and existing `selected_settings` are used | This is the procedure already chosen in training |
-| `predict()` uses `newdata = test_filled` | We need predictions for those new rows |
+| **What will I predict?** | What does one row represent? Which column is the answer? Which inputs will be available when I predict? |
+| **How will I split the data?** | Which records stay together? Which farms choose settings, and which farms are reserved for the final comparison? |
+| **How will the model learn?** | What preparation and fitting steps will I learn from training records? How will I choose any model settings? |
+| **How will I compare results?** | Which predictions and lab results will I compare? What will I calculate and save? |
 
-Run {span .script-block}`BLOCK · restore-selected-tree-settings` to recreate the settings name in this session:
+```{admonition} Reference worksheet for the tree
+:class: tip dropdown
+
+1. Predict log10 MSC for one farm and sampling round using the two survey inputs available before the lab result, as assumed in this exercise.
+2. Keep each farm’s records together. Choose settings within the 81 training farms and reserve 21 farms for testing.
+3. Learn missing-input references inside each fitting group. Choose tree depth by validation, then refit on all training farms.
+4. Compare the tree and baseline on the same 105 test records using RMSE and MAE. Save the scores and the individual predictions.
+```
+
+To replay the full reference analysis, restart R and run a my- copy of `scripts/full-analysis.R`. To check an edit of your own, run the changed blocks in your chapter script.
+
+## 10.6 Optional AI check
+
+Return to the **study data** and ask AI to repeat two familiar operations: fit the tree using the settings chosen in Chapter 9, then predict the same held-out records. Use your my- copy and a browser chat from [AI access](01-first-run.ipynb#id-1-5-ai-access).
+
+Run {span .script-block}`BLOCK · restore-selected-tree-settings` so the chosen settings are available as `selected_settings`.
 
 {{r:restore-selected-tree-settings}}
 
-In your my- script, find the **My live AI attempt** comment at the end. Add the AI code below it, then add this check comparing its predictions with the reference `tree_prediction`. Run your added lines after completing the earlier blocks:
+```text
+I am using R and rpart. Fit a numeric regression tree called ai_tree
+using train_filled, with log10_msc as the outcome and pasture_hours
+and milking_cows as the two inputs. Use method = "anova" and
+control = selected_settings. Then use predict() on test_filled and
+store the results as ai_prediction. Use the existing split, settings
+and prepared tables. Explain which line fits and which predicts.
+```
+
+Read the reply before running it. The fitting call should use `train_filled` and `selected_settings`. The prediction call should use `test_filled`. In your my- script, add the returned R code below **My live AI attempt**, then run it and check:
 
 ```r
 all.equal(as.numeric(ai_prediction), as.numeric(tree_prediction))
 ```
 
-Matching predictions return TRUE. If R reports a difference or an error, share the relevant code and output with AI to investigate. Add your prompt, reply, check and any repair to your AI-use log.
+Matching predictions give **TRUE**. If you see a difference or error, compare the code and output with the supplied blocks. Save your prompt, reply and check in your AI-use log.
 
-For a self-study route without live chat, inspect {span .script-block}`BLOCK · fit-tree` in Chapter 9 and {span .script-block}`BLOCK · predict-tree` here. Record that route as **code inspection**.
-
-## 10.6 Keep the evidence and transfer the workflow
-
-| Find in outputs/tree | What it lets you explain |
-|---|---|
-| `predictor-audit.csv` | Missing survey information and records kept |
-| `validation-scores.csv` | Why this depth was selected |
-| `test-scores.csv` | Same-record comparison with the baseline |
-| `leaf-means.csv` and `nodes.csv` | Where the predictions came from |
-| `model.rds` and `example-predictions.csv` | Reuse of the rule and its preparation |
-
-**Write three sentences.** Name the candidate inputs and the depth selected in validation. Compare the test scores. Then explain one limitation, such as using training medians to fill missing survey inputs.
-
-```{admonition} Reference conclusion — open after writing yours
-:class: tip dropdown
-The candidate inputs were pasture hours and milking-cow count, and five-fold validation within the training farms selected depth 1. On 105 test records from 21 held-out farms, the baseline had a lower RMSE than the tree, about 0.529 versus 0.545 on the log10 CFU/mL scale. The tree score includes predictions made with training medians in place of missing survey values.
-```
-
-| Step | When the algorithm changes |
-|---|---|
-| Define the task | Keep the target, available information and intended new-farm setting explicit |
-| Prepare inputs | A new method may need different preparation; learn it inside each fitting partition |
-| Fit and choose settings | Replace the fitting function and settings; keep whole-farm training validation |
-| Predict and compare | Predict appropriate held-out records, without using their answers to choose the procedure |
-| Explain and verify | Keep predictions and checks; a different model needs an explanation suited to its own rules |
-
-**Your transfer worksheet:** before asking AI to help with another model, fill this table in your own notes. Use the current tree to practise filling the decisions; a future dataset may need different preparation or a different grouping unit.
-
-| Decision | Write your answer |
-|---|---|
-| What is one record, and what numeric target should be predicted? | … |
-| Which input columns exist before the target is known? | … |
-| What related records must stay together? | … |
-| Which data learn preparation and choose settings? | … |
-| Which table fits the model, and which supplies new inputs? | … |
-| What held-out comparison and evidence will you save? | … |
-
-```{admonition} Check the worksheet for this tree
-:class: tip dropdown
-One record is one farm-round MSC result; the target is log10_msc. Inputs are pasture_hours and milking_cows, with availability before the lab result assumed. Keep each farm's records together. Learn preparation inside each fitting partition and choose depth within the 81 training farms. Fit the final rule on train_filled; predict the prepared held-out table test_filled. Compare its 105 predictions with the baseline using RMSE and MAE, and retain the split, preparation, predictions and checks.
-```
-
-**Finish:** save optional changed-input results under another filename if you want to keep them. Restart R and run a my- copy of `scripts/full-analysis.R`; it recreates the supplied reference baseline and tree from the original downloads.
-
-The `source()` calls in `my-full-analysis.R` run the supplied reference workflows. To check your own edits, run the changed blocks in your my- chapter scripts. Explain which steps you can reuse when requesting another model from AI.
+**Code-inspection route.** For the same exercise without live chat, find the fitting call in {span .script-block}`BLOCK · fit-tree` in Chapter 9 and the prediction call in {span .script-block}`BLOCK · predict-tree` here. Use the checklist above to explain the role of each table and setting. Record the route as **code inspection**.

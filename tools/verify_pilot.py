@@ -108,9 +108,21 @@ stopifnot(sum(is.na(train_survey$milking_cows)) == 20, sum(is.na(train_ready$mil
 first_fit_for_check <- first_tree
 source("scripts/09-choose-tree.R")
 stopifnot(isTRUE(all.equal(as.numeric(round_predictions), as.numeric(oof[row_fold == 1, 1]))))
+stopifnot(nrow(traced_record) == 1,
+          traced_record$FarmID == round_one_record$FarmID,
+          traced_record$Sampling == round_one_record$Sampling,
+          traced_record$fold == 1,
+          traced_record$observed_log10 == round_one_record$observed_log10,
+          isTRUE(all.equal(traced_record$depth_1, round_one_record$predicted_log10)))
 stopifnot(isTRUE(all.equal(first_fit_for_check$frame, final_tree$frame)))
 stopifnot(isTRUE(all.equal(first_fit_for_check$splits, final_tree$splits)))
 source("scripts/10-test-tree.R")
+stopifnot(first_tree_test_record$FarmID == "R15", first_tree_test_record$Sampling == "A",
+          nrow(first_test_comparison) == 2,
+          all(first_test_comparison$observed_log10 == first_test_record$observed_log10),
+          first_test_comparison$predicted_log10[1] == first_test_record$predicted_log10,
+          identical(round(first_test_comparison$residual_log10, 4), c(0.0679, 0.1256)),
+          identical(first_test_comparison$residual_log10, c(baseline_errors[1], as.numeric(tree_errors[1]))))
 quiz_inputs <- data.frame(pasture_hours = c(6, 6, 6, 6, 18, 6), milking_cows = c(50, 60, 36, 37, 50, 30))
 quiz_predictions <- as.numeric(predict(saved_model$fit, newdata = quiz_inputs))
 stopifnot(quiz_predictions[1] == quiz_predictions[2], quiz_predictions[1] == quiz_predictions[5])

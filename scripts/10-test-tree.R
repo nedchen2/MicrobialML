@@ -21,15 +21,26 @@ cat("Saved outputs/tree/fitted-tree.png\n")
 test_filled <- fill_predictors(chosen$test, chosen$medians)
 # %% predict-tree
 tree_prediction <- predict(final_tree, newdata = test_filled)
-head(data.frame(observed_log10 = test_filled$log10_msc,
-                tree_prediction = as.numeric(tree_prediction)), 3)
 # %% trace-one-test-prediction
-first_route <- trace_tree(test_filled[1, ], nodes)
+first_tree_test_record <- test_filled[1, ]
+first_route <- trace_tree(first_tree_test_record, nodes)
 data.frame(feature = tree_features, recorded = unlist(chosen$test[1, tree_features], use.names = FALSE),
-           used_by_model = unlist(test_filled[1, tree_features], use.names = FALSE))
-data.frame(rule = paste(first_route$path, collapse = "; "), leaf = first_route$leaf,
+           used_by_model = unlist(first_tree_test_record[tree_features], use.names = FALSE))
+data.frame(FarmID = first_tree_test_record$FarmID, Sampling = first_tree_test_record$Sampling,
+           observed_log10 = first_tree_test_record$log10_msc,
+           rule = paste(first_route$path, collapse = "; "), leaf = first_route$leaf,
            prediction_log10 = first_route$prediction)
 stopifnot(isTRUE(all.equal(first_route$prediction, as.numeric(tree_prediction[1]))))
+# %% check-one-test-residual
+baseline_prediction <- rep(mean(chosen$train$log10_msc), nrow(test_filled))
+first_observed <- first_tree_test_record$log10_msc
+first_predictions <- c(baseline_prediction[1], as.numeric(tree_prediction[1]))
+first_test_comparison <- data.frame(
+  model = c("Training-mean baseline", "Shallow regression tree"),
+  observed_log10 = first_observed,
+  predicted_log10 = first_predictions,
+  residual_log10 = first_observed - first_predictions)
+first_test_comparison
 # %% check-leaves
 train_routes <- lapply(seq_len(nrow(train_filled)), function(i) trace_tree(train_filled[i, ], nodes))
 train_leaf <- vapply(train_routes, function(route) route$leaf, integer(1))
@@ -42,16 +53,14 @@ leaf_means$tree_prediction <- nodes$mean_log10[match(leaf_means$leaf, nodes$node
 stopifnot(isTRUE(all.equal(leaf_means$mean_from_training_records, leaf_means$tree_prediction)))
 leaf_means
 # %% tree-errors
+baseline_errors <- test_filled$log10_msc - baseline_prediction
 tree_errors <- test_filled$log10_msc - tree_prediction
-sqrt(mean(tree_errors^2))
-mean(abs(tree_errors))
 # %% tree-test-scores
-baseline_prediction <- rep(mean(chosen$train$log10_msc), nrow(test_filled))
 tree_scores <- data.frame(model = c("Training-mean baseline", "Shallow regression tree"),
   maxdepth = c(0, chosen$chosen_depth), n_test = nrow(test_filled), test_farms = length(unique(test_filled$FarmID)),
-  RMSE_log10_CFU_ml = c(sqrt(mean((test_filled$log10_msc - baseline_prediction)^2)), sqrt(mean(tree_errors^2))),
-  MAE_log10_CFU_ml = c(mean(abs(test_filled$log10_msc - baseline_prediction)), mean(abs(tree_errors))))
-tree_scores[c("model", "RMSE_log10_CFU_ml", "MAE_log10_CFU_ml")]
+  RMSE_log10_CFU_ml = c(sqrt(mean(baseline_errors^2)), sqrt(mean(tree_errors^2))),
+  MAE_log10_CFU_ml = c(mean(abs(baseline_errors)), mean(abs(tree_errors))))
+tree_scores[c("model", "n_test", "test_farms", "RMSE_log10_CFU_ml", "MAE_log10_CFU_ml")]
 # %% save-tree-results
 write.csv(tree_scores, "outputs/tree/test-scores.csv", row.names = FALSE)
 write.csv(nodes, "outputs/tree/nodes.csv", row.names = FALSE)
