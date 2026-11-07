@@ -117,7 +117,7 @@ Run the deliberately wrong {span .script-block}`BLOCK · toy-leakage` example. I
 
 {{r:toy-leakage}}
 
-The all-record mean is **26.67**, and its apparent test RMSE falls from **22.36 to 16.67**. That looks better only after using answers that should have been held out. It is not evidence of better prediction for unseen samples. This is **data leakage**. It need not change the score in every dataset, so also inspect where the fitted value came from.
+The all-record mean is **26.67**, and its apparent test RMSE falls from **22.36 to 16.67**. Farm C's answers helped set that prediction and then scored it. This is **data leakage**. To spot it, trace which records supplied the fitted value.
 
 There is another way a procedure can answer the wrong question. Consider this alternative split:
 

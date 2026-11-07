@@ -60,8 +60,6 @@ The book displays `<NA>` here. In the RStudio Console, expect `[1] NA`: `[1]` ma
 The ordinary mean includes an unknown value, so R returns NA. The code follows R's rules and does not raise an execution error. Rounding cannot turn a missing result into a known number. This calculation has not produced the requested mean of the recorded counts.
 ```
 
-A different reply might ask for clarification or supply `na.rm = TRUE` with an explanation. Check the reply you actually receive.
-
 ## 3.4 Continue the conversation with evidence
 
 Read this follow-up. It supplies the actual output, the missing-value meaning and the calculation you want:
@@ -115,7 +113,7 @@ The original still has one missing entry. The comparison is FALSE. Getting a num
 | `20` | Averaged the three recorded counts | Yes, with the recorded and missing counts reported |
 | `15` | Added an assumed zero and averaged four values | No; it changed the data assumption |
 
-If an actual reply fills the missing value, tell the assistant what changed and what to preserve. For example: “Your code returned 15 after replacing NA with zero. I need the mean of 10, 20 and 30, without filling the missing value. Revise only the summary.” Do not describe this constructed example as your own AI interaction.
+If your reply fills the missing value, tell the assistant what changed and what to preserve. For example: “Your code returned 15 after replacing NA with zero. I need the mean of 10, 20 and 30, with the original missing entry preserved. Revise only the summary.”
 
 ## 3.6 Check, save and explain your decision
 
@@ -123,7 +121,7 @@ Run the supplied {span .script-block}`BLOCK · verify-recorded-summary` block. I
 
 {{r:verify-recorded-summary}}
 
-Accept the summary for the stated task when it reports 1 missing, 3 recorded and mean 20, while preserving the original missing value. These checks do not establish why a real sample's result went missing or whether the recorded samples represent all samples.
+Accept the summary when it reports 1 missing, 3 recorded and a mean of 20, with the original missing value preserved.
 
 Run {span .script-block}`BLOCK · save-summary-and-log`, then open **Files → outputs → ch03**:
 
@@ -131,7 +129,7 @@ Run {span .script-block}`BLOCK · save-summary-and-log`, then open **Files → o
 
 - **`summary.csv`:** the checked summary, containing 1, 3 and 20.
 - **`summary-check.txt`:** the first reply's result, the fill-zero result and the checked mean, plus whether the original fourth count is still missing.
-- **`ai-use-log.txt`:** open as text, fill in your actual route and checks, then save. Rerunning preserves an existing log.
+- **`ai-use-log.txt`:** open as text and record your route (code inspection or live chat) and checks. Rerunning preserves your saved log.
 
 ```{admonition} Example log for the supplied exercise route
 :class: tip dropdown
@@ -144,7 +142,9 @@ Route: supplied code-inspection exercises; no live chat used. Task: summarize re
 
 This short exercise covers a different problem: a name in the code does not match a name in your session. Your main summary is already saved; this exercise saves its own record.
 
-An incomplete request such as “I have loaded my milk-count data; calculate its mean, ignoring missing values” leaves out the object name. An assistant might guess `milk_data`, or it might ask for your actual names. The following constructed case gives a missing-name error in a fresh session; it is not another real AI transcript.
+An incomplete request such as “I have loaded my milk-count data; calculate its mean, ignoring missing values” leaves out the object name. An assistant might guess `milk_data` or ask for the name.
+
+**Teaching example.** The code below uses the guessed name `milk_data` in a session where the table is called `practice`.
 
 **Make R show the error.** Restart R, then run {span .script-block}`BLOCK · load-practice-data` to restore `practice`. Find {span .script-block}`BLOCK · capture-missing-object-error` in your working script and run only the following line.
 

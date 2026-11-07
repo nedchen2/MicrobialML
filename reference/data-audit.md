@@ -19,7 +19,7 @@ A selected row is one **MSC result from one farm and sampling round**. MSC means
 | Predict log10 MSC | Errors are on the transformed scale |
 | Hold out whole farms | 81 training farms / 21 test farms; no overlap |
 
-The 0.125 values represent the authors' substitution of one quarter of a 0.5 CFU/mL detection limit. They are not precise point measurements. The excluded notes comprise 34 laboratory errors, two TNTC results and one unresolved note. This defines a teaching slice, not a reproduction of the paper's full analysis.
+The authors stored 0.125 CFU/mL, one quarter of the 0.5 CFU/mL detection limit, for records with unknown concentrations below that limit. Our teaching subset excludes 34 records with laboratory errors, two TNTC results and one unresolved note.
 
 ## What does the tree add?
 
@@ -39,11 +39,13 @@ This is optional reference for the supplied `fixed_tree_settings` object. Copyin
 | `xval` | 0; turn off rpart's internal validation because our lesson explicitly validates whole farms |
 | `maxcompete`, `maxsurrogate`, `usesurrogate` | 0; use the primary learned rules and our explicit missing-input preparation |
 
-These choices are a fixed teaching protocol, not universal best settings. The four invented records in Chapter 8 illustrate arithmetic only; they cannot fit the real lesson's tree under the minimum-record rules. `method = "anova"` is rpart's name for numeric regression here; it is not a request for an ANOVA significance test.
+We hold these settings fixed while comparing depths. The four invented records in Chapter 8 are for practising the arithmetic. The fitted tree uses at least 20 records to consider a split. In rpart, `method = "anova"` tells the software to fit a regression tree for a numeric outcome.
 
 ## What can the result support?
 
-The scores compare fixed procedures on held-out records in this study setting. They do not establish that all records are independent, that a farm practice causes a change, or that a milk product is safe. The limit-value treatment, simple predictor filling, assumed survey availability and single split constrain interpretation. These test farms were already displayed in the baseline lesson; this is a teaching comparison, not a fresh blinded study.
+The scores compare predictions on 105 records from 21 held-out farms in this study. Some farms contributed repeated samples. Chapter 7 scores the baseline on these same test records before the tree lessons. The comparison uses the authors' below-limit values and assumes the survey inputs are available before the MSC result. The tree uses training medians to fill missing survey values.
+
+To assess performance in another region, we would need test records from that region. Estimating the effect of changing a farm practice would require a study designed around that question. Product safety requires evidence about the specific hazards of concern.
 
 ## How do I get the data?
 

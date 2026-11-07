@@ -60,7 +60,7 @@ You should have **525 records from 102 farms**. Inspect three selected rows:
 
 {{r:usable-preview}}
 
-Now every displayed concentration belongs to the same assay. Do not delete a failed check simply to reach this total; investigate the input and rule.
+Now every displayed concentration belongs to the same assay. If your count differs, check that you loaded the authors' CSV and ran the assay and eligibility filters in order.
 
 ## 5.3 Prepare the MSC prediction target
 
@@ -122,7 +122,7 @@ Run the supplied {span .script-block}`BLOCK · log-intuition` block on those sam
 
 The original-scale arithmetic mean is **37 CFU/mL**. Taking the average on the log10 scale and converting it back gives **10 CFU/mL**, the geometric mean. Chapter 7 uses this second calculation to express its log10 prediction in CFU/mL.
 
-**Check:** if each of 1, 10 and 100 increases tenfold, what happens to its log10 value? Each increases by 1. It does not increase tenfold on the log scale.
+**Check:** if each of 1, 10 and 100 increases tenfold, what happens to its log10 value? Each increases by 1.
 
 ## 5.4 Save the prepared input
 

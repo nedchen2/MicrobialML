@@ -30,7 +30,7 @@ Depth counts questions along one root-to-leaf path. It does not count all the qu
 | 2 | A second question inside those groups, at most four final groups |
 | 3 | A third question along a path, at most eight final groups |
 
-The software can stop earlier; a depth limit is permission, not a requirement. It learns the cut positions, while we choose the allowed depth by checking predictions on hidden farms.
+The depth sets the maximum number of questions along a path. The software can stop earlier. We choose that maximum by checking predictions on hidden farms.
 
 ## 9.2 Try one validation round first
 
@@ -125,17 +125,15 @@ Each of the 420 training records contributes one squared error. A fold with more
 
 ## 9.4 Let the validation table choose depth
 
-Before this comparison, we fixed the rule: choose the **smallest OOF RMSE**, with a shallower tree winning a tie. MAE is also shown, but does not select depth.
+Our rule is to choose the **smallest OOF RMSE**, with a shallower tree winning a tie. Use MAE as a second description of the errors.
 
 Run the supplied {span .script-block}`BLOCK · choose-depth` block:
 
 {{r:choose-depth}}
 
-**Read it yourself:** depth 1 has OOF RMSE about 0.722, depth 2 about 0.727 and depth 3 about 0.742. Which is smallest? `selected = TRUE` marks that row. A slightly smaller MAE for depth 2 does not change the predeclared RMSE rule.
+**Read it yourself.** Depth 1 has OOF RMSE about 0.722, depth 2 about 0.727 and depth 3 about 0.742. Which is smallest? `selected = TRUE` marks that row.
 
-The baseline row below uses the fitting mean from each round to predict that round's hidden records. Its OOF RMSE is about 0.721. Choosing the best of three trees does not establish that it beats this simpler reference.
-
-Do not compare 0.722 here directly with Chapter 7's test RMSE of 0.529: they concern different farms. Compare methods on the **same hidden records**.
+The baseline uses each round's fitting mean to predict that round's hidden records. On those **same validation records**, the baseline RMSE is about **0.721** and the selected tree's is about **0.722**. Chapter 10 compares both methods on the final test farms.
 
 ## 9.5 Revisit your guess, then fit on all training farms
 

@@ -45,7 +45,7 @@ Run {span .script-block}`BLOCK · check-farm-overlap` to inspect the actual shar
 
 {{r:check-farm-overlap}}
 
-**Expected:** `character(0)`, an empty list of farm labels. If you see any label, repair the split before fitting a model. This addresses farm overlap; it does not establish independence of every record or performance in a new region.
+**Expected.** `character(0)` means the training and test sets share no farm IDs. If you see a farm ID, check the split before fitting a model.
 
 ## 6.4 Save a starting point for evaluation
 

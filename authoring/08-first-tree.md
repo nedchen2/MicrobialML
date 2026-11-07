@@ -8,7 +8,7 @@
 
 A **package** adds functions to R. We use the package **rpart** to fit a tree.
 
-If you have not installed it, type this in the **Console** once. It needs internet; this installation line is not a step to repeat on every run:
+To install rpart for the first time, connect to the internet and run this line once in the **Console**:
 
 ```r
 install.packages("rpart")
@@ -18,9 +18,9 @@ Then run the script's {span .script-block}`BLOCK · load-rpart-for-first-tree` b
 
 {{r:load-rpart-for-first-tree}}
 
-Installing puts the package on your computer. `library(rpart)` makes its functions available in the current R session. After restarting R, run `library(rpart)` again; you usually do not need to install again. A successful load may print nothing. If it says there is no package called rpart, run the installation line above and retry the load.
+Installing puts the package on your computer. Run `library(rpart)` in each new R session to use it. A successful load may print nothing. If R says there is no package called rpart, install it and retry the load.
 
-**Supplied setup — {span .script-block}`BLOCK · load-farm-split-for-tree`:** run this block to restore Chapter 7's split. Its file checks are supporting code; they do not train a model.
+Run {span .script-block}`BLOCK · load-farm-split-for-tree` to restore the split used in Chapter 7.
 
 {{r:load-farm-split-for-tree}}
 
@@ -49,7 +49,7 @@ Run {span .script-block}`BLOCK · hand-data` to create this table:
 
 The answer is `(0 + 0 + 2 + 2) / 4 = 1`, equivalent to 10 CFU/mL.
 
-Now **we choose** a cut at 8 pasture hours for this hand exercise. It is not a biological threshold. Software will later compare candidate cuts; we are not fitting software to these four rows.
+For this hand exercise, choose **8 pasture hours** as the dividing line. Later, R will compare candidate cuts using the study records.
 
 Run {span .script-block}`BLOCK · hand-left`. The condition before the comma selects rows; the empty position after the comma keeps all columns:
 
@@ -126,7 +126,7 @@ Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 
 **Explain:** which prediction missed by more on this record? A rule can perfectly match the records used to build it and still miss a new one. That is why we need hidden farms, not just a small training error.
 
-**The baseline uses one training mean; a regression tree divides records into groups and uses each group's training mean.** Its software searches candidate cuts, then can repeat within groups. It does not search every possible complete tree.
+**The baseline uses one training mean. A regression tree divides records into groups and uses each group's training mean.** It compares candidate cuts at each step and can then split the resulting groups again.
 
 **Pause point:** you have completed the hand-built rule and its counterexample. If you stop here, save your my- script. Next time, restart R and run from the top to recreate its objects.
 
@@ -140,7 +140,7 @@ Run {span .script-block}`BLOCK · hand-surprise` to check the last row:
 | `milking_cows` | Number of milking cows that day | Possible input |
 | `log10_msc` | Lab MSC result on the log10 scale | Answer to learn from in training |
 
-We assume the survey answers can be obtained before the lab result; an actual application must check that timing. Farm labels help match records and separate farms; they are not prediction inputs. Another assay result or a summary of microbial outcomes would not be an appropriate replacement for these survey inputs.
+For this exercise, assume the farm can report pasture hours and cow count before the lab returns the MSC result. We use those two answers to predict MSC and the farm ID to match records and keep each farm together.
 
 In the block below, `fetch_course_survey()` downloads the survey CSV from the authors' fixed GitHub version and saves it as `data/raw/Farm_Survey_Data.csv`. It returns the local path so `read_survey_features()` can read the file and select the two survey inputs. On later runs, the fetch function checks and reuses the saved CSV. [View the authors' survey CSV](https://github.com/FSL-MQIP/OREI_ML_Inference/blob/aebcac0888599ad34ab2898f5aa2b704c6e7600c/Data/Farm%20Survey%20Data.csv).
 
@@ -160,14 +160,12 @@ Run {span .script-block}`BLOCK · predictor-preview` to inspect three training r
 
 There are **29 unmatched farm-round records**: 18 training and 11 test records. Two additional matched training records have unknown cow counts. We keep all 420 training and 105 test records for the same-sample comparison.
 
-This is different from making up a missing lab answer:
-
 | What is missing? | Our action | Why? |
 |---|---|---|
-| MSC answer | Do not invent an answer to train or score against | We do not know the correct result |
-| Survey input | Fill a separate model-input copy using a training reference | The model needs a usable input; this is an explicit assumption |
+| MSC answer | Use records with an available outcome for training and scoring | Both steps need a lab result to compare with the prediction |
+| Survey input | Fill a separate model-input copy using a training reference | This lets the model make a prediction for that record |
 
-Chapter 3 rejected silently treating an unknown count as zero. Here we deliberately state a different assumption for **prediction inputs**, preserve the recorded values and later evaluate the complete procedure. Filling an input does not recover its true measurement.
+The filled value is a stand-in for prediction. The original survey table still shows which values were missing.
 
 Our reference is the training **median**. Sort the known values and take the middle one. With an even count, average the two middle values.
 
@@ -191,11 +189,11 @@ The references are 9 hours and 72 cows. `[["milking_cows"]]` selects that named 
 
 {{r:fill-missing-training-inputs}}
 
-No test record helped calculate these references. Chapter 9 will apply the same rule separately inside each validation round.
+Both references come from the training records. Chapter 9 will learn them separately in each validation round.
 
 ## 8.6 Fit your first real tree and look at it
 
-Use this object map to keep track of the names. These are objects in this R session; the diagram is a reading guide, not another block to run.
+Use this map to follow the R objects from the survey table to the predictions.
 
 ```mermaid
 flowchart TB
@@ -209,7 +207,7 @@ flowchart TB
     invented_inputs["first_inputs: two invented rows"] -->|newdata| prediction_values
 ```
 
-{span .script-block}`BLOCK · load-farm-split-for-tree` also provides `fixed_tree_settings`, the preset settings used below. `library(rpart)` loads functions; it does not create our tables or settings. The fitting and prediction steps create the last two objects as you proceed.
+{span .script-block}`BLOCK · load-farm-split-for-tree` also provides `fixed_tree_settings`, the preset settings used below.
 
 **Fit** means use training records to learn a rule. Run {span .script-block}`BLOCK · fit-first-tree`:
 
@@ -225,9 +223,9 @@ Read the fitting call in pieces:
 | `method = "anova"` | Tell rpart this is a numeric prediction task |
 | `first_settings$maxdepth <- 1` | Allow at most one question along a path |
 
-Here `~` means “predict using”; `+` lists inputs, rather than adding hours to cows. The supplied `fixed_tree_settings` holds the other settings constant. Copy it, then set the visible depth. You do not need to write a settings helper. Optional details are in [the fixed settings note](../reference/data-audit.md#tree-settings).
+Read `~` as “predict using” and `+` as “and.” The block copies `fixed_tree_settings` and sets the depth limit to 1. See [the fixed settings note](../reference/data-audit.md#tree-settings) for the other settings.
 
-The depth of 1 is a **starting demonstration**, not a decision that it is best. We have not calculated a tree test score.
+One question is enough to practise reading a tree. Chapter 9 compares depth limits of 1, 2 and 3.
 
 **Supplied plot — {span .script-block}`BLOCK · first-plot`:** run this block, then open `outputs/tree/first-tree.png` in Files. It saves the image directly; it may not appear in the Plots pane.
 
@@ -235,7 +233,7 @@ The depth of 1 is a **starting demonstration**, not a decision that it is best. 
 
 ![A first depth-one tree learned from training data. Each leaf shows its training mean log10 MSC and number of training records.](../outputs/tree/first-tree.png)
 
-The software chose a question about **milking cows**, not pasture hours. Its cut at 36.5 separates integer counts of **36 or fewer** from **37 or more**. There is no half cow. The cut was learned from these training records; it is not advice to change herd size or a milk-safety threshold.
+The tree learned one question about **milking cows**. On the diagram, the cut at 36.5 separates herds of **36 cows or fewer** from herds of **37 or more**.
 
 ## 8.7 Predict by eye, then use predict()
 
@@ -253,7 +251,7 @@ Before running the next block, point to the leaf for 50 cows, then for 30 cows. 
 
 {{r:first-predict}}
 
-`predict(first_tree, newdata = first_inputs)` applies the learned rule to the new rows. It does **not** train again. Neither row needs an MSC column. Their predictions are about 0.6873 and 1.0545 log10 MSC. Without observed outcomes, these rows cannot tell us whether prediction is accurate.
+`predict(first_tree, newdata = first_inputs)` sends each row through the fitted tree using its inputs. Compare your answers with the two predictions, about 0.6873 and 1.0545 log10 MSC. Chapter 10 will score the tree using test records with lab results.
 
 **Explain:** which operation learned the branches, and which just followed them? Does changing pasture hours alone change this particular tree's prediction?
 
